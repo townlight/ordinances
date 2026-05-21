@@ -120,6 +120,25 @@ ${PYTHON_BIN} scripts/check-civiccore-placeholder-imports.py
 echo "==> Ruff"
 ${PYTHON_BIN} -m ruff check .
 
+echo "==> Public browser QA"
+if command -v node >/dev/null 2>&1; then
+  if [[ "${PYTHON_BIN}" == /mnt/c/* || "${PYTHON_BIN}" == /c/* ]]; then
+    if command -v powershell.exe >/dev/null 2>&1 && command -v wslpath >/dev/null 2>&1; then
+      WIN_ROOT="$(wslpath -w "$PWD")"
+      WIN_PYTHON="$(wslpath -w "${PYTHON_BIN}")"
+      powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \
+        "Set-Location -LiteralPath '${WIN_ROOT}'; [Environment]::SetEnvironmentVariable('PYTHON', '${WIN_PYTHON}', 'Process'); node scripts/browser-public-surfaces-qa.cjs"
+    else
+      PYTHON="${PYTHON_BIN}" node scripts/browser-public-surfaces-qa.cjs
+    fi
+  else
+    PYTHON="${PYTHON_BIN}" node scripts/browser-public-surfaces-qa.cjs
+  fi
+else
+  echo "FAIL: node not found. Install Node.js to run public browser QA." >&2
+  exit 1
+fi
+
 echo "==> Build artifacts"
 rm -rf dist
 ${PYTHON_BIN} -m build

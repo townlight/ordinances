@@ -37,5 +37,7 @@ jobs:
           npx playwright install chromium
       - name: Run staff browser QA
         run: node scripts/browser-staff-surfaces-qa.cjs
+      - name: Run public browser QA
+        run: node scripts/browser-public-surfaces-qa.cjs
       - name: Verify release gate
         run: bash scripts/verify-release.sh

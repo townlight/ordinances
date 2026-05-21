@@ -533,7 +533,7 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v1.0.0 is the public-use municipal-code module release target. The
+CivicCode v1.0.0 is the public-use municipal-code module release candidate. The
 older v0.1.17, v0.1.18, and v0.5.0 publications are historical pre-gate releases; check
 `docs/ops/tier1-retrofit-ledger.md` before relying on those older artifacts.
 The product line

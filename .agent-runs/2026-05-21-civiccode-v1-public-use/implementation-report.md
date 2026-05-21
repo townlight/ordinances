@@ -4,7 +4,7 @@ Run: `2026-05-21-civiccode-v1-public-use`
 
 ## Completed Source Slice
 
-- Version truth moved from `0.5.0` to `1.0.0` in package metadata, runtime health/root tests, release verifier, docs, manual, security policy, and release notes.
+- Candidate version truth moved from `0.5.0` to `1.0.0` in package metadata, runtime health/root tests, release verifier, docs, manual, security policy, and release notes. Final release truth remains blocked until suite installer integration, merge, tag/release, artifacts, and post-release CI are complete.
 - CivicCore dependency language was refreshed to the current CivicCore `1.1.0` platform release where the CivicCode docs described the active dependency.
 - Browser QA evidence was refreshed for public resident routes and staff routes at desktop and mobile widths.
 - Docker smoke and PostgreSQL backup/restore proof were rerun on host port `18052` because host port `8000` was already allocated by another local stack.
@@ -20,7 +20,7 @@ Run: `2026-05-21-civiccode-v1-public-use`
 - Ruff: `All checks passed!`.
 - Build artifacts: `civiccode-1.0.0.tar.gz` and `civiccode-1.0.0-py3-none-any.whl`.
 - Staff browser QA: PASS across 16 staff scenarios.
-- Public browser QA: PASS across 10 public scenarios.
+- Public browser QA: PASS across 10 public scenarios via `scripts/browser-public-surfaces-qa.cjs`.
 - Docker smoke: PASS.
 - Docker backup/restore rehearsal: PASS with run id `civiccode-v1-public-use-verify-3`.
 

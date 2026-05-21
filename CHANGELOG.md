@@ -1,15 +1,17 @@
 # Changelog
 
-## [1.0.0] - 2026-05-21
+## [1.0.0-rc] - 2026-05-21
 
-- Promoted CivicCode from the v0.5.0 recovery label to the active v1.0.0
-  public-use module release line after the Clerk-Core starter release shipped.
+- Prepared CivicCode for the active v1.0.0 public-use module release line after
+  the Clerk-Core starter release shipped. This is pre-final-gate release
+  candidate truth until suite installer integration, merge, tag/release,
+  artifacts, and post-release CI are complete.
 - Synchronized package, verifier, documentation, security, and artifact version
   surfaces to `1.0.0`.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 
-## [0.5.0] - 2026-05-11
+## [0.5.0 recovery update] - 2026-05-11
 
 ### Changed
 
@@ -49,7 +51,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added current public/staff browser QA and clean Docker/PostgreSQL
   backup-restore proof under `docs/qa/` for the recovery pass.
 
-## [1.0.0] - 2026-05-07
+## [1.0.0 false/recovered label] - 2026-05-07
 
 ### Changed
 

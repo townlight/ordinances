@@ -61,8 +61,10 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode target is v1.0.0 public-use module release. The earlier
-v0.5.0 label completed the suite-wide release-recovery pass and remains
+The current CivicCode target is a v1.0.0 public-use module release candidate.
+Until suite installer integration, merge, tag, release artifacts, and
+post-release CI are complete, the current shipped label remains v0.5.0. The
+earlier v0.5.0 label completed the suite-wide release-recovery pass and remains
 historical evidence in
 [docs/release-recovery-status.md](docs/release-recovery-status.md). Release
 provenance follows the suite-wide Sigstore attestation model: the Git tag is a

@@ -4,8 +4,10 @@ Date: 2026-05-21
 
 ## Scope
 
-Promote CivicCode from the v0.5.0 recovery label to the active v1.0.0 public-use
-module release line.
+Prepare CivicCode to move from the v0.5.0 recovery label to the active
+v1.0.0 public-use module release line. This remains a release candidate until
+suite installer integration, merge, tag/release, artifacts, and post-release CI
+are complete.
 
 ## Careful-Work Checklist
 
@@ -39,7 +41,7 @@ module release line.
 
 - `bash scripts/verify-release.sh` passed after version/test updates.
 - `node scripts/browser-staff-surfaces-qa.cjs` passed across 16 staff states.
-- Inline Playwright resident matrix passed across 10 public states.
+- `scripts/browser-public-surfaces-qa.cjs` passed across 10 public states.
 - `docker compose -p civiccode_v1_debug up -d --build` passed with
   `CIVICCODE_PORT=18052`.
 - `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18052 bash scripts/docker-demo-smoke.sh`

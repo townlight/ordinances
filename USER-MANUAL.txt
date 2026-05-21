@@ -448,7 +448,7 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v1.0.0 is the public-use municipal-code module release target. It
+CivicCode v1.0.0 is the public-use municipal-code module release candidate. It
 persists source registry records, title/chapter/section/version records,
 staff-approved popular questions, staff notes, plain-language summaries,
 CivicClerk handoffs, import jobs, and codifier sync source state through
