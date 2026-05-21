@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: Apache-2.0
+current_rung: "civiccode-v1-public-use"
+canonical_source: "C:\\Users\\scott\\OneDrive\\Desktop\\Claude\\ACTIVE_RELEASE_QUEUE.md and CivicSuite/docs/CivicSuiteUnifiedSpec.md"
+rung_title: "CivicCode v1.0.0 public-use module release"
+proves: "CivicCode is the active module after the Clerk-Core public-use starter release and must satisfy the full module Definition of Done before the queue advances."
+required_modules:
+  - "civiccode"
+allowed_feature_terms:
+  - "CivicCode"
+  - "municipal code"
+  - "ordinance"
+  - "citation-grounded"
+  - "CivicClerk handoff"
+  - "v1.0.0"
+  - "installer/module-selection"
+forbidden_feature_terms_without_replan:
+  - "CivicZone implementation"
+  - "CivicPlan implementation"
+  - "CivicPermit implementation"
+  - "CivicInspect implementation"
+  - "full-suite ready"
+  - "city-ready full suite"
+  - "procurement-ready"
+  - "macOS lifecycle certification"
+scope_bullets:
+  - "Active release lock: CivicCode only."
+  - "Target: CivicCode v1.0.0 public-use module release."
+  - "Queued module repos are read-only references until CivicCode satisfies the full Definition of Done."
+exit_criteria:
+  - "Version truth is synchronized across code, docs, tests, release notes, artifacts, and tags."
+  - "Desktop and mobile browser UX walkthroughs are complete for every user-facing path."
+  - "Adversarial mock validation is complete for integration behavior."
+  - "Full local tests, lint/static checks, and scripts/verify-release.sh pass."
+  - "Release-gate audit has no unresolved Blocker or Critical findings."
+  - "CivicSuite installer/module-selection integration exists and is verified for this module."
+replan_required_if:
+  - "README/CHANGELOG/docs index names another module as active."
+  - "Implementation path belongs to another module."
+  - "User wording conflicts with ACTIVE_RELEASE_QUEUE.md."
+  - "A required public-use release item is being treated as an intentional deferral."

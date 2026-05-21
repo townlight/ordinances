@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.5.0"
+VERSION="1.0.0"
 
 find_python() {
   local candidates=()
@@ -40,7 +40,7 @@ ${PYTHON_BIN} - <<'PY'
 from pathlib import Path
 import tomllib
 
-version = "0.5.0"
+version = "1.0.0"
 root = Path(".")
 pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
 assert pyproject["project"]["version"] == version, pyproject["project"]["version"]
@@ -120,6 +120,25 @@ ${PYTHON_BIN} scripts/check-civiccore-placeholder-imports.py
 echo "==> Ruff"
 ${PYTHON_BIN} -m ruff check .
 
+echo "==> Public browser QA"
+if command -v node >/dev/null 2>&1; then
+  if [[ "${PYTHON_BIN}" == /mnt/c/* || "${PYTHON_BIN}" == /c/* ]]; then
+    if command -v powershell.exe >/dev/null 2>&1 && command -v wslpath >/dev/null 2>&1; then
+      WIN_ROOT="$(wslpath -w "$PWD")"
+      WIN_PYTHON="$(wslpath -w "${PYTHON_BIN}")"
+      powershell.exe -NoProfile -ExecutionPolicy Bypass -Command \
+        "Set-Location -LiteralPath '${WIN_ROOT}'; [Environment]::SetEnvironmentVariable('PYTHON', '${WIN_PYTHON}', 'Process'); node scripts/browser-public-surfaces-qa.cjs"
+    else
+      PYTHON="${PYTHON_BIN}" node scripts/browser-public-surfaces-qa.cjs
+    fi
+  else
+    PYTHON="${PYTHON_BIN}" node scripts/browser-public-surfaces-qa.cjs
+  fi
+else
+  echo "FAIL: node not found. Install Node.js to run public browser QA." >&2
+  exit 1
+fi
+
 echo "==> Build artifacts"
 rm -rf dist
 ${PYTHON_BIN} -m build
@@ -128,8 +147,8 @@ from pathlib import Path
 import hashlib
 
 dist = Path("dist")
-wheel = dist / "civiccode-0.5.0-py3-none-any.whl"
-sdist = dist / "civiccode-0.5.0.tar.gz"
+wheel = dist / "civiccode-1.0.0-py3-none-any.whl"
+sdist = dist / "civiccode-1.0.0.tar.gz"
 assert wheel.exists(), f"missing {wheel}"
 assert sdist.exists(), f"missing {sdist}"
 lines = []
