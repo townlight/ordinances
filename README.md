@@ -61,21 +61,13 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode target is a v1.0.0 public-use module release candidate.
-Until suite installer integration, merge, tag, release artifacts, and
-post-release CI are complete, the current shipped label remains v0.5.0. The
-earlier v0.5.0 label completed the suite-wide release-recovery pass and remains
-historical evidence in
-[docs/release-recovery-status.md](docs/release-recovery-status.md). Release
-provenance follows the suite-wide Sigstore attestation model: the Git tag is a
-pointer, and the trust artifact is `release-attestation.json` plus
-`release-attestation.json.bundle`, verified against the exact
-`CivicSuite/civiccode` release workflow identity. The existing v0.1.17,
-v0.1.18, and v0.5.0 releases predate the final v1.0.0 public-use gate and CO-4
-records older releases as historical pre-gate/no-attestation releases in
-[docs/ops/tier1-retrofit-ledger.md](docs/ops/tier1-retrofit-ledger.md). Do not
-publish, mirror, or rely on those release artifacts as attested provenance
-baselines:
+The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
+real backend, database migrations, and substantial municipal-code workflow
+logic, but the prior `v1.0.0` release was published in error. CivicCode is not
+finished, shipping, city-ready, product-ready, or public-use ready until real AI,
+real frontend, real municipal data/search proof, installer/run proof, and an
+independent Section 2 audit are complete. The existing v0.1.17, v0.1.18, v0.5.0,
+and mistaken v1.0.0 releases are historical evidence only.
 
 - install and import the package,
 - expose health/root endpoints for IT smoke checks,
@@ -208,7 +200,7 @@ baselines:
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
-  the v1.0.0 public-use release.
+  the future public-use release gate.
 
 ## Why CivicCode before CivicZone
 
