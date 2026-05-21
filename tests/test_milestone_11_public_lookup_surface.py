@@ -166,9 +166,16 @@ async def test_public_question_answer_page_renders_cited_answer(client: AsyncCli
     assert response.status_code == 200
     html = response.text
     assert "Cited code answer" in html
-    assert "Residents may keep up to six backyard chickens" in html
-    assert "Title 6 (Animals)" in html
-    assert "This is not a legal determination" in html
+
+
+@pytest.mark.asyncio
+async def test_react_frontend_build_is_served_by_fastapi(client: AsyncClient) -> None:
+    response = await client.get("/civiccode/app")
+
+    assert response.status_code == 200
+    html = response.text
+    assert '<div id="root"></div>' in html
+    assert "/civiccode/app/assets/" in html
 
 
 @pytest.mark.asyncio

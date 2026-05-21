@@ -11,6 +11,8 @@ import sqlalchemy as sa
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.dialects.postgresql import JSONB
 
+from civiccode.semantic_search import SemanticDocument, rank_documents
+
 
 VERSION_STATUSES = {"draft", "pending", "adopted", "superseded", "retired"}
 
@@ -361,6 +363,8 @@ class SectionLifecycleStore:
             )
 
         results: list[dict[str, Any]] = []
+        semantic_documents: list[SemanticDocument] = []
+        result_by_section_id: dict[str, dict[str, Any]] = {}
         for section in self._sections.values():
             current = self._current_adopted_version(section.section_id)
             chapter = self._chapters.get(section.chapter_id)
@@ -375,23 +379,69 @@ class SectionLifecycleStore:
                     current.body if current else "",
                 ]
             ).lower()
+            if current:
+                semantic_documents.append(
+                    SemanticDocument(
+                        id=section.section_id,
+                        text=" ".join(
+                            value
+                            for value in [
+                                title.title_name if title else "",
+                                chapter.chapter_name if chapter else "",
+                                section.section_number,
+                                section.section_heading,
+                                current.body,
+                            ]
+                        ),
+                    )
+                )
             if normalized in haystack:
-                results.append(search_result(section, current, result_type="code_section"))
+                result = search_result(section, current, result_type="code_section")
+                results.append(result)
+                result_by_section_id[section.section_id] = result
 
             results.extend(self._related_results(section, normalized))
+
+        semantic_ranked = rank_documents(query, semantic_documents)
+        for rank, hit in enumerate(semantic_ranked[:5], start=1):
+            section_id = str(hit["id"])
+            if section_id in result_by_section_id:
+                result_by_section_id[section_id]["semantic_score"] = hit["score"]
+                result_by_section_id[section_id]["semantic_rank"] = rank
+                continue
+            try:
+                section = self.get_section(section_id)
+            except SectionLifecycleError:
+                continue
+            current = self._current_adopted_version(section.section_id)
+            result = search_result(section, current, result_type="code_section")
+            result["semantic_score"] = hit["score"]
+            result["semantic_rank"] = rank
+            result["match_type"] = "semantic"
+            results.append(result)
 
         deduped: dict[tuple[str, str], dict[str, Any]] = {}
         for result in results:
             deduped[(result["result_type"], result["id"])] = result
         sorted_results = sorted(
             deduped.values(),
-            key=lambda result: (result["result_type"] != "code_section", result["label"]),
+            key=lambda result: (
+                result["result_type"] != "code_section",
+                result.get("semantic_rank", 999),
+                result["label"],
+            ),
         )
         return {
             "query": query,
             "results": sorted_results,
             "count": len(sorted_results),
-            "code_answer_behavior": "not_available",
+            "code_answer_behavior": "semantic_retrieval_available",
+            "semantic_search": {
+                "enabled": True,
+                "embedding_provider": "civiccode_local_hash_embedding",
+                "pgvector_runtime": "available_on_postgresql_profile",
+                "ranked_document_count": len(semantic_ranked),
+            },
             "empty_state": None
             if sorted_results
             else {

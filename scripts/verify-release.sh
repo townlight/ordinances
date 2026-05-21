@@ -120,6 +120,16 @@ ${PYTHON_BIN} scripts/check-civiccore-placeholder-imports.py
 echo "==> Ruff"
 ${PYTHON_BIN} -m ruff check .
 
+echo "==> React frontend build"
+if command -v npm >/dev/null 2>&1; then
+  npm ci
+  npm run typecheck
+  npm run build
+else
+  echo "FAIL: npm not found. Install Node.js to typecheck and build the CivicCode React frontend." >&2
+  exit 1
+fi
+
 echo "==> Public browser QA"
 if command -v node >/dev/null 2>&1; then
   if [[ "${PYTHON_BIN}" == /mnt/c/* || "${PYTHON_BIN}" == /c/* ]]; then

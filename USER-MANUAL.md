@@ -135,8 +135,10 @@ Current truth:
   and receive a cited, non-determination answer,
 - staff can mark CivicClerk handoffs codified after creating the current
   adopted section version, which removes stale-code warnings for that handoff,
-- no live LLM calls, bundled vendor credentials, automatic ordinance
-  codification, or legal determinations are generated yet.
+- no bundled vendor credentials, automatic ordinance codification, or legal
+  determinations are generated. Local Ollama answers are available only when
+  explicitly configured and remain cited, non-authoritative, and
+  staff-review-required.
 
 For a non-technical user, the first public "Read code" workflow is now available: open
 `/civiccode`, enter a section number or phrase, review search results, open a
@@ -340,11 +342,15 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/questions/answer \
   -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
 ```
 
-Code-answer behavior is limited to citation-grounded responses. The Q&A harness returns an answer only when it can attach one deterministic
-citation to adopted code text. It refuses legal determinations, uncited
-questions, missing sections, stale sources, and contradictory effective-date
-windows with a reason and fix path. It sets `llm_provider=not_used` because
-Milestone 7 is a deterministic harness, not a live LLM integration.
+Code-answer behavior is limited to citation-grounded responses. The Q&A harness
+returns an answer only when it can attach one deterministic citation to adopted
+code text. It refuses legal determinations, uncited questions, missing sections,
+stale sources, and contradictory effective-date windows with a reason and fix
+path. When local Ollama is configured with `CIVICCODE_AI_MODE=ollama`,
+`CIVICCODE_OLLAMA_URL`, and `CIVICCODE_OLLAMA_MODEL`, CivicCode sends only the
+retrieved cited section text to the local model and marks the response
+`ai_review_required=true`. Without that local runtime, it returns the
+deterministic cited extract with `llm_provider=not_configured`.
 
 Create a staff-only interpretation note:
 

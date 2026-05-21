@@ -49,7 +49,11 @@ plain-language summaries, follow staff-approved popular questions and related
 materials as navigation aids, and see pending-codification warnings when
 CivicClerk handoffs may affect a section.
 
-This is deliberately not a legal-advice product and not a live-LLM product yet.
+This is deliberately not a legal-advice product. The active v1 work now includes
+local Ollama support for source-bounded answers when configured with
+`CIVICCODE_AI_MODE=ollama`; AI output is cited, non-authoritative, and marked
+staff-review-required. Deterministic citation extraction remains the fallback
+when local Ollama is not configured.
 The staff-controlled codifier sync foundation can validate schedules and
 source hosts, persist host-validation results, plan delta requests, run
 already-fetched local payloads through the import path, and show CivicCore
@@ -62,12 +66,14 @@ endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
 The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
-real backend, database migrations, and substantial municipal-code workflow
-logic, but the prior `v1.0.0` release was published in error. CivicCode is not
-finished, shipping, city-ready, product-ready, or public-use ready until real AI,
-real frontend, real municipal data/search proof, installer/run proof, and an
-independent Section 2 audit are complete. The existing v0.1.17, v0.1.18, v0.5.0,
-and mistaken v1.0.0 releases are historical evidence only.
+real backend, database migrations, substantial municipal-code workflow logic,
+active-branch local AI integration, active-branch React frontend work, and
+semantic retrieval proof in progress, but the prior `v1.0.0` release was
+published in error. CivicCode is not finished, shipping, city-ready,
+product-ready, or public-use ready until installer/run proof, complete
+public-use gate evidence, and an independent Section 2 audit are complete. The
+existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical
+evidence only.
 
 - install and import the package,
 - expose health/root endpoints for IT smoke checks,
@@ -94,7 +100,7 @@ and mistaken v1.0.0 releases are historical evidence only.
 - refuse ambiguous overlapping dates and pending ordinance language with an
   actionable fix path,
 - search public-visible adopted section text and related public material
-  references,
+  references with semantic retrieval metadata,
 - publish staff-approved popular questions that link only to cited adopted code,
 - persist staff-approved popular questions with `CIVICCODE_SOURCE_REGISTRY_DB_URL`
   so the Docker/PostgreSQL product path keeps resident discovery aids after
@@ -143,6 +149,8 @@ and mistaken v1.0.0 releases are historical evidence only.
 - warn affected section lookups when a handoff may make the codified text stale,
 - detect likely conflicts when ordinance text references affected sections,
 - render a resident-facing public code lookup surface under `/civiccode`,
+- serve the React/Vite resident app under `/civiccode/app` with live API search
+  and answer calls,
 - render a resident-facing cited-answer page under `/civiccode/answer` when one
   adopted section and exact citation ground the response,
 - show accessible search success, empty, refusal, stale-source, and section
@@ -385,11 +393,15 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/questions/answer \
 ```
 
 Expected Q&A truth today: successful answers quote adopted section text, include
-one citation object, set `classification=information_not_determination`, set
-`llm_provider=not_used`, and state that the answer is not a legal
-determination. Code-answer behavior is limited to `citation_grounded` responses.
-Legal-advice, uncited, stale, missing, ambiguous, or
-contradictory requests return structured refusals.
+one citation object, set `classification=information_not_determination`, and
+state that the answer is not a legal determination. Without local Ollama
+configuration the response sets `llm_provider=not_configured` and returns the
+deterministic cited extract. With `CIVICCODE_AI_MODE=ollama`,
+`CIVICCODE_OLLAMA_URL`, and `CIVICCODE_OLLAMA_MODEL`, CivicCode calls the local
+Ollama `/api/generate` endpoint with only the retrieved cited section text and
+marks the answer `ai_review_required=true`. Code-answer behavior remains
+limited to cited adopted text. Legal-advice, uncited, stale, missing,
+ambiguous, or contradictory requests return structured refusals.
 
 Staff workbench smoke:
 

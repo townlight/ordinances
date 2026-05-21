@@ -44,18 +44,20 @@ City of Brookfield demo with CIVICCODE_DEMO_SEED=1, and rehearse a
 Docker/PostgreSQL backup-restore with pg_dump, pg_restore, restored-table
 verification, and a checksum manifest.
 
-This is not a legal-advice product and does not make live LLM calls. The
+This is not a legal-advice product. The active v1 work includes local Ollama
+support for source-bounded, cited, staff-review-required answers when
+CIVICCODE_AI_MODE=ollama and CIVICCODE_OLLAMA_URL are configured. The
 staff-controlled codifier sync foundation can validate schedules and source
 hosts, persist host-validation results, plan delta requests, run already-fetched local payloads through the
 import path, and show CivicCore circuit-breaker health. There is no
-CivicAccess runtime dependency, live LLM-backed frontend workflow, live LLM
-calls, bundled vendor credentials, automatic ordinance codification, or legal
+CivicAccess runtime dependency, bundled vendor credentials, automatic ordinance codification, or legal
 determination behavior yet.
 Staff notes are not public. Summaries are not law. Pending ordinance language is not adopted law. Source,
 section/version, search, permalink, citation-contract, citation-grounded Q&A,
-staff workbench, and local import behavior exists so authoritative text can be
-found, cited, imported from local fixtures, and annotated internally without
-uncited public answers. Code answers are limited to citation_grounded responses.
+staff workbench, semantic retrieval, local AI, and local import behavior exists
+so authoritative text can be found, cited, imported from local fixtures, and
+annotated internally without uncited public answers. Code-answer behavior is
+limited to citation_grounded responses.
 
 Local import truth today
 ------------------------

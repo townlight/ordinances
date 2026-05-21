@@ -21,6 +21,24 @@ const scenarios = [
   { name: "public-section-detail-desktop", path: "/civiccode/sections/6.12.040", width: 1440, height: 1000, status: 200, text: ["Authoritative code text", "Records-ready export", "Need an official interpretation"] },
   { name: "public-section-detail-mobile", path: "/civiccode/sections/6.12.040", width: 390, height: 900, status: 200, text: ["Authoritative code text", "Citation", "Related materials"] },
   { name: "public-section-export-mobile", path: "/civiccode/sections/6.12.040/export", width: 390, height: 900, status: 200, skipText: "Skip to export content", text: ["CivicCode records-ready export", "Source provenance", "Legal boundary"] },
+  {
+    name: "react-app-api-search-answer-desktop",
+    path: "/civiccode/app",
+    width: 1440,
+    height: 1000,
+    status: 200,
+    appActions: true,
+    text: ["Read municipal code", "Search", "Answer"],
+  },
+  {
+    name: "react-app-empty-error-mobile",
+    path: "/civiccode/app",
+    width: 390,
+    height: 900,
+    status: 200,
+    appEmptyState: true,
+    text: ["Read municipal code", "Search", "Answer"],
+  },
 ];
 
 main().catch((error) => {
@@ -107,7 +125,30 @@ async function runScenario(browser, baseUrl, scenario) {
     page.on("pageerror", (error) => {
       pageErrors.push(error.message);
     });
+    const apiResponses = [];
+    page.on("response", (response) => {
+      const url = response.url();
+      if (url.includes("/api/v1/civiccode/search") || url.includes("/api/v1/civiccode/questions/answer")) {
+        apiResponses.push({ url, status: response.status() });
+      }
+    });
     const response = await page.goto(`${baseUrl}${scenario.path}`, { waitUntil: "networkidle" });
+    if (scenario.appActions) {
+      await Promise.all([
+        page.waitForResponse((item) => item.url().includes("/api/v1/civiccode/search")),
+        page.getByRole("button", { name: "Search" }).first().click(),
+      ]);
+      await Promise.all([
+        page.waitForResponse((item) => item.url().includes("/api/v1/civiccode/questions/answer")),
+        page.getByRole("button", { name: "Answer" }).first().click(),
+      ]);
+      await page.getByText("Residents may keep up to six backyard chickens").waitFor();
+    }
+    if (scenario.appEmptyState) {
+      await page.getByLabel("Question or section").fill("   ");
+      await page.getByRole("button", { name: "Search" }).first().click();
+      await page.getByText("Enter a section number or plain-language term before searching.").waitFor();
+    }
     const status = response?.status();
     const evidence = await page.evaluate((expectedText) => {
       const bodyText = document.body.textContent || "";
@@ -129,10 +170,11 @@ async function runScenario(browser, baseUrl, scenario) {
       evidence.skip === 1 &&
       evidence.textPresent &&
       !evidence.horizontalOverflow &&
-      firstFocus.includes(skipText) &&
+      (scenario.appActions || scenario.appEmptyState || firstFocus.includes(skipText)) &&
+      (!scenario.appActions || apiResponses.length >= 2) &&
       consoleErrors.length === 0 &&
       pageErrors.length === 0;
-    return { scenario: scenario.name, status, firstFocus, ...evidence, consoleErrors, pageErrors, passed };
+    return { scenario: scenario.name, status, firstFocus, apiResponses, ...evidence, consoleErrors, pageErrors, passed };
   } finally {
     await context.close();
   }
@@ -148,6 +190,7 @@ function printRows(rows) {
       text: row.textPresent,
       overflow: row.horizontalOverflow,
       focus: row.firstFocus,
+      api: row.apiResponses?.length || 0,
       console: row.consoleErrors.length,
       pageErrors: row.pageErrors.length,
       passed: row.passed,

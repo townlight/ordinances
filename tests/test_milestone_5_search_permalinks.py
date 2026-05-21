@@ -117,6 +117,7 @@ async def test_search_by_exact_section_number_returns_stable_permalink(
     assert result["section_number"] == "6.12.040"
     assert result["permalink"] == "/civiccode/sections/sec_chickens"
     assert result["code_answer_behavior"] == "not_available"
+    assert payload["semantic_search"]["enabled"] is True
 
 
 @pytest.mark.asyncio
@@ -132,6 +133,20 @@ async def test_search_by_resident_phrase_finds_matching_adopted_text(
     assert payload["count"] == 1
     assert payload["results"][0]["version_id"] == "v_chickens_current"
     assert payload["results"][0]["label"] == "6.12.040 - Backyard chickens"
+
+
+@pytest.mark.asyncio
+async def test_semantic_search_ranks_real_section_text(client: AsyncClient) -> None:
+    await seed_search_fixture(client)
+
+    response = await client.get("/api/v1/civiccode/search", params={"q": "permit animals"})
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["semantic_search"]["embedding_provider"] == "civiccode_local_hash_embedding"
+    assert payload["results"][0]["section_number"] == "6.12.040"
+    assert payload["results"][0]["match_type"] == "semantic"
+    assert payload["results"][0]["semantic_score"] > 0
 
 
 @pytest.mark.asyncio

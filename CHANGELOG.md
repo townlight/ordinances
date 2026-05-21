@@ -30,13 +30,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Added the first real CivicCode React/Vite/TypeScript frontend at `/civiccode/app`, served by FastAPI from the built package assets and wired to the live search and cited-answer APIs.
+- Added source-bounded local Ollama answer generation for citation-grounded questions. AI output remains non-authoritative, cited, and staff-review-required; deterministic citation extraction remains the fallback when local Ollama is not configured.
+- Added semantic retrieval metadata for public search plus a new Alembic migration for PostgreSQL pgvector embedding storage (`civiccode_0011_semantic_search`).
+- Expanded browser QA to exercise the React app at desktop/mobile widths with live `/api/v1/civiccode/search` and `/api/v1/civiccode/questions/answer` network calls.
+
+### Changed
+
+- Updated `scripts/verify-release.sh` to run `npm ci`, TypeScript checks, and the Vite production build before browser QA.
+
 ## [0.6.0] - 2026-05-21
 
 ### Corrected
 
 - Corrected the false v1.0.0 release label after the independent CivicSuite release-integrity audit found CivicCode does not meet the Section 2 FINISHED and SHIPPING bar.
 - Set the honest current label to v0.6.0 and superseded the mistaken v1.0.0 posture without deleting the historical record.
-- Current classification: functional-partial: real backend exists; AI layer, real frontend, real data/search proof, and public-use gate remain pending.
+- Current classification: functional-partial: real backend exists; the post-0.6.0 active branch is adding AI, React frontend, semantic search, installer/run evidence, and public-use gate proof before any future v1.0.0 claim.
 - CivicCode must not be described as finished, shipping, city-ready, product-ready, or public-use ready until a future independent audit signs off against the full Section 2 gate.
 
 ### Fixed

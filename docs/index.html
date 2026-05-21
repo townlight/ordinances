@@ -119,7 +119,7 @@
   <div class="eyebrow">CivicSuite module planning lane</div>
   <h1>CivicCode</h1>
   <p class="lead">Municipal code and ordinance access, designed to answer code questions with exact citations while keeping legal interpretation with city staff.</p>
-  <p class="status">Durable code, discovery, staff-note, plain-language summary, CivicClerk handoff, local import-job, codifier sync-state, and operational retry/replay/cursor runtime online on the Docker/PostgreSQL path, alongside related-section navigation aids, mock-city codifier contracts, staff code lifecycle workspace, staff workbench foundation, staff source registry, records-ready export and accessibility hardening, local import, public lookup, CivicClerk handoff warnings, citation-grounded Q&amp;A, citation contract, search and permalink, database-backed source registry, runtime foundation, and canonical schema foundations - legal determinations, live LLM calls, bundled vendor credentials, CivicAccess runtime dependency, and automatic ordinance codification not available</p>
+  <p class="status">Durable code, discovery, staff-note, plain-language summary, CivicClerk handoff, local import-job, codifier sync-state, and operational retry/replay/cursor runtime online on the Docker/PostgreSQL path, alongside semantic retrieval metadata, local Ollama source-bounded answer support, a React/Vite resident app, related-section navigation aids, mock-city codifier contracts, staff code lifecycle workspace, staff workbench foundation, staff source registry, records-ready export and accessibility hardening, local import, public lookup, CivicClerk handoff warnings, citation-grounded Q&amp;A, citation contract, search and permalink, database-backed source registry, runtime foundation, and canonical schema foundations - legal determinations, bundled vendor credentials, CivicAccess runtime dependency, and automatic ordinance codification not available</p>
 
   <div class="grid">
     <section>
@@ -155,7 +155,8 @@
         <li>Official source registry API for codifier/source metadata, provenance, source-state checks, and optional persistence through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code>.</li>
         <li>Section/version lifecycle APIs for adopted, historical, and pending text boundaries.</li>
         <li>Durable title, chapter, section, and section-version storage through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code> for Docker/PostgreSQL demos.</li>
-        <li>Public-safe search and stable section permalink APIs.</li>
+        <li>Public-safe search and stable section permalink APIs with semantic retrieval metadata.</li>
+        <li>React/Vite resident app at <code>/civiccode/app</code> wired to live search and cited-answer APIs.</li>
         <li>Staff-approved popular questions that link only to cited adopted code.</li>
         <li>Durable popular-question storage through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code> for Docker/PostgreSQL demos.</li>
         <li>Related materials from explicit public cross-references, labeled as navigation aids and not legal determinations.</li>
@@ -195,13 +196,13 @@
         <li>CivicAccess integration notes without a shipped CivicAccess runtime dependency.</li>
         <li>Pending ordinance language is not adopted law and does not replace codified text.</li>
         <li>Staff context is marked <code>staff_only_do_not_publish</code>; public answers stay <code>citation_grounded</code>.</li>
-        <li>No legal advice, live LLM calls, or automatic ordinance codification yet. Staff notes remain staff-only.</li>
+        <li>No legal advice or automatic ordinance codification. Local Ollama answers are source-bounded, cited, non-authoritative, and staff-review-required.</li>
       </ul>
     </section>
     <section>
       <h2>Release status</h2>
-      <p>CivicCode v0.6.0 is the honest corrective-demotion label after the mistaken 2026-05-21 v1.0.0 publication. CivicCode has a real backend, database migrations, and substantial municipal-code workflow logic, but it is not finished, shipping, city-ready, product-ready, or public-use ready until real AI, real frontend, real municipal data/search proof, installer/run proof, and independent Section 2 audit sign-off are complete. Existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical evidence only.</p>
-      <p>The service is intentionally honest: code-answer behavior is limited to <code>code_answer_behavior</code> <code>citation_grounded</code>; refusals keep <code>not_available</code>.</p>
+      <p>CivicCode v0.6.0 is the honest corrective-demotion label after the mistaken 2026-05-21 v1.0.0 publication. CivicCode has a real backend, database migrations, substantial municipal-code workflow logic, active-branch local AI integration, active-branch React frontend work, and semantic retrieval proof in progress, but it is not finished, shipping, city-ready, product-ready, or public-use ready until installer/run proof, complete public-use gate evidence, and independent Section 2 audit sign-off are complete. Existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical evidence only.</p>
+      <p>The service is intentionally honest: code-answer behavior remains citation-grounded; refusals keep <code>not_available</code>, and local AI answers are marked <code>ai_review_required</code>.</p>
     </section>
   </div>
 </main>

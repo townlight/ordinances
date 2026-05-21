@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from contextvars import ContextVar
 from datetime import date, datetime
+from pathlib import Path
 from typing import Any
 
 from civiccore.auth import (
@@ -15,7 +16,8 @@ from civiccore.auth import (
 )
 from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
-from starlette.responses import HTMLResponse
+from starlette.responses import FileResponse, HTMLResponse, Response
+from starlette.staticfiles import StaticFiles
 
 from civiccode import __version__
 from civiccode.citation_contract import build_citation_payload, refusal
@@ -127,6 +129,13 @@ app = FastAPI(
     version=__version__,
     summary="Runtime foundation for CivicCode municipal code access workflows.",
 )
+FRONTEND_DIST = Path(__file__).resolve().parent / "frontend_dist"
+if (FRONTEND_DIST / "assets").exists():
+    app.mount(
+        "/civiccode/app/assets",
+        StaticFiles(directory=str(FRONTEND_DIST / "assets")),
+        name="civiccode_frontend_assets",
+    )
 _current_request: ContextVar[Request | None] = ContextVar("current_request", default=None)
 
 SOURCE_STORE = SourceRegistryStore()
@@ -765,6 +774,20 @@ async def public_lookup_home() -> str:
         for question in _get_popular_question_store().public_popular_questions()
     ]
     return render_home_page(questions)
+
+
+@app.get("/civiccode/app")
+@app.get("/civiccode/app/")
+async def civiccode_frontend_app() -> Response:
+    """Serve the React/Vite CivicCode frontend when built."""
+    index_path = FRONTEND_DIST / "index.html"
+    if not index_path.exists():
+        return render_error_page(
+            "Frontend build required",
+            "The CivicCode React app has not been built in this package.",
+            "Run npm install and npm run build before packaging or deploy the package artifact that includes civiccode/frontend_dist.",
+        )
+    return FileResponse(index_path)
 
 
 @app.get("/civiccode/search", response_class=HTMLResponse)
