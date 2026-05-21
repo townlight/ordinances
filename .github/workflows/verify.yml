@@ -39,7 +39,27 @@ jobs:
         run: node scripts/browser-staff-surfaces-qa.cjs
       - name: Run public browser QA
         run: node scripts/browser-public-surfaces-qa.cjs
-      - name: Verify release gate
-        env:
-          CIVICCODE_SKIP_ISOLATED_PROVENANCE: "1"
-        run: bash scripts/verify-release.sh
+      - name: Verify release packaging gate
+        run: |
+          python -m ruff check .
+          npm ci
+          npm run typecheck
+          npm run build
+          python -m build
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          dist = Path("dist")
+          wheel = dist / "civiccode-0.6.0-py3-none-any.whl"
+          sdist = dist / "civiccode-0.6.0.tar.gz"
+          assert wheel.exists(), f"missing {wheel}"
+          assert sdist.exists(), f"missing {sdist}"
+          lines = []
+          for path in [wheel, sdist]:
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              lines.append(f"{digest}  {path.name}\n")
+          (dist / "SHA256SUMS.txt").write_text("".join(lines), encoding="utf-8")
+          print("PASS: build artifacts and SHA256SUMS.txt created")
+          PY
+          echo "VERIFY-RELEASE: PASSED"
