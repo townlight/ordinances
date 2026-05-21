@@ -148,7 +148,14 @@ def test_ci_runs_pytest_docs_and_placeholder_gates() -> None:
     assert "python -m pytest" in text
     assert "bash scripts/verify-docs.sh" in text
     assert "python scripts/check-civiccore-placeholder-imports.py" in text
-    assert "bash scripts/verify-release.sh" in text
+    assert "Run staff browser QA" in text
+    assert "Run public browser QA" in text
+    assert "Verify release packaging gate" in text
+    assert "python -m ruff check ." in text
+    assert "npm run typecheck" in text
+    assert "npm run build" in text
+    assert "python -m build" in text
+    assert "VERIFY-RELEASE: PASSED" in text
 
 
 def test_release_gate_prefers_native_unix_python_and_isolates_provenance_install() -> None:
