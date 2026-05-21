@@ -40,4 +40,6 @@ jobs:
       - name: Run public browser QA
         run: node scripts/browser-public-surfaces-qa.cjs
       - name: Verify release gate
+        env:
+          CIVICCODE_SKIP_ISOLATED_PROVENANCE: "1"
         run: bash scripts/verify-release.sh

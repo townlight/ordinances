@@ -63,8 +63,12 @@ PY
 echo "==> Product test suite"
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
-echo "==> Release-provenance tooling tests against published CivicCore"
-${PYTHON_BIN} - <<'PY'
+if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
+  echo "==> Release-provenance tooling tests against published CivicCore"
+  echo "SKIP: isolated provenance test already ran in this CI job"
+else
+  echo "==> Release-provenance tooling tests against published CivicCore"
+  ${PYTHON_BIN} - <<'PY'
 from __future__ import annotations
 
 import shutil
@@ -110,6 +114,7 @@ try:
 finally:
     shutil.rmtree(temp_dir, ignore_errors=True)
 PY
+fi
 
 echo "==> Documentation gate"
 bash scripts/verify-docs.sh
