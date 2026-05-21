@@ -149,10 +149,11 @@ back to staff.
 
 ## For IT and technical staff
 
-This repo currently contains the v1.0.0 staff operations surfaces,
-CivicCore v1 contracts, durable import/codifier sync state, and
-documentation and verification gates. Runtime implementation must follow the
-CivicSuite pattern:
+This repo currently contains active-branch staff operations surfaces, CivicCore
+v1 contracts, durable import/codifier sync state, and documentation and
+verification gates. CivicCode remains at v0.6.0 until the independent
+public-use release audit clears a future v1.0.0 tag. Runtime implementation
+must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
 - published `civiccore v1.1.0` release-wheel dependency,

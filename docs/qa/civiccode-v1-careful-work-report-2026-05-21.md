@@ -1,13 +1,13 @@
-# CivicCode v1.0.0 Careful Work Report
+# CivicCode Careful Work Report
 
 Date: 2026-05-21
 
 ## Scope
 
-Prepare CivicCode to move from the v0.5.0 recovery label to the active
-v1.0.0 public-use module release line. This remains a release candidate until
-suite installer integration, merge, tag/release, artifacts, and post-release CI
-are complete.
+Record careful-work evidence from the earlier CivicCode completion attempt and
+the current v0.6.0 active branch. CivicCode is not v1.0.0, public-use ready,
+finished, shipping, city-ready, or product-ready until the complete release gate
+and independent audit sign-off are complete.
 
 ## Careful-Work Checklist
 
@@ -19,9 +19,9 @@ are complete.
    rehearsal helper.
 3. Pattern search performed: version, release-truth, CivicCore pin, recovery,
    staff, legal-advice, citation, CivicClerk handoff, and public-use markers.
-4. Data contract changed: package/version contract moved from `0.5.0` to
-   `1.0.0`; `/health` now reports CivicCode `1.0.0`; build artifacts are
-   `civiccode-1.0.0`.
+4. Data contract changed in the earlier attempt and was corrected back to the
+   honest `0.6.0` label; `/health` now reports CivicCode `0.6.0`, and current
+   build artifacts are `civiccode-0.6.0`.
 5. Blast radius: release truth, tests that assert version payloads, docs,
    security policy, package metadata, release verifier, Docker package build,
    and browser QA evidence.
@@ -29,10 +29,10 @@ are complete.
    current QA summary, and tests.
 7. Full path narrated: `pyproject.toml` and `civiccode/__init__.py` feed the app
    version; `/health` exposes it; tests assert it; `scripts/verify-release.sh`
-   builds and checks `civiccode-1.0.0` artifacts.
-8. New state consumed/rendered: `1.0.0` is consumed by tests, rendered in
-   `/health`, reflected in docs/security/manual/index surfaces, and built into
-   release artifacts.
+   builds and checks `civiccode-0.6.0` artifacts.
+8. New state consumed/rendered: `0.6.0` is consumed by tests, rendered in
+   `/health`, reflected in docs/manual/index surfaces, and built into release
+   artifacts.
 9. Self-audit: local verifier, browser QA, Docker smoke, and backup/restore were
    rerun; the first Docker attempt failed due an occupied host port and was
    rerun on host port `18052` with successful smoke and restore proof.

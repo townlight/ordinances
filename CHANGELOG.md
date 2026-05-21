@@ -1,13 +1,23 @@
 # Changelog
 
-## [1.0.0-rc] - 2026-05-21
+## [0.6.0 active completion branch] - 2026-05-21
 
-- Prepared CivicCode for the active v1.0.0 public-use module release line after
-  the Clerk-Core starter release shipped. This is pre-final-gate release
-  candidate truth until suite installer integration, merge, tag/release,
-  artifacts, and post-release CI are complete.
-- Synchronized package, verifier, documentation, security, and artifact version
-  surfaces to `1.0.0`.
+- Added source-bounded local Ollama answer generation for citation-grounded
+  questions. AI output remains non-authoritative, cited, and
+  staff-review-required; deterministic citation extraction remains the fallback.
+- Added the React/Vite/TypeScript resident app at `/civiccode/app`, served by
+  FastAPI and verified against live search and cited-answer API calls.
+- Added semantic retrieval metadata and a PostgreSQL/pgvector-ready
+  `section_search_embeddings` migration.
+- Added adversarial tests and evidence for bad input, missing/stale records,
+  public/staff boundary failures, spoofed staff headers, unavailable Ollama
+  fallback behavior, live Ollama, route inventory, staff browser QA,
+  Docker/PostgreSQL installed-stack smoke, backup/restore, and suite custom
+  module-selection.
+- Kept package, verifier, documentation, and artifact version surfaces at the
+  honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
+  city-ready, product-ready, or public-use ready until an independent audit
+  clears the full release gate.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 

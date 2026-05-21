@@ -68,10 +68,10 @@ replace adopted code text.
 The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
 real backend, database migrations, substantial municipal-code workflow logic,
 active-branch local AI integration, active-branch React frontend work, and
-semantic retrieval proof in progress, but the prior `v1.0.0` release was
+semantic retrieval, installed-stack, and suite module-selection proof, but the prior `v1.0.0` release was
 published in error. CivicCode is not finished, shipping, city-ready,
-product-ready, or public-use ready until installer/run proof, complete
-public-use gate evidence, and an independent Section 2 audit are complete. The
+product-ready, or public-use ready until complete public-use gate evidence and
+an independent Section 2 audit are complete. The
 existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical
 evidence only.
 

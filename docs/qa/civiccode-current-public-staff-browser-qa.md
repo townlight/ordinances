@@ -1,11 +1,12 @@
-# CivicCode v1.0.0 Public And Staff Browser QA
+# CivicCode Public And Staff Browser QA
 
 Date: 2026-05-21
 
 ## Scope
 
-Fresh browser verification for the CivicCode v1.0.0 public-use release
-candidate after promoting candidate package truth from v0.5.0:
+Fresh browser verification for the CivicCode active completion branch after the
+v0.6.0 corrective demotion. This is not a v1.0.0, public-use, finished, or
+shipping claim:
 
 - public resident lookup/search/answer/detail/export surfaces,
 - staff code/source/import/sync surfaces,
