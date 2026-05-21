@@ -12,8 +12,9 @@
 - Added adversarial tests and evidence for bad input, missing/stale records,
   public/staff boundary failures, spoofed staff headers, unavailable Ollama
   fallback behavior, live Ollama, route inventory, staff browser QA,
-  Docker/PostgreSQL installed-stack smoke, backup/restore, and suite custom
-  module-selection.
+  Docker/PostgreSQL installed-stack smoke, backup/restore, suite custom
+  module-selection, and source-attributed real municipal data import/search/Q&A
+  proof.
 - Kept package, verifier, documentation, and artifact version surfaces at the
   honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
   city-ready, product-ready, or public-use ready until an independent audit
@@ -46,6 +47,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Added source-bounded local Ollama answer generation for citation-grounded questions. AI output remains non-authoritative, cited, and staff-review-required; deterministic citation extraction remains the fallback when local Ollama is not configured.
 - Added semantic retrieval metadata for public search plus a new Alembic migration for PostgreSQL pgvector embedding storage (`civiccode_0011_semantic_search`).
 - Expanded browser QA to exercise the React app at desktop/mobile widths with live `/api/v1/civiccode/search` and `/api/v1/civiccode/questions/answer` network calls.
+- Added a source-attributed Portland municipal-code fixture test that imports,
+  searches, and answers against real adopted code text while keeping the
+  evidence bounded as fixture proof rather than full city-corpus proof.
 
 ### Changed
 

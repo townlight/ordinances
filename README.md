@@ -68,7 +68,8 @@ replace adopted code text.
 The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
 real backend, database migrations, substantial municipal-code workflow logic,
 active-branch local AI integration, active-branch React frontend work, and
-semantic retrieval, installed-stack, and suite module-selection proof, but the prior `v1.0.0` release was
+semantic retrieval, installed-stack, suite module-selection, and
+source-attributed real municipal data fixture proof, but the prior `v1.0.0` release was
 published in error. CivicCode is not finished, shipping, city-ready,
 product-ready, or public-use ready until complete public-use gate evidence and
 an independent Section 2 audit are complete. The
@@ -157,6 +158,9 @@ evidence only.
   detail states,
 - import local CSV/file-drop bundles and official HTML extract fixtures through
   staff-only endpoints,
+- prove that import/search/cited-answer path against a source-attributed
+  Portland municipal code fixture without treating that fixture as a full city
+  corpus,
 - record import jobs with success or actionable failure states,
 - persist import job status, counts, provenance, failure details, and completion
   timestamps with `CIVICCODE_SOURCE_REGISTRY_DB_URL` so staff can inspect
