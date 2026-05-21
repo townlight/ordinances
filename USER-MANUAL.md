@@ -26,7 +26,7 @@ code administrators. `/staff/code` gives staff a single lifecycle review page
 for current adopted versions, source readiness, draft summaries, staff note
 counts, and pending CivicClerk codification warnings. The Docker Compose path
 starts PostgreSQL 17 with pgvector, runs migrations, serves the API, enables a
-City of Brookfield seeded demo with `CIVICCODE_DEMO_SEED=1`, and includes a
+Portland Title 13 seeded demo with `CIVICCODE_DEMO_SEED=1`, and includes a
 Docker/PostgreSQL backup-restore rehearsal for IT staff to prove `pg_dump` and
 `pg_restore` before trusting a shared environment.
 
@@ -63,6 +63,8 @@ Current truth:
   actionable errors instead of being treated as settled law,
 - public-safe search can find adopted section text and related public material
   references,
+- when a city operator enables local Ollama embeddings, CivicCode persists
+  learned vectors and uses PostgreSQL pgvector ranking for semantic search,
 - staff can approve popular questions that link only to cited adopted code,
 - popular questions and related materials are labeled as navigation aids, not
   legal determinations,
@@ -101,6 +103,8 @@ Current truth:
 - pending ordinance language is not adopted law and does not replace codified
   text,
 - staff can run local CSV/file-drop bundle and official HTML extract imports,
+- the bundled Portland Title 13 evidence corpus imports two official chapter
+  sources and five adopted sections with package-local source artifacts,
 - failed imports remain visible with an actionable fix and can be retried with
   corrected local bundles,
 - local import job ledgers persist status, counts, provenance, actionable
@@ -177,8 +181,8 @@ docker compose up --build
 ```
 
 With the default `CIVICCODE_DEMO_SEED=1`, a first-time evaluator can open
-`http://127.0.0.1:8000/civiccode`, search for `6.12.040`, read seeded City of
-Brookfield code text, see the non-authoritative summary warning, and review the
+`http://127.0.0.1:8000/civiccode`, search for `13.40.020`, read seeded
+Portland Title 13 code text, see the non-authoritative summary warning, and review the
 staff code workspace at `/staff/code` through trusted staff headers. The default
 database password in `docker.env.example` is for local demo use only; change it
 before a shared environment. Smoke the running stack with:

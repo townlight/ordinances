@@ -7,14 +7,17 @@
   staff-review-required; deterministic citation extraction remains the fallback.
 - Added the React/Vite/TypeScript resident app at `/civiccode/app`, served by
   FastAPI and verified against live search and cited-answer API calls.
-- Added semantic retrieval metadata and a PostgreSQL/pgvector-ready
-  `section_search_embeddings` migration.
+- Replaced the local hash-bucket search stand-in with configured Ollama
+  embeddings, persisted search embeddings, and a PostgreSQL pgvector ranking
+  path. The search test suite now proves a zero-literal-overlap retrieval
+  through local `nomic-embed-text` and a disposable `pgvector/pgvector:pg17`
+  database when those runtimes are available.
 - Added adversarial tests and evidence for bad input, missing/stale records,
   public/staff boundary failures, spoofed staff headers, unavailable Ollama
   fallback behavior, live Ollama, route inventory, staff browser QA,
   Docker/PostgreSQL installed-stack smoke, backup/restore, suite custom
-  module-selection, and source-attributed real municipal data import/search/Q&A
-  proof.
+  module-selection, and source-attributed Portland Title 13 municipal data
+  import/search/Q&A proof.
 - Kept package, verifier, documentation, and artifact version surfaces at the
   honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
   city-ready, product-ready, or public-use ready until an independent audit

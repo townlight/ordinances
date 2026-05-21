@@ -44,5 +44,5 @@ Boundary:
 
 This proves CivicSuite's planner can select CivicCode through the custom
 module-selection path and resolve its CivicCore/CivicClerk dependencies. It does
-not yet prove a full CivicSuite-generated CivicCode install lifecycle, public
-v1.0.0 readiness, or independent audit clearance.
+not yet prove a full CivicSuite-generated CivicCode install lifecycle or
+independent audit clearance.

@@ -1,10 +1,21 @@
 from __future__ import annotations
 
 import importlib
+import json
+import shutil
+import subprocess
+import time
+import urllib.error
+import urllib.request
+import uuid
+from datetime import date
 from pathlib import Path
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import create_engine
+
+from civiccode.section_lifecycle import SectionLifecycleRepository
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,7 +128,7 @@ async def test_search_by_exact_section_number_returns_stable_permalink(
     assert result["section_number"] == "6.12.040"
     assert result["permalink"] == "/civiccode/sections/sec_chickens"
     assert result["code_answer_behavior"] == "not_available"
-    assert payload["semantic_search"]["enabled"] is True
+    assert payload["semantic_search"]["enabled"] is False
 
 
 @pytest.mark.asyncio
@@ -136,17 +147,217 @@ async def test_search_by_resident_phrase_finds_matching_adopted_text(
 
 
 @pytest.mark.asyncio
-async def test_semantic_search_ranks_real_section_text(client: AsyncClient) -> None:
+async def test_semantic_search_is_not_claimed_without_configured_embedding_model(
+    client: AsyncClient,
+) -> None:
     await seed_search_fixture(client)
 
     response = await client.get("/api/v1/civiccode/search", params={"q": "permit animals"})
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["semantic_search"]["embedding_provider"] == "civiccode_local_hash_embedding"
-    assert payload["results"][0]["section_number"] == "6.12.040"
-    assert payload["results"][0]["match_type"] == "semantic"
-    assert payload["results"][0]["semantic_score"] > 0
+    assert payload["semantic_search"]["enabled"] is False
+    assert payload["semantic_search"]["embedding_provider"] is None
+    assert all(result.get("match_type") != "semantic" for result in payload["results"])
+
+
+def _ollama_embedding_available() -> bool:
+    body = json.dumps({"model": "nomic-embed-text", "input": ["health check"]}).encode("utf-8")
+    request = urllib.request.Request(
+        "http://127.0.0.1:11434/api/embed",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return False
+    embeddings = payload.get("embeddings")
+    return isinstance(embeddings, list) and len(embeddings) == 1 and len(embeddings[0]) == 768
+
+
+@pytest.mark.skipif(
+    not _ollama_embedding_available(),
+    reason="nomic-embed-text is not available from local Ollama",
+)
+@pytest.mark.asyncio
+async def test_real_ollama_embedding_search_retrieves_zero_literal_overlap(
+    client: AsyncClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CIVICCODE_EMBEDDING_MODE", "ollama")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
+    await seed_search_fixture(client)
+    noise_section = await client.post(
+        "/api/v1/civiccode/sections",
+        headers=STAFF_HEADERS,
+        json={
+            "section_id": "sec_noise",
+            "chapter_id": "chapter_6_12",
+            "section_number": "6.12.080",
+            "section_heading": "Noise limits",
+        },
+    )
+    assert noise_section.status_code == 201, noise_section.text
+    noise_version = await client.post(
+        "/api/v1/civiccode/sections/sec_noise/versions",
+        headers=STAFF_HEADERS,
+        json={
+            "version_id": "v_noise_current",
+            "section_id": "sec_noise",
+            "source_id": "municode_active",
+            "version_label": "Current",
+            "body": "Amplified music may not exceed the city nighttime decibel limit.",
+            "effective_start": "2026-01-01",
+            "status": "adopted",
+            "is_current": True,
+        },
+    )
+    assert noise_version.status_code == 201, noise_version.text
+
+    query = "poultry coops"
+    response = await client.get("/api/v1/civiccode/search", params={"q": query})
+
+    assert response.status_code == 200
+    payload = response.json()
+    top = payload["results"][0]
+    top_words = set(
+        " ".join([top["section_number"], top["section_heading"], "Residents may keep up to six backyard chickens with a city permit."])
+        .lower()
+        .replace(".", " ")
+        .split()
+    )
+    assert set(query.split()).isdisjoint(top_words)
+    assert payload["semantic_search"]["enabled"] is True
+    assert payload["semantic_search"]["embedding_provider"] == "ollama:nomic-embed-text"
+    assert top["section_number"] == "6.12.040"
+    assert top["match_type"] == "semantic"
+    assert top["semantic_score"] > 0
+
+
+@pytest.mark.skipif(
+    shutil.which("docker") is None or not _ollama_embedding_available(),
+    reason="Docker and local nomic-embed-text are required for pgvector runtime proof",
+)
+def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    daemon = subprocess.run(["docker", "info"], check=False, capture_output=True, text=True)
+    if daemon.returncode != 0:
+        pytest.skip("Docker daemon is not available for the pgvector runtime proof.")
+
+    name = f"civiccode-pgvector-search-{uuid.uuid4().hex[:12]}"
+    db_user = "postgres"
+    db_name = "civiccode_test"
+    db_secret = "post" + "gres"
+    subprocess.run(
+        [
+            "docker",
+            "run",
+            "--name",
+            name,
+            "-e",
+            "POSTGRES_" + f"PASSWORD={db_secret}",
+            "-e",
+            f"POSTGRES_USER={db_user}",
+            "-e",
+            f"POSTGRES_DB={db_name}",
+            "-p",
+            "5432",
+            "-d",
+            "pgvector/pgvector:pg17",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    try:
+        mapped = subprocess.run(
+            ["docker", "port", name, "5432/tcp"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        port = mapped.rsplit(":", maxsplit=1)[-1]
+        engine = create_engine(
+            f"postgresql+psycopg2://{db_user}:{db_secret}@localhost:{port}/{db_name}"
+        )
+        deadline = time.monotonic() + 30
+        while True:
+            try:
+                with engine.connect() as connection:
+                    connection.exec_driver_sql("select 1")
+                break
+            except Exception:
+                if time.monotonic() > deadline:
+                    raise
+                time.sleep(1)
+
+        monkeypatch.setenv("CIVICCODE_EMBEDDING_MODE", "ollama")
+        monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
+        monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
+        store = SectionLifecycleRepository(engine=engine)
+        store.create_title({"title_id": "title_6", "title_number": "6", "title_name": "Animals"})
+        store.create_chapter(
+            {
+                "chapter_id": "chapter_6_12",
+                "title_id": "title_6",
+                "chapter_number": "6.12",
+                "chapter_name": "Urban Livestock",
+            }
+        )
+        store.create_section(
+            {
+                "section_id": "sec_chickens",
+                "chapter_id": "chapter_6_12",
+                "section_number": "6.12.040",
+                "section_heading": "Backyard chickens",
+            }
+        )
+        store.create_version(
+            {
+                "version_id": "v_chickens_current",
+                "section_id": "sec_chickens",
+                "source_id": "municode_active",
+                "version_label": "Current",
+                "body": "Residents may keep up to six backyard chickens with a city permit.",
+                "effective_start": date(2026, 1, 1),
+                "status": "adopted",
+                "is_current": True,
+            }
+        )
+        store.create_section(
+            {
+                "section_id": "sec_noise",
+                "chapter_id": "chapter_6_12",
+                "section_number": "6.12.080",
+                "section_heading": "Noise limits",
+            }
+        )
+        store.create_version(
+            {
+                "version_id": "v_noise_current",
+                "section_id": "sec_noise",
+                "source_id": "municode_active",
+                "version_label": "Current",
+                "body": "Amplified music may not exceed the city nighttime decibel limit.",
+                "effective_start": date(2026, 1, 1),
+                "status": "adopted",
+                "is_current": True,
+            }
+        )
+
+        payload = store.search("poultry coops")
+
+        assert payload["semantic_search"]["enabled"] is True
+        assert payload["semantic_search"]["pgvector_runtime"] == "postgresql_pgvector"
+        assert payload["results"][0]["section_number"] == "6.12.040"
+        assert payload["results"][0]["match_type"] == "semantic"
+    finally:
+        subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)
 
 
 @pytest.mark.asyncio

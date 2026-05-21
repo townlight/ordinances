@@ -18,7 +18,8 @@ type SearchPayload = {
   results: SearchResult[];
   semantic_search?: {
     enabled: boolean;
-    embedding_provider: string;
+    embedding_provider: string | null;
+    pgvector_runtime?: string;
     ranked_document_count: number;
   };
   empty_state?: { message: string; fix: string } | null;
@@ -38,10 +39,10 @@ type AnswerPayload = {
   fix?: string;
 };
 
-const initialExamples = ["backyard chickens", "6.12.040", "permit animals"];
+const initialExamples = ["13.40.020", "roosters", "large livestock"];
 
 function App() {
-  const [query, setQuery] = useState("backyard chickens");
+  const [query, setQuery] = useState("13.40.020");
   const [sectionNumber, setSectionNumber] = useState("");
   const [searchState, setSearchState] = useState<"idle" | "loading" | "success" | "empty" | "error">("idle");
   const [answerState, setAnswerState] = useState<"idle" | "loading" | "success" | "error" | "partial">("idle");
@@ -120,8 +121,8 @@ function App() {
         </div>
         <div className="status-strip" aria-label="Runtime evidence">
           <span>Live API</span>
-          <span>Semantic retrieval</span>
-          <span>Local LLM ready</span>
+          <span>Configured retrieval shown in results</span>
+          <span>Staff review required for AI answers</span>
         </div>
       </section>
 
@@ -181,10 +182,17 @@ function App() {
             ))}
           </div>
           {searchPayload?.semantic_search ? (
-            <p className="footnote">
-              {searchPayload.semantic_search.embedding_provider} ranked{" "}
-              {searchPayload.semantic_search.ranked_document_count} adopted code records.
-            </p>
+            searchPayload.semantic_search.enabled ? (
+              <p className="footnote">
+                {searchPayload.semantic_search.embedding_provider} ranked{" "}
+                {searchPayload.semantic_search.ranked_document_count} adopted code records via{" "}
+                {searchPayload.semantic_search.pgvector_runtime ?? "configured vector search"}.
+              </p>
+            ) : (
+              <p className="footnote">
+                Semantic retrieval is not configured for this runtime; results use exact text and approved related-material matches.
+              </p>
+            )
           ) : null}
         </section>
 

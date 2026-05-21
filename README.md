@@ -39,7 +39,7 @@ provenance and actionable failure records, durable codifier sync source
 configuration, run cursors, circuit state, delta-plan history, and durable
 operational retry queue, replay, and delta-cursor records,
 and a Docker Compose product path that starts PostgreSQL 17 with pgvector, runs
-migrations, serves the FastAPI app, can seed a City of Brookfield demo with
+migrations, serves the FastAPI app, can seed a Portland Title 13 demo with
 `CIVICCODE_DEMO_SEED=1`, and can rehearse a Docker/PostgreSQL backup-restore
 with `pg_dump`, `pg_restore`, restored-table verification, and a checksum
 manifest.
@@ -49,7 +49,7 @@ plain-language summaries, follow staff-approved popular questions and related
 materials as navigation aids, and see pending-codification warnings when
 CivicClerk handoffs may affect a section.
 
-This is deliberately not a legal-advice product. The active v1 work now includes
+This is deliberately not a legal-advice product. The active completion work now includes
 local Ollama support for source-bounded answers when configured with
 `CIVICCODE_AI_MODE=ollama`; AI output is cited, non-authoritative, and marked
 staff-review-required. Deterministic citation extraction remains the fallback
@@ -58,8 +58,9 @@ The staff-controlled codifier sync foundation can validate schedules and
 source hosts, persist host-validation results, plan delta requests, run
 already-fetched local payloads through the import path, and show CivicCore
 circuit-breaker health plus the shared source-list health projection. It does not bundle
-vendor credentials, make legal determinations, call live LLMs, replace the
-official codifier, or automatically codify ordinances. There is no CivicAccess
+vendor credentials, make legal determinations, call live LLMs unless a city
+operator explicitly configures local Ollama, replace the official codifier, or
+automatically codify ordinances. There is no CivicAccess
 runtime dependency in this repo yet.
 Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
@@ -67,9 +68,10 @@ replace adopted code text.
 
 The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
 real backend, database migrations, substantial municipal-code workflow logic,
-active-branch local AI integration, active-branch React frontend work, and
-semantic retrieval, installed-stack, suite module-selection, and
-source-attributed real municipal data fixture proof, but the prior `v1.0.0` release was
+active-branch local AI integration, active-branch React frontend work, real
+Ollama embedding retrieval with PostgreSQL pgvector runtime proof,
+installed-stack, suite module-selection, and source-attributed Portland Title
+13 municipal data fixture proof, but the prior `v1.0.0` release was
 published in error. CivicCode is not finished, shipping, city-ready,
 product-ready, or public-use ready until complete public-use gate evidence and
 an independent Section 2 audit are complete. The
@@ -101,7 +103,8 @@ evidence only.
 - refuse ambiguous overlapping dates and pending ordinance language with an
   actionable fix path,
 - search public-visible adopted section text and related public material
-  references with semantic retrieval metadata,
+  references, and use configured Ollama embeddings plus PostgreSQL pgvector for
+  semantic retrieval when the operator enables that runtime,
 - publish staff-approved popular questions that link only to cited adopted code,
 - persist staff-approved popular questions with `CIVICCODE_SOURCE_REGISTRY_DB_URL`
   so the Docker/PostgreSQL product path keeps resident discovery aids after
@@ -200,7 +203,7 @@ evidence only.
   CivicCode mock-city environment report,
 - write a secret-free mock-city environment JSON report with planned delta URLs,
 - run `docker compose up --build` against PostgreSQL 17 with pgvector,
-  migrations, source-registry persistence, and City of Brookfield demo data
+  migrations, source-registry persistence, and Portland Title 13 demo data
   enabled by `CIVICCODE_DEMO_SEED=1`,
 - smoke the Docker demo with `scripts/docker-demo-smoke.sh`,
 - rehearse the Docker/PostgreSQL backup and restore path with
@@ -276,8 +279,8 @@ CivicCode API, runs CivicCore then CivicCode migrations before serving traffic,
 persists source registry, section lifecycle, popular-question, staff-note,
 plain-language summary, CivicClerk handoff, handoff audit, import job, codifier sync, and operational state records through
 `CIVICCODE_SOURCE_REGISTRY_DB_URL`, and
-seeds the City of Brookfield demo when `CIVICCODE_DEMO_SEED=1`. Open
-`http://127.0.0.1:8000/civiccode`, search for `6.12.040`, or open
+seeds the Portland Title 13 demo when `CIVICCODE_DEMO_SEED=1`. Open
+`http://127.0.0.1:8000/civiccode`, search for `13.40.020`, or open
 `/staff/code` through the trusted staff shell headers to review the seeded
 staff workspace. The default Compose password is local-demo only; change it in
 `.env` before any shared environment.

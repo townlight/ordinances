@@ -34,7 +34,12 @@ def upgrade() -> None:
     if bind.dialect.name == "postgresql":
         op.execute(
             "ALTER TABLE civiccode.section_search_embeddings "
-            "ALTER COLUMN embedding TYPE vector(16) USING embedding::vector"
+            "ALTER COLUMN embedding TYPE vector(768) USING embedding::vector"
+        )
+        op.execute(
+            "CREATE INDEX IF NOT EXISTS ix_section_search_embeddings_embedding "
+            "ON civiccode.section_search_embeddings "
+            "USING ivfflat (embedding vector_cosine_ops)"
         )
 
 

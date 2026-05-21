@@ -1,6 +1,6 @@
 # CivicCode React App Browser QA - 2026-05-21
 
-Scope: active CivicCode v1 completion branch, not a v1.0.0 release claim.
+Scope: active CivicCode product-completion branch, not a release-clearance claim.
 
 Command:
 

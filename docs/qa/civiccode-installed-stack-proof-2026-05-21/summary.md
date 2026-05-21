@@ -5,11 +5,11 @@ Status: PASS for Docker/PostgreSQL installed-stack smoke and backup/restore proo
 Successful run:
 
 ```powershell
-$project='civiccode_v1_real_product_evidence3'
+$project='civiccode_product_completion_evidence3'
 $env:CIVICCODE_PORT='18066'
 docker compose -p $project up -d --build
 bash -lc 'CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18066 scripts/docker-demo-smoke.sh'
-python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-v1-real-product-evidence3-2026-05-21 --compose-project-name $project --strict
+python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-product-completion-evidence3-2026-05-21 --compose-project-name $project --strict
 docker compose -p $project down -v
 ```
 

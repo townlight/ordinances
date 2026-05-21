@@ -170,12 +170,13 @@ class ImportConnectorStore:
                 f"Unknown connector_type '{connector_type}'.",
                 f"Use one of: {', '.join(sorted(CONNECTOR_TYPES))}.",
             )
-        source = payload.get("source") or {}
-        if not source.get("source_id"):
+        sources = _payload_sources(payload)
+        if not sources:
             raise CivicCodeImportError(
                 "Import bundle source requires source_id.",
-                "Add source.source_id so imported sections can cite their official source.",
+                "Add source.source_id or sources[].source_id so imported sections can cite their official source.",
             )
+        source_ids = {source["source_id"] for source in sources}
         title_ids = {item["title_id"] for item in payload.get("titles", [])}
         chapter_ids = {item["chapter_id"] for item in payload.get("chapters", [])}
         section_ids = {item["section_id"] for item in payload.get("sections", [])}
@@ -201,7 +202,7 @@ class ImportConnectorStore:
                     f"Version '{version['version_id']}' references missing section '{section_id}'.",
                     "Include the section in the same bundle or import it before this version.",
                 )
-            if version["source_id"] != source["source_id"] and not _exists(
+            if version["source_id"] not in source_ids and not _exists(
                 lambda: self._source_store.get(version["source_id"])
             ):
                 raise CivicCodeImportError(
@@ -211,15 +212,16 @@ class ImportConnectorStore:
 
     def _apply_payload(self, payload: dict[str, Any]) -> dict[str, int]:
         counts = _empty_counts()
-        source = dict(payload["source"])
-        if source.get("checksum") is None and source.get("file_reference"):
-            source["checksum"] = compute_reference_checksum(source["file_reference"])
-        _create_or_reuse(
-            lambda: self._source_store.create(source),
-            lambda: self._source_store.get(source["source_id"]),
-            counts,
-            "sources",
-        )
+        for source_item in _payload_sources(payload):
+            source = dict(source_item)
+            if source.get("checksum") is None and source.get("file_reference"):
+                source["checksum"] = compute_reference_checksum(source["file_reference"])
+            _create_or_reuse(
+                lambda item=source: self._source_store.create(item),
+                lambda item=source: self._source_store.get(item["source_id"]),
+                counts,
+                "sources",
+            )
         for title in payload.get("titles", []):
             _create_or_reuse(
                 lambda item=title: self._section_store.create_title(item),
@@ -440,8 +442,19 @@ def _create_or_reuse(create, get_existing, counts: dict[str, int], key: str) -> 
         counts[f"{key}_reused"] += 1
 
 
+def _payload_sources(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    sources = payload.get("sources")
+    if isinstance(sources, list) and sources:
+        return [dict(source) for source in sources if source.get("source_id")]
+    source = payload.get("source")
+    if isinstance(source, dict) and source.get("source_id"):
+        return [dict(source)]
+    return []
+
+
 def _base_provenance(payload: dict[str, Any]) -> dict[str, Any]:
-    source = payload.get("source", {})
+    sources = _payload_sources(payload)
+    source = sources[0] if sources else {}
     serialized = json.dumps(payload, sort_keys=True, default=str)
     return {
         "connector_type": payload.get("connector_type"),

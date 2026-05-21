@@ -13,8 +13,8 @@ done
 curl -fsS "${BASE_URL}/health" | grep -q '"service":"civiccode"'
 
 echo "==> CivicCode seeded public lookup"
-curl -fsS "${BASE_URL}/civiccode/search?q=6.12.040" | grep -q "Backyard chickens"
-curl -fsS "${BASE_URL}/civiccode/sections/6.12.040" | grep -q "Plain-language summary"
+curl -fsS "${BASE_URL}/civiccode/search?q=13.40.020" | grep -q "Backyard Livestock"
+curl -fsS "${BASE_URL}/civiccode/sections/13.40.020" | grep -q "Plain-language summary"
 
 echo "==> CivicCode seeded staff workspace"
 curl -fsS \

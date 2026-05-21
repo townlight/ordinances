@@ -5,9 +5,8 @@ Date: 2026-05-21
 ## Scope
 
 Record careful-work evidence from the earlier CivicCode completion attempt and
-the current v0.6.0 active branch. CivicCode is not v1.0.0, public-use ready,
-finished, shipping, city-ready, or product-ready until the complete release gate
-and independent audit sign-off are complete.
+the current v0.6.0 active branch. CivicCode stays at v0.6.0 until the complete
+release gate and independent audit sign-off are complete.
 
 ## Careful-Work Checklist
 
@@ -42,9 +41,9 @@ and independent audit sign-off are complete.
 - `bash scripts/verify-release.sh` passed after version/test updates.
 - `node scripts/browser-staff-surfaces-qa.cjs` passed across 16 staff states.
 - `scripts/browser-public-surfaces-qa.cjs` passed across 10 public states.
-- `docker compose -p civiccode_v1_debug up -d --build` passed with
+- `docker compose -p civiccode_product_completion_debug up -d --build` passed with
   `CIVICCODE_PORT=18052`.
 - `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18052 bash scripts/docker-demo-smoke.sh`
   passed.
-- `python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-v1-public-use-verify-3 --compose-project-name civiccode_v1_debug --strict`
+- `python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-product-completion-verify-3 --compose-project-name civiccode_product_completion_debug --strict`
   passed.

@@ -10,7 +10,7 @@ from httpx import ASGITransport, AsyncClient
 ROOT = Path(__file__).resolve().parents[1]
 STAFF_HEADERS = {
     "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@brookfield.example.gov",
+    "X-CivicCode-Actor": "clerk@portland.example.gov",
 }
 
 
@@ -44,12 +44,12 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
     health = await client.get("/health")
     assert health.status_code == 200
 
-    search = await client.get("/civiccode/search", params={"q": "6.12.040"})
+    search = await client.get("/civiccode/search", params={"q": "13.40.020"})
     assert search.status_code == 200
-    assert "Backyard chickens" in search.text
+    assert "Backyard Livestock" in search.text
     assert "Citation-ready" in search.text
 
-    detail = await client.get("/civiccode/sections/6.12.040")
+    detail = await client.get("/civiccode/sections/13.40.020")
     assert detail.status_code == 200
     assert "Plain-language summary" in detail.text
     assert "pending codification" in detail.text
@@ -57,7 +57,7 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
 
     staff = await client.get("/staff/code", headers=STAFF_HEADERS)
     assert staff.status_code == 200
-    assert "Backyard chickens" in staff.text
+    assert "Backyard Livestock" in staff.text
     assert "Pending CivicClerk handoffs require codification review" in staff.text
 
 
@@ -83,4 +83,4 @@ def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
     for text in [readme, manual, landing]:
         assert "Docker Compose" in text
         assert "CIVICCODE_DEMO_SEED=1" in text
-        assert "City of Brookfield" in text
+        assert "Portland Title 13" in text
