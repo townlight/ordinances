@@ -1,0 +1,5 @@
+2026-05-21T00:00:00Z | manifest | COMPLETE | scope recorded from ACTIVE_RELEASE_QUEUE and CivicSuiteUnifiedSpec
+2026-05-21T00:00:00Z | scope-lock | COMPLETE | active release lock CivicCode only
+2026-05-21T00:00:00Z | execute | COMPLETE | source version truth, docs, tests, QA evidence, Docker proof committed in 1954319785f98a8d8e4620c516aff30c74bcf5b8
+2026-05-21T00:00:00Z | verify | COMPLETE | scripts/verify-release.sh passed before push
+2026-05-21T00:00:00Z | push | COMPLETE | branch release/civiccode-v1-public-use pushed to origin

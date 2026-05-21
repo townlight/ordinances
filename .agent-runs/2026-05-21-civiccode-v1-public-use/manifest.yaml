@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: Apache-2.0
+pipeline_run:
+  id: "2026-05-21-civiccode-v1-public-use"
+  type: "module-release"
+  branch: "release/civiccode-v1-public-use"
+  goal: "Promote CivicCode to the v1.0.0 public-use municipal-code module release line with verified UX, docs, tests, Docker backup/restore, installer integration, audit, PR, CI, merge, tag, and release evidence."
+  allowed_paths:
+    - "CHANGELOG.md"
+    - "README.md"
+    - "README.txt"
+    - "SECURITY.md"
+    - "USER-MANUAL.md"
+    - "USER-MANUAL.txt"
+    - "civiccode/"
+    - "docs/"
+    - "pyproject.toml"
+    - "scripts/"
+    - "tests/"
+    - ".agent-runs/2026-05-21-civiccode-v1-public-use/"
+  forbidden_paths:
+    - ".github/workflows/"
+    - ".tmp-"
+    - ".docker-backup-restore-rehearsal/"
+  non_goals:
+    - "Do not implement or edit queued CivicSuite modules."
+    - "Do not claim full-suite readiness, city procurement readiness, production hosting certification, airgap readiness, or macOS lifecycle certification."
+    - "Do not rewrite historical v0.1.x or v0.5.0 tags; preserve them as historical evidence."
+  expected_outputs:
+    - "CivicCode code, docs, tests, release verifier, and build artifacts report version 1.0.0."
+    - "Desktop and mobile browser QA evidence covers public and staff CivicCode paths."
+    - "Docker smoke plus backup/restore rehearsal passes on the active host."
+    - "CivicSuite installer/module-selection truth is updated and verified after CivicCode source PR/CI is green."
+    - "Independent release-gate audit has no unresolved Blocker or Critical findings before merge/tag/release."
+  required_gates:
+    - "manifest_scope_recorded"
+    - "careful_work_evidence_recorded"
+    - "local_tests_passed"
+    - "browser_qa_passed"
+    - "docker_backup_restore_passed"
+    - "pre_push_verify_release_passed"
+    - "post_push_ci_passed"
+    - "suite_installer_integration_passed"
+    - "independent_audit_passed"
+    - "merge_tag_release_passed"
+  risk: "high"
+  rollback_plan: "Revert the CivicCode merge commit, leave historical tags untouched, and keep suite installer truth on the previous CivicCode version until a corrected release branch passes all gates."
+  definition_of_done: "CivicCode may be called v1.0.0 released only after the source branch passes local and GitHub CI, browser QA, Docker smoke, backup/restore rehearsal, docs gates, release verifier, independent audit, suite installer/module-selection integration, merge to main, v1.0.0 tag/release with artifacts, and post-merge/release CI without unresolved Blocker or Critical findings."
+  director_notes:
+    - "UX evidence is mandatory before commits that affect user-facing surfaces."
+    - "Documentation and QA are release deliverables, not afterthoughts."
+    - "No intentional deferrals may be used as an out for required public-use release work."
+  control_loop:
+    active_control_state: ".agent-runs/2026-05-21-civiccode-v1-public-use/active-control-state.md"
+    stop_condition_required_for_final_response: true
+    open_caveats_block_completion: true
+    post_push_ci_follow_through_required: true
+    execute_recommended_next_action_when_authorized: true
+    final_response_allowed_without_stop_condition: false
