@@ -18,7 +18,7 @@ plain-language summaries, staff workbench, citation-grounded Q&A, citation
 contract, search and permalink, section/version, source registry, runtime
 foundation, and canonical schema foundations: an
 installable Python package, a FastAPI app shell, `/` and `/health` endpoints,
-a published `civiccore v1.0.0` release-wheel dependency, canonical SQLAlchemy table
+a published `civiccore v1.1.0` release-wheel dependency, canonical SQLAlchemy table
 metadata, Alembic migrations under the `civiccode` schema, source registry APIs,
 optional database-backed source registry persistence, staff-header-protected
 source registry mutations and staff source reads, staff source registry
@@ -61,17 +61,16 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The published CivicCode v0.5.0 label has completed the suite-wide
-release-recovery pass on `main`; see
-[docs/release-recovery-status.md](docs/release-recovery-status.md) for the
-PR, CI, browser QA, Docker, backup/restore, and release-gate evidence. Release
-provenance follows the suite-wide Sigstore attestation
-model: the Git tag is a pointer, and the trust artifact is
-`release-attestation.json` plus
+The current CivicCode target is v1.0.0 public-use module release. The earlier
+v0.5.0 label completed the suite-wide release-recovery pass and remains
+historical evidence in
+[docs/release-recovery-status.md](docs/release-recovery-status.md). Release
+provenance follows the suite-wide Sigstore attestation model: the Git tag is a
+pointer, and the trust artifact is `release-attestation.json` plus
 `release-attestation.json.bundle`, verified against the exact
-`CivicSuite/civiccode` release workflow identity. The existing v0.1.17 and
-v0.1.18 releases predate that model and CO-4 records both as historical
-pre-gate/no-attestation releases in
+`CivicSuite/civiccode` release workflow identity. The existing v0.1.17,
+v0.1.18, and v0.5.0 releases predate the final v1.0.0 public-use gate and CO-4
+records older releases as historical pre-gate/no-attestation releases in
 [docs/ops/tier1-retrofit-ledger.md](docs/ops/tier1-retrofit-ledger.md). Do not
 publish, mirror, or rely on those release artifacts as attested provenance
 baselines:
@@ -203,11 +202,11 @@ baselines:
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the current shared CivicCore v1.0.0 release wheel,
+- consume the current shared CivicCore v1.1.0 release wheel,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
-  the v0.5.0 recovery release.
+  the v1.0.0 public-use release.
 
 ## Why CivicCode before CivicZone
 

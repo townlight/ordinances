@@ -153,7 +153,7 @@ documentation and verification gates. Runtime implementation must follow the
 CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- published `civiccore v1.0.0` release-wheel dependency,
+- published `civiccore v1.1.0` release-wheel dependency,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,
 - no imports from unreleased CivicCore placeholder packages.
@@ -533,9 +533,8 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v0.5.0 is a published durable operational-state label under
-suite-wide release-recovery review. The
-older v0.1.17 and v0.1.18 publications are historical pre-gate releases; check
+CivicCode v1.0.0 is the public-use municipal-code module release target. The
+older v0.1.17, v0.1.18, and v0.5.0 publications are historical pre-gate releases; check
 `docs/ops/tier1-retrofit-ledger.md` before relying on those older artifacts.
 The product line
 reuses the shared CivicCore source-list health projection for codifier sync

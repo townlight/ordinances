@@ -1,13 +1,15 @@
-# CivicCode Current Public And Staff Browser QA
+# CivicCode v1.0.0 Public And Staff Browser QA
 
-Date: 2026-05-09
+Date: 2026-05-21
 
 ## Scope
 
-Fresh local browser verification for the CivicCode recovery pass after fixing:
+Fresh local browser verification for the CivicCode v1.0.0 public-use release
+line after promoting current release truth from v0.5.0:
 
-- public related-material search results returning a server error,
-- records-ready export overflow on mobile.
+- public resident lookup/search/answer/detail/export surfaces,
+- staff code/source/import/sync surfaces,
+- access-required, empty, populated, cited-answer, refusal, and export states.
 
 ## Public Resident Surfaces
 
@@ -33,7 +35,7 @@ Evidence:
 - Browser console warnings/errors: 0.
 - Page errors: 0.
 - Horizontal overflow: 0 scenarios.
-- Screenshots saved under `docs/qa/current-public-browser-qa/`.
+- Screenshots refreshed under `docs/qa/current-public-browser-qa/`.
 
 ## Staff Operator Surfaces
 
@@ -60,7 +62,7 @@ Evidence:
 - Browser console warnings/errors: 0.
 - Page errors: 0.
 - Horizontal overflow: 0 scenarios.
-- Screenshots saved under `docs/qa/current-staff-browser-qa/`.
+- Screenshots refreshed under `docs/qa/current-staff-browser-qa/`.
 
 ## Verification Commands
 
@@ -69,18 +71,22 @@ Evidence:
 - `python -m pytest -q --ignore=tests/test_release_provenance_gate.py`
 - `python -m ruff check .`
 - `bash scripts/verify-docs.sh`
-- `docker compose -p civiccode_recovery_verify up -d --build`
-- `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18042 scripts/docker-demo-smoke.sh`
-- `python scripts/check_docker_backup_restore_rehearsal.py --run-id current-product-recovery-verify --compose-project-name civiccode_recovery_verify --strict`
-- `docker compose -p civiccode_recovery_verify down -v`
+- `bash scripts/verify-release.sh`
+- `CIVICCODE_BROWSER_QA_ARTIFACT_DIR=docs/qa/current-staff-browser-qa node scripts/browser-staff-surfaces-qa.cjs`
+- Inline Playwright public-route matrix against local `uvicorn` with `CIVICCODE_DEMO_SEED=true`
+- `CIVICCODE_PORT=18052 docker compose -p civiccode_v1_debug up -d --build`
+- `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18052 bash scripts/docker-demo-smoke.sh`
+- `python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-v1-public-use-verify-3 --compose-project-name civiccode_v1_debug --strict`
+- `docker compose -p civiccode_v1_debug down -v`
 
 All verification commands passed in the current session.
 
 ## Docker/PostgreSQL Recovery Proof
 
-The clean Docker proof used a separate Compose project,
-`civiccode_recovery_verify`, and removed that project's containers, network,
-and volume after verification.
+The clean Docker proof used a separate Compose project, `civiccode_v1_debug`,
+and removed that project's containers, network, and volume after verification.
+Port `18052` was used because another local stack already owned host port
+`8000`; the container still listened on its normal internal port `8000`.
 
 Results:
 
@@ -95,4 +101,4 @@ Results:
 - Temporary restore database cleanup: PASS.
 
 The rehearsal manifest and restore verification were written under
-`.docker-backup-restore-rehearsal/current-product-recovery-verify/`.
+`.docker-backup-restore-rehearsal/civiccode-v1-public-use-verify-3/`.

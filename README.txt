@@ -124,7 +124,7 @@ Documentation: CC BY 4.0 unless otherwise stated; see LICENSE-DOCS.
 Run locally
 -----------
 
-1. python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.0/civiccore-1.0.0-py3-none-any.whl
+1. python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
 2. python -m pip install -e ".[dev]"
 3. python -m uvicorn civiccode.main:app --reload
 4. curl http://127.0.0.1:8000/health
@@ -173,8 +173,7 @@ Migration smoke
 Release
 -------
 
-CivicCode v0.5.0 is a published durable operational-state label under
-suite-wide release-recovery review. It
+CivicCode v1.0.0 is the public-use municipal-code module release target. It
 persists source registry records, title/chapter/section/version records,
 staff-approved popular questions, staff notes, plain-language summaries,
 CivicClerk handoff records, handoff audit events, local import job records, and codifier sync source records through

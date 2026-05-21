@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.0] - 2026-05-21
+
+- Promoted CivicCode from the v0.5.0 recovery label to the active v1.0.0
+  public-use module release line after the Clerk-Core starter release shipped.
+- Synchronized package, verifier, documentation, security, and artifact version
+  surfaces to `1.0.0`.
+- Kept earlier v0.1.x and v0.5.0 releases documented as historical
+  pre-final-gate evidence rather than current release truth.
+
 ## [0.5.0] - 2026-05-11
 
 ### Changed

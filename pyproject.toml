@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "civiccode"
-version = "0.5.0"
-description = "CivicCode runtime foundation for municipal code and ordinance access."
+version = "1.0.0"
+description = "CivicCode municipal code and ordinance access module."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }

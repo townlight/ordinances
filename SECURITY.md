@@ -1,6 +1,6 @@
 # Security Policy
 
-CivicCode has a v0.5.0 recovery release line. If you find a vulnerability in the
+CivicCode has a v1.0.0 public-use release line. If you find a vulnerability in the
 runtime, scaffold, documentation, or release workflow, do not open a public issue.
 
 Report privately through GitHub Security Advisories on

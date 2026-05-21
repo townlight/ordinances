@@ -147,7 +147,7 @@
       <ul>
         <li>Installable Python package.</li>
         <li>FastAPI runtime foundation with <code>/</code> and <code>/health</code>.</li>
-        <li>Published <code>civiccore v1.0.0</code> release-wheel dependency.</li>
+        <li>Published <code>civiccore v1.1.0</code> release-wheel dependency.</li>
         <li>Staff-header-protected source registry mutations and staff source reads.</li>
         <li>Staff source registry workspace at <code>/staff/sources</code> with empty, active, stale, failed, and access-required states.</li>
         <li>Staff code lifecycle workspace at <code>/staff/code</code> with access-required, empty, readiness-snapshot, section-card, draft-summary, and pending-codification states.</li>
@@ -200,7 +200,7 @@
     </section>
     <section>
       <h2>Release status</h2>
-      <p>CivicCode v0.5.0 is a published durable operational-state label with CivicCore v1.0.0 source-list health projection reuse. The suite-wide release-recovery pass has completed on <code>main</code>: PR #51 merged, GitHub CI passed, and local runtime, browser, Docker, documentation, backup/restore, and release verification gates were rerun in the recovery workspace. Release provenance follows the suite-wide Sigstore attestation model: the Git tag is a pointer, while <code>release-attestation.json</code> and <code>release-attestation.json.bundle</code> are the trust artifacts verified against the exact <code>CivicSuite/civiccode</code> release workflow identity. Existing v0.1.17 and v0.1.18 releases predate that model and CO-4 records both as historical pre-gate/no-attestation releases; review <code>docs/ops/tier1-retrofit-ledger.md</code> before relying on those older artifacts.</p>
+      <p>CivicCode v1.0.0 is the public-use municipal-code module release target with CivicCore v1.1.0 source-list health projection reuse. The earlier suite-wide release-recovery pass remains historical evidence, while the current release gate must prove local runtime, browser, Docker, documentation, backup/restore, installer integration, and release verification on the v1.0.0 line. Release provenance follows the suite-wide Sigstore attestation model: the Git tag is a pointer, while <code>release-attestation.json</code> and <code>release-attestation.json.bundle</code> are the trust artifacts verified against the exact <code>CivicSuite/civiccode</code> release workflow identity. Existing v0.1.17, v0.1.18, and v0.5.0 releases predate the final v1.0.0 public-use gate; review <code>docs/ops/tier1-retrofit-ledger.md</code> before relying on those older artifacts.</p>
       <p>The service is intentionally honest: code-answer behavior is limited to <code>code_answer_behavior</code> <code>citation_grounded</code>; refusals keep <code>not_available</code>.</p>
     </section>
   </div>
