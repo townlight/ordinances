@@ -1,8 +1,7 @@
 # Security Policy
 
-CivicCode is preparing a v1.0.0 public-use release line. Until suite installer
-integration, merge, tag, release artifacts, and post-release CI are complete,
-the current shipped label remains v0.5.0. If you find a vulnerability in the
+CivicCode is at v0.6.0 after corrective demotion. The mistaken v1.0.0 release
+does not prove public-use readiness. If you find a vulnerability in the
 runtime, scaffold, documentation, or release workflow, do not open a public issue.
 
 Report privately through GitHub Security Advisories on

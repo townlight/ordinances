@@ -30,6 +30,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-05-21
+
+### Corrected
+
+- Corrected the false v1.0.0 release label after the independent CivicSuite release-integrity audit found CivicCode does not meet the Section 2 FINISHED and SHIPPING bar.
+- Set the honest current label to v0.6.0 and superseded the mistaken v1.0.0 posture without deleting the historical record.
+- Current classification: functional-partial: real backend exists; AI layer, real frontend, real data/search proof, and public-use gate remain pending.
+- CivicCode must not be described as finished, shipping, city-ready, product-ready, or public-use ready until a future independent audit signs off against the full Section 2 gate.
+
 ### Fixed
 
 - Fixed public search rendering for staff-approved related-material results so
