@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
@@ -23,6 +24,7 @@ from civiccode.semantic_search import (
 
 
 VERSION_STATUSES = {"draft", "pending", "adopted", "superseded", "retired"}
+SECTION_NUMBER_RE = re.compile(r"\b\d{1,2}\.\d{2}\.\d{3}\b")
 
 
 class SectionLifecycleError(ValueError):
@@ -807,8 +809,8 @@ class SectionLifecycleRepository(SectionLifecycleStore):
         config = embedding_config_from_env()
         if not config:
             return []
-        self._refresh_all_search_embeddings()
         if self.engine.dialect.name != "postgresql":
+            self._refresh_all_search_embeddings()
             return super()._rank_semantic_results(query)
         try:
             query_embedding = embed_texts([query], config=config)[0]
@@ -817,31 +819,65 @@ class SectionLifecycleRepository(SectionLifecycleStore):
         vector_literal = _pgvector_literal(query_embedding)
         statement = sa.text(
             """
-            SELECT section_id,
-                   section_version_id,
-                   embedding_model,
-                   source_text_checksum,
+            SELECT content_text,
                    1 - (embedding <=> CAST(:query_embedding AS vector)) AS score
-            FROM civiccode.section_search_embeddings
-            WHERE embedding_model = :embedding_model
+            FROM public.document_chunks
+            WHERE embedding IS NOT NULL
             ORDER BY embedding <=> CAST(:query_embedding AS vector)
-            LIMIT 5
+            LIMIT 20
             """
         )
-        with self.engine.begin() as connection:
-            rows = connection.execute(
-                statement,
-                {"query_embedding": vector_literal, "embedding_model": config.model},
-            ).mappings()
-            return [
-                {
-                    "id": row["section_id"],
-                    "version_id": row["section_version_id"],
-                    "score": round(float(row["score"]), 6),
-                    "embedding_model": row["embedding_model"],
-                }
-                for row in rows
+        ranked: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        try:
+            with self.engine.begin() as connection:
+                rows = connection.execute(statement, {"query_embedding": vector_literal}).mappings()
+                for row in rows:
+                    match = self._section_for_shared_chunk(str(row["content_text"]))
+                    if match is None or match.section_id in seen:
+                        continue
+                    current = self._current_adopted_version(match.section_id)
+                    if current is None:
+                        continue
+                    ranked.append(
+                        {
+                            "id": match.section_id,
+                            "version_id": current.version_id,
+                            "score": round(float(row["score"]), 6),
+                            "embedding_model": config.model,
+                        }
+                    )
+                    seen.add(match.section_id)
+                    if len(ranked) >= 5:
+                        break
+        except Exception:
+            self._refresh_all_search_embeddings()
+            return super()._rank_semantic_results(query)
+        if ranked:
+            return ranked
+        self._refresh_all_search_embeddings()
+        return super()._rank_semantic_results(query)
+
+    def _section_for_shared_chunk(self, chunk_text: str) -> CodeSection | None:
+        for section_number in SECTION_NUMBER_RE.findall(chunk_text):
+            matches = [
+                section
+                for section in self._sections.values()
+                if section.section_number == section_number
             ]
+            if matches:
+                return matches[0]
+        normalized_chunk = " ".join(chunk_text.lower().split())
+        for version in self._versions.values():
+            if version.status != "adopted" or not version.is_current:
+                continue
+            body = " ".join(version.body.lower().split())
+            if not body:
+                continue
+            snippet = body[:240]
+            if len(snippet) >= 80 and snippet in normalized_chunk:
+                return self._sections.get(version.section_id)
+        return None
 
     def _persist_search_embedding(self, record: SearchEmbedding) -> None:
         values = search_embedding_to_record(record)

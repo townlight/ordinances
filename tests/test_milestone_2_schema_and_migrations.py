@@ -268,8 +268,13 @@ def handoff_resolution_migration_path() -> Path:
 def test_canonical_table_models_exist_and_no_tables_are_missing_or_extra() -> None:
     models = model_module()
     metadata = models.Base.metadata
+    civiccode_tables = {
+        key
+        for key, table in metadata.tables.items()
+        if table.schema == "civiccode"
+    }
 
-    assert sorted(metadata.tables) == sorted(f"civiccode.{name}" for name in CANONICAL_TABLES)
+    assert sorted(civiccode_tables) == sorted(f"civiccode.{name}" for name in CANONICAL_TABLES)
 
 
 def test_models_use_civiccode_schema_and_civiccore_shared_base() -> None:
@@ -493,7 +498,11 @@ def test_migration_table_list_matches_model_metadata() -> None:
     models = model_module()
     text = migration_path().read_text(encoding="utf-8")
 
-    model_tables = {table.name for table in models.Base.metadata.tables.values()}
+    model_tables = {
+        table.name
+        for table in models.Base.metadata.tables.values()
+        if table.schema == "civiccode"
+    }
     for table_name in model_tables:
         assert f'"{table_name}"' in text or f"'{table_name}'" in text
 

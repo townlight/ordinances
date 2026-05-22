@@ -38,13 +38,13 @@ def test_pyproject_declares_runtime_package_and_release_version() -> None:
     assert "CivicCode" in data["project"]["description"]
 
 
-def test_pyproject_consumes_published_civiccore_v100_wheel() -> None:
+def test_pyproject_consumes_audited_civiccore_shared_ingestion_commit() -> None:
     data = load_pyproject()
     dependencies = data["project"]["dependencies"]
 
     assert (
-        "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
-        "v1.1.0/civiccore-1.1.0-py3-none-any.whl#sha256=3ab146f4fea2ae99640d5b1b013be1a9676de5f91b783eaeaa913043a2ae2b87"
+        "civiccore @ https://github.com/CivicSuite/civiccore/archive/"
+        "80799976d1b50a76f549400afebeb994b935ff0c.zip"
     ) in dependencies
     assert not any("civiccore>=" in dep or "civiccore~=" in dep for dep in dependencies)
 

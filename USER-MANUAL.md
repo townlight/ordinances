@@ -160,15 +160,23 @@ public-use release audit clears a future v1.0.0 tag. Runtime implementation
 must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- published `civiccore v1.1.0` release-wheel dependency,
+- audited CivicCore shared-ingestion dependency
+  `80799976d1b50a76f549400afebeb994b935ff0c`,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,
 - no imports from unreleased CivicCore placeholder packages.
 
+The active branch can ingest the full Longmont Code of Ordinances PDF through
+CivicCore shared ingestion, persist the resulting `document_chunks` with
+768-dimensional Ollama embeddings, structure the corpus into CivicCode
+title/chapter/section/version records, and answer a cited question through a
+local Ollama model. This is evidence for audit only; it is not a v1.0.0 release
+claim.
+
 Install and run:
 
 ```bash
-python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
@@ -542,7 +550,7 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v0.6.0 is the public-use municipal-code module release candidate. The
+CivicCode v0.6.0 is active-branch municipal-code module evidence for audit. The
 older v0.1.17, v0.1.18, and v0.5.0 publications are historical pre-gate releases; check
 `docs/ops/tier1-retrofit-ledger.md` before relying on those older artifacts.
 The product line
@@ -551,4 +559,4 @@ source lists while retaining CivicCode-specific legal-boundary copy, and it now
 keeps local import job status, codifier sync configuration, host-validation
 results, circuit-breaker state, delta-plan history, and completion timestamps
 in the configured database. Future work moves to the next
-module or release plan in the CivicSuite unified roadmap.
+module or release plan only after CivicCode clears independent audit.

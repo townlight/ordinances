@@ -13,8 +13,9 @@ authors = [
   { name = "CivicSuite contributors" }
 ]
 dependencies = [
-  "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl#sha256=3ab146f4fea2ae99640d5b1b013be1a9676de5f91b783eaeaa913043a2ae2b87",
+  "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip",
   "alembic>=1.13.0,<2.0.0",
+  "asyncpg>=0.29.0,<1.0.0",
   "fastapi>=0.115.0,<1.0.0",
   "psycopg2-binary>=2.9.0,<3.0.0",
   "sqlalchemy>=2.0.0,<3.0.0",

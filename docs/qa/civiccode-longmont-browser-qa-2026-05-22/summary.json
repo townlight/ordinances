@@ -1,0 +1,34 @@
+[
+  {
+    "viewport": "desktop",
+    "responses": [
+      "200 http://127.0.0.1:8137/api/v1/civiccode/search?q=public%20access%20to%20procurement%20documents",
+      "200 http://127.0.0.1:8137/api/v1/civiccode/questions/answer"
+    ],
+    "consoleMessages": [],
+    "failedRequests": [],
+    "focusAfterTabs": "INPUT",
+    "screenshots": [
+      "desktop-initial.png",
+      "desktop-search-success.png",
+      "desktop-answer-success.png",
+      "desktop-error-state.png"
+    ]
+  },
+  {
+    "viewport": "mobile",
+    "responses": [
+      "200 http://127.0.0.1:8137/api/v1/civiccode/search?q=public%20access%20to%20procurement%20documents",
+      "200 http://127.0.0.1:8137/api/v1/civiccode/questions/answer"
+    ],
+    "consoleMessages": [],
+    "failedRequests": [],
+    "focusAfterTabs": "INPUT",
+    "screenshots": [
+      "mobile-initial.png",
+      "mobile-search-success.png",
+      "mobile-answer-success.png",
+      "mobile-error-state.png"
+    ]
+  }
+]

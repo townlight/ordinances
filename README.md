@@ -18,7 +18,7 @@ plain-language summaries, staff workbench, citation-grounded Q&A, citation
 contract, search and permalink, section/version, source registry, runtime
 foundation, and canonical schema foundations: an
 installable Python package, a FastAPI app shell, `/` and `/health` endpoints,
-a published `civiccore v1.1.0` release-wheel dependency, canonical SQLAlchemy table
+an audited CivicCore shared-ingestion dependency, canonical SQLAlchemy table
 metadata, Alembic migrations under the `civiccode` schema, source registry APIs,
 optional database-backed source registry persistence, staff-header-protected
 source registry mutations and staff source reads, staff source registry
@@ -70,8 +70,9 @@ The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
 real backend, database migrations, substantial municipal-code workflow logic,
 active-branch local AI integration, active-branch React frontend work, real
 Ollama embedding retrieval with PostgreSQL pgvector runtime proof,
-installed-stack, suite module-selection, and source-attributed Portland Title
-13 municipal data fixture proof, but the prior `v1.0.0` release was
+installed-stack, suite module-selection, source-attributed Portland Title
+13 municipal data fixture proof, and active-branch full Longmont PDF ingestion
+through CivicCore shared ingestion, but the prior `v1.0.0` release was
 published in error. CivicCode is not finished, shipping, city-ready,
 product-ready, or public-use ready until complete public-use gate evidence and
 an independent Section 2 audit are complete. The
@@ -161,6 +162,9 @@ evidence only.
   detail states,
 - import local CSV/file-drop bundles and official HTML extract fixtures through
   staff-only endpoints,
+- ingest the full Longmont Code of Ordinances PDF through CivicCore shared
+  ingestion, then structure the resulting chunks into CivicCode titles,
+  chapters, sections, and adopted versions,
 - prove that import/search/cited-answer path against a source-attributed
   Portland municipal code fixture without treating that fixture as a full city
   corpus,
@@ -211,7 +215,8 @@ evidence only.
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the current shared CivicCore v1.1.0 release wheel,
+- consume the audited CivicCore shared-ingestion commit
+  `80799976d1b50a76f549400afebeb994b935ff0c`,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
@@ -258,11 +263,11 @@ Read these upstream documents first:
 
 ## Development status
 
-Install the CivicCore release wheel first, then install CivicCode in editable
-mode:
+Install the audited CivicCore shared-ingestion dependency, then install
+CivicCode in editable mode:
 
 ```bash
-python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
@@ -413,6 +418,26 @@ Ollama `/api/generate` endpoint with only the retrieved cited section text and
 marks the answer `ai_review_required=true`. Code-answer behavior remains
 limited to cited adopted text. Legal-advice, uncited, stale, missing,
 ambiguous, or contradictory requests return structured refusals.
+
+Longmont shared-ingestion proof:
+
+```powershell
+$env:CIVICCODE_SOURCE_REGISTRY_DB_URL='postgresql+psycopg2://civiccode@localhost:33134/civiccode'
+$env:OLLAMA_BASE_URL='http://localhost:11434'
+$env:CIVICCODE_OLLAMA_EMBEDDING_URL='http://localhost:11434'
+$env:CIVICCODE_EMBEDDING_MODE='ollama'
+$env:CIVICCODE_AI_MODE='ollama'
+$env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
+$env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
+python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+```
+
+Expected Longmont proof today: the full Longmont PDF is parsed through
+CivicCore shared ingestion, persisted as `document_chunks` with 768-dimensional
+Ollama embeddings, structured into CivicCode titles, chapters, sections, and
+versions, searched through PostgreSQL pgvector, and answered through a cited,
+staff-review-required local Ollama response. See
+`docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md`.
 
 Staff workbench smoke:
 
