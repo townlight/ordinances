@@ -48,6 +48,11 @@ def main() -> int:
         default="What does the Longmont code say about public access to procurement documents?",
     )
     parser.add_argument(
+        "--answer-section-number",
+        default=None,
+        help="Use a specific section for the cited Q&A proof instead of the top result from the first search.",
+    )
+    parser.add_argument(
         "--force-reingest",
         action="store_true",
         help="Delete the existing Longmont CivicCore document for this source/hash before ingesting.",
@@ -89,7 +94,7 @@ def main() -> int:
                 "top_results": search_payload["results"][:3],
             }
         )
-    pinned_section = _first_section_number(searches[0])
+    pinned_section = args.answer_section_number or _first_section_number(searches[0])
     answer_payload = build_grounded_answer(
         QuestionRequestContext(question=args.question, section_number=pinned_section),
         search=section_store.search,

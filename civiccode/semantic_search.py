@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass
 import math
 import os
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 
 from civiccore.ingest.embedder import embed_batch
 
@@ -25,15 +25,6 @@ class SemanticDocument:
     id: str
     version_id: str
     text: str
-
-
-@dataclass(frozen=True, slots=True)
-class SearchEmbedding:
-    section_id: str
-    section_version_id: str
-    embedding_model: str
-    embedding: list[float]
-    source_text_checksum: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,32 +97,8 @@ def _run_civiccore_embed_batch(
         return executor.submit(lambda: asyncio.run(coroutine)).result()
 
 
-def rank_embeddings(
-    query_embedding: list[float],
-    document_embeddings: list[SearchEmbedding],
-) -> list[dict[str, float | str]]:
-    """Rank persisted learned vectors by cosine similarity."""
-    query = _normalize(query_embedding)
-    ranked = [
-        {
-            "id": item.section_id,
-            "version_id": item.section_version_id,
-            "score": round(_cosine(query, item.embedding), 6),
-            "embedding_model": item.embedding_model,
-        }
-        for item in document_embeddings
-    ]
-    return sorted(ranked, key=lambda item: float(item["score"]), reverse=True)
-
-
 def _normalize(vector: list[float]) -> list[float]:
     length = math.sqrt(sum(value * value for value in vector))
     if length == 0:
         return vector
     return [value / length for value in vector]
-
-
-def _cosine(left: list[float], right: list[float]) -> float:
-    if not left or not right:
-        return 0.0
-    return sum(a * b for a, b in zip(left, right, strict=False))

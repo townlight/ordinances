@@ -13,12 +13,15 @@
   made PostgreSQL semantic ranking use shared CivicCore `document_chunks`
   pgvector rows instead of CivicCode-local section embedding storage.
 - Added `scripts/prove-longmont-shared-ingestion.py` and
+  `scripts/prove-longmont-civiccore-chunk-params.py` plus
   `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
   full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,443
   structured sections, shared pgvector search, and local Ollama cited Q&A.
   The force-reingest proof records the exact input basis: 1,604 pages,
   12,394,756 source bytes, 2,931 chunks, `chunk_size=500`,
-  `chunk_overlap=50`, and 768-dimensional embeddings.
+  `chunk_overlap=50`, and 768-dimensional embeddings; the dual-run script
+  reproduces `chunk_size=900` / `chunk_overlap=90` as 1,789 chunks and
+  `chunk_size=500` / `chunk_overlap=50` as 2,931 chunks from the same PDF.
 - CivicCode remains `0.6.0`. This is active-branch evidence for independent
   audit, not a v1.0.0 release claim.
 - Added source-bounded local Ollama answer generation for citation-grounded

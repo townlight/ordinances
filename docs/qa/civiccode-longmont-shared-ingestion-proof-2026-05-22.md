@@ -5,23 +5,27 @@ Status: evidence for independent audit; not a release claim.
 Command:
 
 ```powershell
-$env:CIVICCODE_SOURCE_REGISTRY_DB_URL='postgresql+psycopg2://civiccode@localhost:33139/civiccode'
+$env:CIVICCODE_SOURCE_REGISTRY_DB_URL='postgresql+psycopg2://civiccode@localhost:33140/civiccode'
 $env:OLLAMA_BASE_URL='http://localhost:11434'
 $env:CIVICCODE_OLLAMA_EMBEDDING_URL='http://localhost:11434'
 $env:CIVICCODE_EMBEDDING_MODE='ollama'
 $env:CIVICCODE_AI_MODE='ollama'
 $env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
 $env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
-$env:CIVICCODE_OLLAMA_TIMEOUT_SECONDS='180'
+$env:CIVICCODE_OLLAMA_TIMEOUT_SECONDS='300'
 $env:CIVICCODE_SEMANTIC_SCORE_FLOOR='0.58'
-python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL --force-reingest
+python scripts\prove-longmont-shared-ingestion.py `
+  --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL `
+  --force-reingest `
+  --answer-section-number 4.12.040 `
+  --question "What does Section 4.12.040 say about public access to procurement documents?"
 ```
 
 Corpus:
 
 - `C:\Users\scott\OneDrive\Desktop\Claude\longmont-code-corpus\Longmont, CO Code of Ordinances.pdf`
 - File size: `12394756` bytes.
-- CivicCore document id: `e608fd38-38c3-42e2-8a51-ad57c8f874e6`.
+- CivicCore document id: `b636cbfa-8555-4b7a-9226-a38868e555e9`.
 - CivicCore document status: `completed`.
 
 Shared CivicCore ingestion output:
@@ -50,14 +54,32 @@ Ordinance No. O-2025-83, enacted December 16, 2025.
 
 CivicCode structuring output:
 
-- Sources created/reused on force-reingest proof run: `1 created / 0 reused`.
-- Sources reused on post-fix Q&A rerun against the same completed corpus: `1`.
+- Sources created/reused by import job: `0 created / 1 reused`.
 - Titles: `14`.
 - Chapters: `195`.
 - Sections: `1443`.
 - Versions: `1443`.
 - First structured section: `1.12.010 - Designated`.
 - Source URL: `https://library.municode.com/co/longmont/codes/code_of_ordinances`.
+
+Dual CivicCore chunk-parameter proof:
+
+Command:
+
+```powershell
+python scripts\prove-longmont-civiccore-chunk-params.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+```
+
+Output from the committed script, same PDF, same CivicCore `ingest_file()` path,
+same run id `20260522171542`:
+
+| Label | Chunk size | Overlap | Document chunks | Chunk rows | Embedded rows | Pages | Vector dim |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `civiccore-original-proof` | `900` | `90` | `1789` | `1789` | `1789` | `1604` | `768` |
+| `civiccode-pr61-proof` | `500` | `50` | `2931` | `2931` | `2931` | `1604` | `768` |
+
+This demonstrates the 1,789 vs. 2,931 chunk-count difference with live
+ingestion, not a documentation assertion.
 
 Semantic search proof:
 
@@ -69,13 +91,15 @@ Queries exercised by the proof script:
 4. `disposal of surplus city property`
 5. `city manager purchasing authority`
 
-Representative query: `public access to procurement documents`
+Top results from the same force-reingest proof run:
 
-Top results included:
-
-1. `4.12.280 - City procurement records`, semantic score `0.656692`.
-2. `4.12.010 - Purpose`, semantic score `0.6338`.
-3. `4.12.040 - Public access to procurement documents`, semantic score `0.630508`.
+| Query | Count | Top results |
+|---|---:|---|
+| `public access to procurement documents` | `5` | `4.12.280 - City procurement records` (`0.656692`); `4.12.010 - Purpose` (`0.6338`); `4.12.040 - Public access to procurement documents` (`0.630508`) |
+| `rules for emergency purchases` | `5` | `2.20.170 - Rules and regulations governing city property` (`0.658082`); `4.12.180 - Responsibility of offerors` (`0.654005`); `11.12.010 - Authorized when` (`0.63646`) |
+| `bid protest appeal` | `4` | `4.12.400 - Protest of solicitation or award` (`0.71742`); `4.12.390 - Finality of decision` (`0.653361`); `15.02.040 - Common review procedures` (`0.617039`) |
+| `disposal of surplus city property` | `5` | `10.50.080 - Appeal` (`0.696358`); `10.50.010 - Definitions` (`0.690831`); `14.12.020 - Service established` (`0.673018`) |
+| `city manager purchasing authority` | `5` | `4.12.070 - Authority and duties` (`0.736773`); `4.12.095 - Execution of intergovernmental agreements` (`0.670086`); `4.12.140 - Small or micro purchases` (`0.658042`) |
 
 Search metadata:
 
@@ -94,36 +118,34 @@ chunks back to CivicCode sections.
 
 Local LLM cited Q&A proof:
 
-- Question: `What does the Longmont code say about public access to procurement documents?`
-- Matched section: `4.12.280`.
+- Question: `What does Section 4.12.040 say about public access to procurement documents?`
+- Matched section: `4.12.040`.
 - LLM provider: `ollama`.
 - LLM error: `null`.
 - Answer excerpt:
 
 ```text
-Based on the provided text, the section discusses the retention and disposal of
-records, stating that all procurement records "will be retained and disposed of
-by the city in accordance with the applicable records retention guidelines and
-schedules approved by the city council" (4.12.310. B). The text does not
-specify the rules for public access to these documents.
+The provided text only lists the section title, "4.12.040. Public access to
+procurement documents," and immediately follows it with the beginning of
+Section 4.12.050.
 
 Staff review is required for interpretations. Source: Title 4 (Title 4),
-Chapter 4.12 (Chapter 4.12), Section 4.12.280 (City procurement records),
-version Longmont Code codified through December 2025, effective 2025-12-31.
-This is not a legal determination.
+Chapter 4.12 (Chapter 4.12), Section 4.12.040 (Public access to procurement
+documents), version Longmont Code codified through December 2025, effective
+2025-12-31. This is not a legal determination.
 ```
 
 Citation:
 
 ```text
-Title 4 (Title 4), Chapter 4.12 (Chapter 4.12), Section 4.12.280
-(City procurement records), version Longmont Code codified
+Title 4 (Title 4), Chapter 4.12 (Chapter 4.12), Section 4.12.040
+(Public access to procurement documents), version Longmont Code codified
 through December 2025, effective 2025-12-31
 ```
 
 Known evidence limits:
 
-- The fresh `--force-reingest` run completed on this machine and proves full-corpus ingestion, 768-dimensional shared pgvector chunk embeddings, CivicCode structuring, and five-query semantic search. A follow-up rerun against the same completed corpus, after fixing the proof-script result selector, proves local Ollama cited Q&A.
-- Older CivicCore evidence that listed 1,789 chunks used `chunk_size=900` / `chunk_overlap=90`; it remains valid for that CivicCore parameter set but must not be cited as the current CivicCode PR #61 proof count.
+- The fresh `--force-reingest` run completed on this machine and proves full-corpus ingestion, 768-dimensional shared pgvector chunk embeddings, CivicCode structuring, five-query semantic search, and local Ollama cited Q&A from one run.
+- The committed dual-run script reproduced the chunk-count reconciliation: CivicCore `900/90` produced `1789` chunks and CivicCode PR #61 `500/50` produced `2931` chunks from the same PDF through the same CivicCore `ingest_file()` path.
 - This is not a v1.0.0 release claim.
 - Independent audit is still required before any release tag.
