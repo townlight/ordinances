@@ -103,6 +103,20 @@ def test_docker_backup_restore_rehearsal_powershell_wrapper_prints_expected_plan
         assert expected in result.stdout
 
 
+def test_docker_backup_restore_rehearsal_wrappers_run_strict_by_default() -> None:
+    powershell = (ROOT / "scripts" / "start_docker_backup_restore_rehearsal.ps1").read_text(
+        encoding="utf-8"
+    )
+    bash = (ROOT / "scripts" / "start_docker_backup_restore_rehearsal.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '$ArgsList += "--strict"' in powershell
+    assert "[switch]$Strict" not in powershell
+    assert "strict=1" in bash
+    assert "--strict)" not in bash
+
+
 def test_docker_backup_restore_rehearsal_bash_wrapper_prints_expected_plan() -> None:
     shell = shutil.which("bash")
     if shell is None:

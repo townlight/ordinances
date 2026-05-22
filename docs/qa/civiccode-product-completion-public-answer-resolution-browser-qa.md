@@ -11,15 +11,15 @@ Date: 2026-05-07
 ## Evidence
 
 - Desktop screenshots:
-  - `docs/qa/civiccode-v1-home-desktop.png`
-  - `docs/qa/civiccode-v1-answer-desktop.png`
-  - `docs/qa/civiccode-v1-refusal-desktop.png`
+  - `docs/qa/civiccode-product-completion-home-desktop.png`
+  - `docs/qa/civiccode-product-completion-answer-desktop.png`
+  - `docs/qa/civiccode-product-completion-refusal-desktop.png`
 - Mobile screenshots:
-  - `docs/qa/civiccode-v1-home-mobile.png`
-  - `docs/qa/civiccode-v1-answer-mobile.png`
-  - `docs/qa/civiccode-v1-refusal-mobile.png`
+  - `docs/qa/civiccode-product-completion-home-mobile.png`
+  - `docs/qa/civiccode-product-completion-answer-mobile.png`
+  - `docs/qa/civiccode-product-completion-refusal-mobile.png`
 - Console log:
-  - `docs/qa/civiccode-v1-browser-console.txt`
+  - `docs/qa/civiccode-product-completion-browser-console.txt`
 
 ## Result
 

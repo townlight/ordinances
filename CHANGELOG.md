@@ -1,13 +1,27 @@
 # Changelog
 
-## [1.0.0-rc] - 2026-05-21
+## [0.6.0 active completion branch] - 2026-05-21
 
-- Prepared CivicCode for the active v1.0.0 public-use module release line after
-  the Clerk-Core starter release shipped. This is pre-final-gate release
-  candidate truth until suite installer integration, merge, tag/release,
-  artifacts, and post-release CI are complete.
-- Synchronized package, verifier, documentation, security, and artifact version
-  surfaces to `1.0.0`.
+- Added source-bounded local Ollama answer generation for citation-grounded
+  questions. AI output remains non-authoritative, cited, and
+  staff-review-required; deterministic citation extraction remains the fallback.
+- Added the React/Vite/TypeScript resident app at `/civiccode/app`, served by
+  FastAPI and verified against live search and cited-answer API calls.
+- Replaced the local hash-bucket search stand-in with configured Ollama
+  embeddings, persisted search embeddings, and a PostgreSQL pgvector ranking
+  path. The search test suite now proves a zero-literal-overlap retrieval
+  through local `nomic-embed-text` and a disposable `pgvector/pgvector:pg17`
+  database when those runtimes are available.
+- Added adversarial tests and evidence for bad input, missing/stale records,
+  public/staff boundary failures, spoofed staff headers, unavailable Ollama
+  fallback behavior, live Ollama, route inventory, staff browser QA,
+  Docker/PostgreSQL installed-stack smoke, backup/restore, suite custom
+  module-selection, and source-attributed Portland Title 13 municipal data
+  import/search/Q&A proof.
+- Kept package, verifier, documentation, and artifact version surfaces at the
+  honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
+  city-ready, product-ready, or public-use ready until an independent audit
+  clears the full release gate.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 
@@ -30,13 +44,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Added the first real CivicCode React/Vite/TypeScript frontend at `/civiccode/app`, served by FastAPI from the built package assets and wired to the live search and cited-answer APIs.
+- Added source-bounded local Ollama answer generation for citation-grounded questions. AI output remains non-authoritative, cited, and staff-review-required; deterministic citation extraction remains the fallback when local Ollama is not configured.
+- Added semantic retrieval metadata for public search plus a new Alembic migration for PostgreSQL pgvector embedding storage (`civiccode_0011_semantic_search`).
+- Expanded browser QA to exercise the React app at desktop/mobile widths with live `/api/v1/civiccode/search` and `/api/v1/civiccode/questions/answer` network calls.
+- Added a source-attributed Portland municipal-code fixture test that imports,
+  searches, and answers against real adopted code text while keeping the
+  evidence bounded as fixture proof rather than full city-corpus proof.
+
+### Changed
+
+- Updated `scripts/verify-release.sh` to run `npm ci`, TypeScript checks, and the Vite production build before browser QA.
+
 ## [0.6.0] - 2026-05-21
 
 ### Corrected
 
 - Corrected the false v1.0.0 release label after the independent CivicSuite release-integrity audit found CivicCode does not meet the Section 2 FINISHED and SHIPPING bar.
 - Set the honest current label to v0.6.0 and superseded the mistaken v1.0.0 posture without deleting the historical record.
-- Current classification: functional-partial: real backend exists; AI layer, real frontend, real data/search proof, and public-use gate remain pending.
+- Current classification: functional-partial: real backend exists; the post-0.6.0 active branch is adding AI, React frontend, semantic search, installer/run evidence, and public-use gate proof before any future v1.0.0 claim.
 - CivicCode must not be described as finished, shipping, city-ready, product-ready, or public-use ready until a future independent audit signs off against the full Section 2 gate.
 
 ### Fixed

@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from contextvars import ContextVar
 from datetime import date, datetime
+from pathlib import Path
 from typing import Any
 
 from civiccore.auth import (
@@ -15,7 +16,8 @@ from civiccore.auth import (
 )
 from fastapi import FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
-from starlette.responses import HTMLResponse
+from starlette.responses import FileResponse, HTMLResponse, Response
+from starlette.staticfiles import StaticFiles
 
 from civiccode import __version__
 from civiccode.citation_contract import build_citation_payload, refusal
@@ -34,7 +36,6 @@ from civiccode.import_connectors import (
     job_to_dict,
     provenance_report,
 )
-from civiccode.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
 from civiccode.operational_readiness import build_operational_readiness
 from civiccode.ordinance_handoff import (
     OrdinanceHandoffError,
@@ -60,6 +61,7 @@ from civiccode.public_lookup import (
     render_search_page,
     render_section_page,
 )
+from civiccode.real_municipal_fixtures import portland_backyard_livestock_payload
 from civiccode.public_exports import (
     build_records_ready_export,
     render_records_ready_export_page,
@@ -127,6 +129,13 @@ app = FastAPI(
     version=__version__,
     summary="Runtime foundation for CivicCode municipal code access workflows.",
 )
+FRONTEND_DIST = Path(__file__).resolve().parent / "frontend_dist"
+if (FRONTEND_DIST / "assets").exists():
+    app.mount(
+        "/civiccode/app/assets",
+        StaticFiles(directory=str(FRONTEND_DIST / "assets")),
+        name="civiccode_frontend_assets",
+    )
 _current_request: ContextVar[Request | None] = ContextVar("current_request", default=None)
 
 SOURCE_STORE = SourceRegistryStore()
@@ -449,11 +458,12 @@ class ImportBundleCreate(BaseModel):
     job_id: str | None = None
     connector_type: str = Field(min_length=1)
     source: SourceCreate
+    sources: list[SourceCreate] = Field(default_factory=list)
     titles: list[TitleCreate] = Field(default_factory=list)
     chapters: list[ChapterCreate] = Field(default_factory=list)
     sections: list[SectionCreate] = Field(default_factory=list)
     versions: list[SectionVersionCreate] = Field(default_factory=list)
-    provenance: dict[str, str] = Field(default_factory=dict)
+    provenance: dict[str, Any] = Field(default_factory=dict)
 
 
 class CodifierSyncConfigureRequest(BaseModel):
@@ -765,6 +775,20 @@ async def public_lookup_home() -> str:
         for question in _get_popular_question_store().public_popular_questions()
     ]
     return render_home_page(questions)
+
+
+@app.get("/civiccode/app")
+@app.get("/civiccode/app/")
+async def civiccode_frontend_app() -> Response:
+    """Serve the React/Vite CivicCode frontend when built."""
+    index_path = FRONTEND_DIST / "index.html"
+    if not index_path.exists():
+        return render_error_page(
+            "Frontend build required",
+            "The CivicCode React app has not been built in this package.",
+            "Run npm install and npm run build before packaging or deploy the package artifact that includes civiccode/frontend_dist.",
+        )
+    return FileResponse(index_path)
 
 
 @app.get("/civiccode/search", response_class=HTMLResponse)
@@ -1914,50 +1938,49 @@ def _get_codifier_sync_store() -> CodifierSyncStore:
 
 
 def _seed_demo_city_if_enabled() -> None:
-    """Populate a deterministic Brookfield demo when CIVICCODE_DEMO_SEED is enabled."""
+    """Populate a bounded Portland Title 13 demo when CIVICCODE_DEMO_SEED is enabled."""
     global _demo_seed_key
     if os.environ.get("CIVICCODE_DEMO_SEED", "").strip().lower() not in {"1", "true", "yes"}:
         return
-    seed_key = f"{_source_store_key()}:brookfield-v1"
+    seed_key = f"{_source_store_key()}:portland-title-13-product-completion"
     if _demo_seed_key == seed_key:
         return
 
-    actor = os.environ.get("CIVICCODE_DEMO_ACTOR", "demo-seed@brookfield.example.gov")
+    actor = os.environ.get("CIVICCODE_DEMO_ACTOR", "demo-seed@portland.example.gov")
     import_store = _get_import_store()
-    for contract in mock_city_codifier_contracts():
-        payload = mock_city_import_payload(contract)
-        for version in payload.get("versions", []):
-            if isinstance(version.get("effective_start"), str):
-                version["effective_start"] = date.fromisoformat(version["effective_start"])
-            if isinstance(version.get("effective_end"), str):
-                version["effective_end"] = date.fromisoformat(version["effective_end"])
-        import_store.run_import(payload, actor=actor)
+    payload = portland_backyard_livestock_payload()
+    for version in payload.get("versions", []):
+        if isinstance(version.get("effective_start"), str):
+            version["effective_start"] = date.fromisoformat(version["effective_start"])
+        if isinstance(version.get("effective_end"), str):
+            version["effective_end"] = date.fromisoformat(version["effective_end"])
+    import_store.run_import(payload, actor=actor)
 
     try:
         SUMMARY_STORE.create_summary(
-            "sec_municode_sample",
+            "sec_portland_13_40_020",
             {
-                "summary_id": "summary_brookfield_chickens",
-                "section_version_id": "version_municode_current",
+                "summary_id": "summary_portland_backyard_livestock",
+                "section_version_id": "version_sec_portland_13_40_020_current",
                 "summary_text": (
-                    "Residents can find the adopted Brookfield chicken-permit "
-                    "rule here, but this summary is not law."
+                    "Portland Title 13 describes when backyard livestock such "
+                    "as small domestic fowl may be kept, but this summary is not law."
                 ),
             },
             actor=actor,
         )
-        SUMMARY_STORE.approve_summary("summary_brookfield_chickens", actor=actor)
+        SUMMARY_STORE.approve_summary("summary_portland_backyard_livestock", actor=actor)
     except PlainLanguageSummaryError:
         pass
 
     try:
         STAFF_NOTE_STORE.create_note(
-            "sec_municode_sample",
+            "sec_portland_13_40_020",
             {
-                "note_id": "note_brookfield_staff_permit_routing",
+                "note_id": "note_portland_staff_livestock_routing",
                 "note_text": (
-                    "Route permit-processing interpretation questions to the "
-                    "Planning counter before publishing resident guidance."
+                    "Route interpretation questions about lot size, agricultural "
+                    "uses, or animal count limits to the responsible code staff."
                 ),
                 "status": "approved",
             },
@@ -1969,17 +1992,17 @@ def _seed_demo_city_if_enabled() -> None:
     try:
         HANDOFF_STORE.create_event(
             {
-                "event_id": "ord_brookfield_2026_041",
-                "external_event_id": "cc_event_2026_041",
+                "event_id": "ord_portland_192002",
+                "external_event_id": "cc_event_portland_192002",
                 "civicclerk_meeting_id": "meeting_2026_04_27",
                 "civicclerk_agenda_item_id": "agenda_14",
-                "ordinance_number": "2026-041",
-                "title": "Ordinance amending backyard chicken permits",
+                "ordinance_number": "192002",
+                "title": "Ordinance updating Title 13 livestock provisions",
                 "status": "adopted",
-                "affected_sections": ["6.12.040"],
-                "source_document_url": "https://brookfield.example.gov/minutes/2026-041.pdf",
-                "source_document_hash": "sha256:brookfield-demo-ordinance-2026-041",
-                "ordinance_text": "An ordinance amending Section 6.12.040.",
+                "affected_sections": ["13.40.020"],
+                "source_document_url": "https://www.portland.gov/code/13/40",
+                "source_document_hash": "sha256:portland-title-13-ordinance-192002",
+                "ordinance_text": "An ordinance updating Title 13 livestock provisions.",
             },
             actor=actor,
         )
@@ -1987,18 +2010,18 @@ def _seed_demo_city_if_enabled() -> None:
         pass
 
     try:
-        citation_payload = _build_citation_for_section("6.12.040")
+        citation_payload = _build_citation_for_section("13.40.020")
         if citation_payload.get("status") == "ok":
             _get_popular_question_store().create(
                 {
-                    "question_id": "popular_brookfield_chickens",
-                    "question_text": "Where do I read the backyard chicken permit rule?",
-                    "section_id": "sec_municode_sample",
-                    "section_number": "6.12.040",
-                    "section_heading": "Backyard chickens",
+                    "question_id": "popular_portland_backyard_livestock",
+                    "question_text": "Where do I read the backyard livestock rule?",
+                    "section_id": "sec_portland_13_40_020",
+                    "section_number": "13.40.020",
+                    "section_heading": "Backyard Livestock",
                     "answer_excerpt": (
-                        "Open Section 6.12.040 for the adopted chicken-permit rule "
-                        "and its official source citation."
+                        "Open Section 13.40.020 for the adopted backyard livestock "
+                        "rule and its official source citation."
                     ),
                     "citation_payload": citation_payload,
                     "status": "approved",

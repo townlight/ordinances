@@ -119,13 +119,14 @@
   <div class="eyebrow">CivicSuite module planning lane</div>
   <h1>CivicCode</h1>
   <p class="lead">Municipal code and ordinance access, designed to answer code questions with exact citations while keeping legal interpretation with city staff.</p>
-  <p class="status">Durable code, discovery, staff-note, plain-language summary, CivicClerk handoff, local import-job, codifier sync-state, and operational retry/replay/cursor runtime online on the Docker/PostgreSQL path, alongside related-section navigation aids, mock-city codifier contracts, staff code lifecycle workspace, staff workbench foundation, staff source registry, records-ready export and accessibility hardening, local import, public lookup, CivicClerk handoff warnings, citation-grounded Q&amp;A, citation contract, search and permalink, database-backed source registry, runtime foundation, and canonical schema foundations - legal determinations, live LLM calls, bundled vendor credentials, CivicAccess runtime dependency, and automatic ordinance codification not available</p>
+  <p class="status">Durable code, discovery, staff-note, plain-language summary, CivicClerk handoff, local import-job, codifier sync-state, and operational retry/replay/cursor runtime online on the Docker/PostgreSQL path, alongside configured Ollama embedding retrieval with PostgreSQL pgvector ranking, local Ollama source-bounded answer support, a React/Vite resident app, related-section navigation aids, mock-city codifier contracts, staff code lifecycle workspace, staff workbench foundation, staff source registry, records-ready export and accessibility hardening, local import, public lookup, CivicClerk handoff warnings, citation-grounded Q&amp;A, citation contract, search and permalink, database-backed source registry, runtime foundation, and canonical schema foundations - legal determinations, bundled vendor credentials, CivicAccess runtime dependency, and automatic ordinance codification not available</p>
 
   <div class="grid">
     <section>
       <h2>What CivicCode does</h2>
       <ul>
         <li>Import authoritative municipal code sources from local fixtures and file drops.</li>
+        <li>Verify source-attributed real municipal code fixtures through the same local import, search, and cited-answer path.</li>
         <li>Preserve section versions and effective dates.</li>
         <li>Export records-ready section packages with citations and source provenance.</li>
         <li>Answer routine code questions with citations.</li>
@@ -155,7 +156,8 @@
         <li>Official source registry API for codifier/source metadata, provenance, source-state checks, and optional persistence through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code>.</li>
         <li>Section/version lifecycle APIs for adopted, historical, and pending text boundaries.</li>
         <li>Durable title, chapter, section, and section-version storage through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code> for Docker/PostgreSQL demos.</li>
-        <li>Public-safe search and stable section permalink APIs.</li>
+        <li>Public-safe search and stable section permalink APIs with configured Ollama embedding retrieval and PostgreSQL pgvector ranking proof.</li>
+        <li>React/Vite resident app at <code>/civiccode/app</code> wired to live search and cited-answer APIs.</li>
         <li>Staff-approved popular questions that link only to cited adopted code.</li>
         <li>Durable popular-question storage through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code> for Docker/PostgreSQL demos.</li>
         <li>Related materials from explicit public cross-references, labeled as navigation aids and not legal determinations.</li>
@@ -174,6 +176,7 @@
         <li>Resident-facing public code lookup surface under <code>/civiccode</code> for the "Read code" workflow.</li>
         <li>Search, empty, legal-advice refusal, stale-source warning, and section detail states.</li>
         <li>Staff-only local import jobs for CSV/file-drop bundles and official HTML extract fixtures.</li>
+        <li>Source-attributed Portland Title 13 fixture proof for two official chapter sources, five adopted sections, local import, public search, and cited-answer behavior.</li>
         <li>Staff import provenance ledger at <code>/staff/imports</code> with access-required, empty, populated, failed-job, and actionable recovery states.</li>
         <li>Durable import job status, counts, provenance, actionable failure details, and completion timestamps through <code>CIVICCODE_SOURCE_REGISTRY_DB_URL</code> for Docker/PostgreSQL demos.</li>
         <li>Import retry, visible failure records, imported-tree verification, and provenance report endpoints.</li>
@@ -188,20 +191,20 @@
         <li>Reusable mock-city codifier contracts for Municode, American Legal Publishing, Code Publishing Company, and General Code.</li>
         <li>Mock-city report reuses CivicCore municipal IdP and backup-retention contracts and writes a secret-free JSON report.</li>
         <li>Records-ready export API and accessible HTML export page for adopted sections.</li>
-        <li>Docker Compose product path with PostgreSQL 17 plus pgvector, migration startup, and City of Brookfield seeded demo data enabled by <code>CIVICCODE_DEMO_SEED=1</code>.</li>
-        <li>Local Docker staff smoke checks trust loopback plus the Docker bridge CIDR for the demo; production deployments should set <code>CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS</code> to their actual staff-shell proxy CIDR list.</li>
+        <li>Docker Compose product path with PostgreSQL 17 plus pgvector, loopback-bound API port, migration startup, and Portland Title 13 seeded demo data enabled by <code>CIVICCODE_DEMO_SEED=1</code>.</li>
+        <li>Local Docker smoke checks public lookup and verifies forged staff headers on the published demo port fail with HTTP 403; shared deployments must use a header-stripping staff-shell proxy and must not trust the Docker bridge CIDR on a published API port.</li>
         <li>Docker/PostgreSQL backup-restore rehearsal with <code>pg_dump</code>, <code>pg_restore</code>, restored-table verification, <code>civiccode-docker-backup-manifest.json</code>, and Windows/Bash launchers.</li>
         <li>Semantic headings, labels, focus styling, and print-friendly export output.</li>
         <li>CivicAccess integration notes without a shipped CivicAccess runtime dependency.</li>
         <li>Pending ordinance language is not adopted law and does not replace codified text.</li>
         <li>Staff context is marked <code>staff_only_do_not_publish</code>; public answers stay <code>citation_grounded</code>.</li>
-        <li>No legal advice, live LLM calls, or automatic ordinance codification yet. Staff notes remain staff-only.</li>
+        <li>No legal advice or automatic ordinance codification. Local Ollama answers are source-bounded, cited, non-authoritative, and staff-review-required.</li>
       </ul>
     </section>
     <section>
       <h2>Release status</h2>
-      <p>CivicCode v0.6.0 is the honest corrective-demotion label after the mistaken 2026-05-21 v1.0.0 publication. CivicCode has a real backend, database migrations, and substantial municipal-code workflow logic, but it is not finished, shipping, city-ready, product-ready, or public-use ready until real AI, real frontend, real municipal data/search proof, installer/run proof, and independent Section 2 audit sign-off are complete. Existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical evidence only.</p>
-      <p>The service is intentionally honest: code-answer behavior is limited to <code>code_answer_behavior</code> <code>citation_grounded</code>; refusals keep <code>not_available</code>.</p>
+      <p>CivicCode v0.6.0 is the honest corrective-demotion label after the mistaken 2026-05-21 v1.0.0 publication. CivicCode has a real backend, database migrations, substantial municipal-code workflow logic, active-branch local AI integration, active-branch React frontend work, real embedding retrieval proof, installed-stack proof, suite module-selection proof, and source-attributed real municipal data fixture proof, but it is not finished, shipping, city-ready, product-ready, or public-use ready until the complete public-use gate evidence and independent Section 2 audit sign-off are complete. Existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical evidence only.</p>
+      <p>The service is intentionally honest: code-answer behavior remains citation-grounded; refusals keep <code>not_available</code>, and local AI answers are marked <code>ai_review_required</code>.</p>
     </section>
   </div>
 </main>

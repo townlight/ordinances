@@ -14,13 +14,31 @@ const scenarios = [
   { name: "public-home-desktop", path: "/civiccode", width: 1440, height: 1000, status: 200, text: ["Read code with citations", "Ready for a search"] },
   { name: "public-home-mobile", path: "/civiccode", width: 390, height: 900, status: 200, text: ["Read code with citations", "What this does not do"] },
   { name: "public-search-empty-mobile", path: "/civiccode/search", width: 390, height: 900, status: 200, text: ["Search query cannot be empty", "Enter a section number"] },
-  { name: "public-search-results-desktop", path: "/civiccode/search?q=backyard%20chickens", width: 1440, height: 1000, status: 200, text: ["Search results for backyard chickens", "Citation-ready results"] },
-  { name: "public-answer-cited-desktop", path: "/civiccode/answer?q=What%20does%20section%206.12.040%20say%3F&section_number=6.12.040", width: 1440, height: 1000, status: 200, text: ["Cited code answer", "Citation", "not a legal determination"] },
-  { name: "public-answer-cited-mobile", path: "/civiccode/answer?q=What%20does%20section%206.12.040%20say%3F&section_number=6.12.040", width: 390, height: 900, status: 200, text: ["Cited code answer", "Open authoritative section text"] },
-  { name: "public-answer-refusal-mobile", path: "/civiccode/search?q=Should%20I%20sue%20my%20neighbor%20over%20chickens%3F", width: 390, height: 900, status: 200, text: ["CivicCode cannot provide legal advice", "contact the City Attorney"] },
-  { name: "public-section-detail-desktop", path: "/civiccode/sections/6.12.040", width: 1440, height: 1000, status: 200, text: ["Authoritative code text", "Records-ready export", "Need an official interpretation"] },
-  { name: "public-section-detail-mobile", path: "/civiccode/sections/6.12.040", width: 390, height: 900, status: 200, text: ["Authoritative code text", "Citation", "Related materials"] },
-  { name: "public-section-export-mobile", path: "/civiccode/sections/6.12.040/export", width: 390, height: 900, status: 200, skipText: "Skip to export content", text: ["CivicCode records-ready export", "Source provenance", "Legal boundary"] },
+  { name: "public-search-results-desktop", path: "/civiccode/search?q=roosters", width: 1440, height: 1000, status: 200, text: ["Search results for roosters", "Citation-ready results"] },
+  { name: "public-answer-cited-desktop", path: "/civiccode/answer?q=What%20does%20section%2013.40.020%20say%3F&section_number=13.40.020", width: 1440, height: 1000, status: 200, text: ["Cited code answer", "Citation", "not a legal determination"] },
+  { name: "public-answer-cited-mobile", path: "/civiccode/answer?q=What%20does%20section%2013.40.020%20say%3F&section_number=13.40.020", width: 390, height: 900, status: 200, text: ["Cited code answer", "Open authoritative section text"] },
+  { name: "public-answer-refusal-mobile", path: "/civiccode/search?q=Should%20I%20sue%20my%20neighbor%20over%20roosters%3F", width: 390, height: 900, status: 200, text: ["CivicCode cannot provide legal advice", "contact the City Attorney"] },
+  { name: "public-section-detail-desktop", path: "/civiccode/sections/13.40.020", width: 1440, height: 1000, status: 200, text: ["Authoritative code text", "Records-ready export", "Need an official interpretation"] },
+  { name: "public-section-detail-mobile", path: "/civiccode/sections/13.40.020", width: 390, height: 900, status: 200, text: ["Authoritative code text", "Citation", "Related materials"] },
+  { name: "public-section-export-mobile", path: "/civiccode/sections/13.40.020/export", width: 390, height: 900, status: 200, skipText: "Skip to export content", text: ["CivicCode records-ready export", "Source provenance", "Legal boundary"] },
+  {
+    name: "react-app-api-search-answer-desktop",
+    path: "/civiccode/app",
+    width: 1440,
+    height: 1000,
+    status: 200,
+    appActions: true,
+    text: ["Read municipal code", "Search", "Answer"],
+  },
+  {
+    name: "react-app-empty-error-mobile",
+    path: "/civiccode/app",
+    width: 390,
+    height: 900,
+    status: 200,
+    appEmptyState: true,
+    text: ["Read municipal code", "Search", "Answer"],
+  },
 ];
 
 main().catch((error) => {
@@ -107,7 +125,30 @@ async function runScenario(browser, baseUrl, scenario) {
     page.on("pageerror", (error) => {
       pageErrors.push(error.message);
     });
+    const apiResponses = [];
+    page.on("response", (response) => {
+      const url = response.url();
+      if (url.includes("/api/v1/civiccode/search") || url.includes("/api/v1/civiccode/questions/answer")) {
+        apiResponses.push({ url, status: response.status() });
+      }
+    });
     const response = await page.goto(`${baseUrl}${scenario.path}`, { waitUntil: "networkidle" });
+    if (scenario.appActions) {
+      await Promise.all([
+        page.waitForResponse((item) => item.url().includes("/api/v1/civiccode/search")),
+        page.getByRole("button", { name: "Search" }).first().click(),
+      ]);
+      await Promise.all([
+        page.waitForResponse((item) => item.url().includes("/api/v1/civiccode/questions/answer")),
+        page.getByRole("button", { name: "Answer" }).first().click(),
+      ]);
+      await page.getByText("Up to four chickens, ducks, pigeons").waitFor();
+    }
+    if (scenario.appEmptyState) {
+      await page.getByLabel("Question or section").fill("   ");
+      await page.getByRole("button", { name: "Search" }).first().click();
+      await page.getByText("Enter a section number or plain-language term before searching.").waitFor();
+    }
     const status = response?.status();
     const evidence = await page.evaluate((expectedText) => {
       const bodyText = document.body.textContent || "";
@@ -129,10 +170,11 @@ async function runScenario(browser, baseUrl, scenario) {
       evidence.skip === 1 &&
       evidence.textPresent &&
       !evidence.horizontalOverflow &&
-      firstFocus.includes(skipText) &&
+      (scenario.appActions || scenario.appEmptyState || firstFocus.includes(skipText)) &&
+      (!scenario.appActions || apiResponses.length >= 2) &&
       consoleErrors.length === 0 &&
       pageErrors.length === 0;
-    return { scenario: scenario.name, status, firstFocus, ...evidence, consoleErrors, pageErrors, passed };
+    return { scenario: scenario.name, status, firstFocus, apiResponses, ...evidence, consoleErrors, pageErrors, passed };
   } finally {
     await context.close();
   }
@@ -148,6 +190,7 @@ function printRows(rows) {
       text: row.textPresent,
       overflow: row.horizontalOverflow,
       focus: row.firstFocus,
+      api: row.apiResponses?.length || 0,
       console: row.consoleErrors.length,
       pageErrors: row.pageErrors.length,
       passed: row.passed,

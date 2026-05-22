@@ -7,6 +7,7 @@ from datetime import date
 import re
 from typing import Any, Callable
 
+from civiccode.ai_answer import CivicCodeAIError, generate_local_llm_answer
 from civiccode.citation_contract import refusal
 
 
@@ -80,6 +81,8 @@ def build_grounded_answer(
     *,
     search: Callable[[str], dict[str, Any]],
     build_citation: Callable[[str, date | None], dict[str, Any]],
+    use_local_llm: bool = True,
+    generate_answer: Callable[..., dict[str, Any]] = generate_local_llm_answer,
 ) -> dict[str, Any]:
     """Answer only when one adopted section and citation can ground the response."""
     if looks_like_legal_determination(context.question):
@@ -99,24 +102,47 @@ def build_grounded_answer(
         return citation_payload
 
     citation = citation_payload["citation"]
-    answer = (
+    deterministic_answer = (
         "The cited section says: "
         f"{citation['body_text']} "
         f"Source: {citation['citation_text']}. "
         "This is not a legal determination."
     )
-    return {
+    payload = {
         "status": "ok",
         "question": context.question,
         "matched_section_number": section_number,
-        "answer": answer,
+        "answer": deterministic_answer,
         "citations": [citation],
         "classification": "information_not_determination",
         "legal_determination": "not_provided",
         "code_answer_behavior": "citation_grounded",
-        "llm_provider": "not_used",
+        "llm_provider": "not_configured",
+        "ai_review_required": False,
+        "ai_authority": "deterministic_citation_extract",
         "review_note": "City staff remain responsible for legal interpretations and determinations.",
     }
+    if not use_local_llm:
+        payload["llm_provider"] = "not_requested"
+        return payload
+    try:
+        ai_payload = generate_answer(question=context.question, citation=citation)
+    except CivicCodeAIError as exc:
+        payload["llm_error"] = {
+            "message": str(exc),
+            "fix": (
+                "Start the local Ollama runtime, pull the configured model, or retry "
+                "with deterministic citation extraction while staff review the source."
+            ),
+        }
+        return payload
+
+    payload.update(ai_payload)
+    payload["answer"] = (
+        f"{ai_payload['answer']} Source: {citation['citation_text']}. "
+        "This is not a legal determination."
+    )
+    return payload
 
 
 def _search_code_results(

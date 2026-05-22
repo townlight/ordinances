@@ -26,7 +26,7 @@ code administrators. `/staff/code` gives staff a single lifecycle review page
 for current adopted versions, source readiness, draft summaries, staff note
 counts, and pending CivicClerk codification warnings. The Docker Compose path
 starts PostgreSQL 17 with pgvector, runs migrations, serves the API, enables a
-City of Brookfield seeded demo with `CIVICCODE_DEMO_SEED=1`, and includes a
+Portland Title 13 seeded demo with `CIVICCODE_DEMO_SEED=1`, and includes a
 Docker/PostgreSQL backup-restore rehearsal for IT staff to prove `pg_dump` and
 `pg_restore` before trusting a shared environment.
 
@@ -63,6 +63,8 @@ Current truth:
   actionable errors instead of being treated as settled law,
 - public-safe search can find adopted section text and related public material
   references,
+- when a city operator enables local Ollama embeddings, CivicCode persists
+  learned vectors and uses PostgreSQL pgvector ranking for semantic search,
 - staff can approve popular questions that link only to cited adopted code,
 - popular questions and related materials are labeled as navigation aids, not
   legal determinations,
@@ -101,6 +103,8 @@ Current truth:
 - pending ordinance language is not adopted law and does not replace codified
   text,
 - staff can run local CSV/file-drop bundle and official HTML extract imports,
+- the bundled Portland Title 13 evidence corpus imports two official chapter
+  sources and five adopted sections with package-local source artifacts,
 - failed imports remain visible with an actionable fix and can be retried with
   corrected local bundles,
 - local import job ledgers persist status, counts, provenance, actionable
@@ -135,8 +139,10 @@ Current truth:
   and receive a cited, non-determination answer,
 - staff can mark CivicClerk handoffs codified after creating the current
   adopted section version, which removes stale-code warnings for that handoff,
-- no live LLM calls, bundled vendor credentials, automatic ordinance
-  codification, or legal determinations are generated yet.
+- no bundled vendor credentials, automatic ordinance codification, or legal
+  determinations are generated. Local Ollama answers are available only when
+  explicitly configured and remain cited, non-authoritative, and
+  staff-review-required.
 
 For a non-technical user, the first public "Read code" workflow is now available: open
 `/civiccode`, enter a section number or phrase, review search results, open a
@@ -147,10 +153,11 @@ back to staff.
 
 ## For IT and technical staff
 
-This repo currently contains the v1.0.0 staff operations surfaces,
-CivicCore v1 contracts, durable import/codifier sync state, and
-documentation and verification gates. Runtime implementation must follow the
-CivicSuite pattern:
+This repo currently contains active-branch staff operations surfaces, CivicCore
+v1 contracts, durable import/codifier sync state, and documentation and
+verification gates. CivicCode remains at v0.6.0 until the independent
+public-use release audit clears a future v1.0.0 tag. Runtime implementation
+must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
 - published `civiccore v1.1.0` release-wheel dependency,
@@ -174,9 +181,9 @@ docker compose up --build
 ```
 
 With the default `CIVICCODE_DEMO_SEED=1`, a first-time evaluator can open
-`http://127.0.0.1:8000/civiccode`, search for `6.12.040`, read seeded City of
-Brookfield code text, see the non-authoritative summary warning, and review the
-staff code workspace at `/staff/code` through trusted staff headers. The default
+`http://127.0.0.1:8000/civiccode`, search for `13.40.020`, read seeded
+Portland Title 13 code text, and see the non-authoritative summary warning. The
+Compose file binds the published API port to loopback only. The default
 database password in `docker.env.example` is for local demo use only; change it
 before a shared environment. Smoke the running stack with:
 
@@ -187,11 +194,11 @@ bash scripts/docker-demo-smoke.sh
 Rehearse Docker/PostgreSQL backup and restore after the stack is running:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1 -Strict
+powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1
 ```
 
 ```bash
-bash scripts/start_docker_backup_restore_rehearsal.sh --strict
+bash scripts/start_docker_backup_restore_rehearsal.sh
 ```
 
 The rehearsal is intentionally non-destructive: it dumps the `civiccode`
@@ -199,8 +206,8 @@ database from the Compose `postgres` service, restores into a temporary
 `civiccode_restore_*` database, verifies restored application tables, writes
 `.docker-backup-restore-rehearsal/<run-id>/backup/civiccode-docker-backup-manifest.json`,
 and drops the temporary restore database unless instructed otherwise. Both launchers
-call `scripts/check_docker_backup_restore_rehearsal.py`, which can also be run
-directly with `--print-only` to review the plan without touching Docker. If it
+call `scripts/check_docker_backup_restore_rehearsal.py` in strict mode by default,
+which can also be run directly with `--print-only` to review the plan without touching Docker. If it
 fails, confirm Docker Desktop is running, start the stack with `docker compose
 up -d`, inspect `docker compose logs postgres api`, and rerun with a new run id.
 
@@ -340,11 +347,15 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/questions/answer \
   -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
 ```
 
-Code-answer behavior is limited to citation-grounded responses. The Q&A harness returns an answer only when it can attach one deterministic
-citation to adopted code text. It refuses legal determinations, uncited
-questions, missing sections, stale sources, and contradictory effective-date
-windows with a reason and fix path. It sets `llm_provider=not_used` because
-Milestone 7 is a deterministic harness, not a live LLM integration.
+Code-answer behavior is limited to citation-grounded responses. The Q&A harness
+returns an answer only when it can attach one deterministic citation to adopted
+code text. It refuses legal determinations, uncited questions, missing sections,
+stale sources, and contradictory effective-date windows with a reason and fix
+path. When local Ollama is configured with `CIVICCODE_AI_MODE=ollama`,
+`CIVICCODE_OLLAMA_URL`, and `CIVICCODE_OLLAMA_MODEL`, CivicCode sends only the
+retrieved cited section text to the local model and marks the response
+`ai_review_required=true`. Without that local runtime, it returns the
+deterministic cited extract with `llm_provider=not_configured`.
 
 Create a staff-only interpretation note:
 
@@ -371,15 +382,13 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
 
 Staff endpoints require `X-CivicCode-Role: staff` and `X-CivicCode-Actor` from
 a trusted proxy source. Local mock runs allow loopback (`127.0.0.1/32` and
-`::1/128`) by default; shared environments should set
-`CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` to the reverse proxy CIDR list and strip
-client-supplied staff headers before CivicCode sees the request. Staff Q&A
-context is explicitly marked `staff_only_do_not_publish`. Public lookup, public
-search, and public Q&A responses must not expose staff note text or staff note
-counts.
-The local Docker Compose demo sets the Docker bridge CIDR (`172.16.0.0/12`) for
-the seeded smoke test. Production deployments should replace that with the
-actual trusted proxy CIDR list for their staff shell.
+`::1/128`) by default. Shared environments must keep CivicCode behind a
+header-stripping reverse proxy, set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only
+to that reverse proxy CIDR list, and strip client-supplied staff headers before
+CivicCode sees the request. Do not trust the Docker bridge CIDR on a published
+API port. Staff Q&A context is explicitly marked `staff_only_do_not_publish`.
+Public lookup, public search, and public Q&A responses must not expose staff
+note text or staff note counts.
 
 Draft and approve a plain-language summary:
 

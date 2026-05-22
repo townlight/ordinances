@@ -1,0 +1,608 @@
+{
+  "route_count": 55,
+  "routes": [
+    {
+      "path": "/health",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "health",
+      "audience": "operator",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "root",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/chapters",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_chapter",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/citations/build",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "build_citation",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/popular-questions",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_popular_questions",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/questions/answer",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "answer_question",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/search",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "search_sections",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_section",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/lookup",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "lookup_section",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/resolve",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resolve_section",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_id}/history",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "section_history",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_id}/permalink",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "section_permalink",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_id}/summaries",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_public_plain_language_summaries",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_id}/versions",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_section_version",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_number}/related",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "related_materials",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sections/{section_ref}/export",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "export_section",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_public_sources",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sources",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_source",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sources/catalog",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "source_registry_catalog",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sources/{source_id}",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_public_source",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/sources/{source_id}/transitions",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "transition_source",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/titles",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_title",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/civiccode",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "public_lookup_home",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/answer",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "public_lookup_answer",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/app",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "civiccode_frontend_app",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/app/",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "civiccode_frontend_app",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/app/assets",
+      "methods": [],
+      "endpoint": "civiccode_frontend_assets",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/search",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "public_lookup_search",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/sections/{section_ref}",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "public_section_detail",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/civiccode/sections/{section_ref}/export",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "public_section_export",
+      "audience": "public",
+      "auth_requirement": "none",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/audit-events",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_staff_audit_events",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_civicclerk_ordinance_event",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/civicclerk/ordinance-events/{event_id}/resolve",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "resolve_civicclerk_ordinance_event",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_import_jobs",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports/local-bundle",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_local_import_job",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports/{job_id}",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_import_job",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports/{job_id}/provenance",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_import_provenance",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports/{job_id}/retry",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "retry_import_job",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/imports/{job_id}/tree",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_imported_tree",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/operational-state",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_staff_operational_state",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/popular-questions",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_popular_question",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/questions/answer",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "answer_staff_question",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sections/{section_id}/notes",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_interpretation_notes",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sections/{section_id}/notes",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_interpretation_note",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sections/{section_id}/summaries",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "create_plain_language_summary",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_staff_sources",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sources/{source_id}",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "get_staff_source",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/summaries/{summary_id}/approve",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "approve_plain_language_summary",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sync/codifier-sources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "list_codifier_sync_sources",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sync/codifier-sources",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "configure_codifier_sync_source",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/api/v1/civiccode/staff/sync/codifier-sources/{source_id}/run",
+      "methods": [
+        "POST"
+      ],
+      "endpoint": "run_codifier_sync_source",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "api/integration coverage required",
+      "state_coverage": "API state coverage required"
+    },
+    {
+      "path": "/staff/code",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "staff_code_workspace",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/staff/imports",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "staff_import_ledger",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/staff/sources",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "staff_source_workspace",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    },
+    {
+      "path": "/staff/sync",
+      "methods": [
+        "GET"
+      ],
+      "endpoint": "staff_sync_workspace",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
+      "desktop_mobile_qa_status": "covered by current browser harness",
+      "state_coverage": "loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses"
+    }
+  ]
+}

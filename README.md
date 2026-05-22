@@ -39,7 +39,7 @@ provenance and actionable failure records, durable codifier sync source
 configuration, run cursors, circuit state, delta-plan history, and durable
 operational retry queue, replay, and delta-cursor records,
 and a Docker Compose product path that starts PostgreSQL 17 with pgvector, runs
-migrations, serves the FastAPI app, can seed a City of Brookfield demo with
+migrations, serves the FastAPI app, can seed a Portland Title 13 demo with
 `CIVICCODE_DEMO_SEED=1`, and can rehearse a Docker/PostgreSQL backup-restore
 with `pg_dump`, `pg_restore`, restored-table verification, and a checksum
 manifest.
@@ -49,25 +49,34 @@ plain-language summaries, follow staff-approved popular questions and related
 materials as navigation aids, and see pending-codification warnings when
 CivicClerk handoffs may affect a section.
 
-This is deliberately not a legal-advice product and not a live-LLM product yet.
+This is deliberately not a legal-advice product. The active completion work now includes
+local Ollama support for source-bounded answers when configured with
+`CIVICCODE_AI_MODE=ollama`; AI output is cited, non-authoritative, and marked
+staff-review-required. Deterministic citation extraction remains the fallback
+when local Ollama is not configured.
 The staff-controlled codifier sync foundation can validate schedules and
 source hosts, persist host-validation results, plan delta requests, run
 already-fetched local payloads through the import path, and show CivicCore
 circuit-breaker health plus the shared source-list health projection. It does not bundle
-vendor credentials, make legal determinations, call live LLMs, replace the
-official codifier, or automatically codify ordinances. There is no CivicAccess
+vendor credentials, make legal determinations, call live LLMs unless a city
+operator explicitly configures local Ollama, replace the official codifier, or
+automatically codify ordinances. There is no CivicAccess
 runtime dependency in this repo yet.
 Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
 The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
-real backend, database migrations, and substantial municipal-code workflow
-logic, but the prior `v1.0.0` release was published in error. CivicCode is not
-finished, shipping, city-ready, product-ready, or public-use ready until real AI,
-real frontend, real municipal data/search proof, installer/run proof, and an
-independent Section 2 audit are complete. The existing v0.1.17, v0.1.18, v0.5.0,
-and mistaken v1.0.0 releases are historical evidence only.
+real backend, database migrations, substantial municipal-code workflow logic,
+active-branch local AI integration, active-branch React frontend work, real
+Ollama embedding retrieval with PostgreSQL pgvector runtime proof,
+installed-stack, suite module-selection, and source-attributed Portland Title
+13 municipal data fixture proof, but the prior `v1.0.0` release was
+published in error. CivicCode is not finished, shipping, city-ready,
+product-ready, or public-use ready until complete public-use gate evidence and
+an independent Section 2 audit are complete. The
+existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical
+evidence only.
 
 - install and import the package,
 - expose health/root endpoints for IT smoke checks,
@@ -94,7 +103,8 @@ and mistaken v1.0.0 releases are historical evidence only.
 - refuse ambiguous overlapping dates and pending ordinance language with an
   actionable fix path,
 - search public-visible adopted section text and related public material
-  references,
+  references, and use configured Ollama embeddings plus PostgreSQL pgvector for
+  semantic retrieval when the operator enables that runtime,
 - publish staff-approved popular questions that link only to cited adopted code,
 - persist staff-approved popular questions with `CIVICCODE_SOURCE_REGISTRY_DB_URL`
   so the Docker/PostgreSQL product path keeps resident discovery aids after
@@ -143,12 +153,17 @@ and mistaken v1.0.0 releases are historical evidence only.
 - warn affected section lookups when a handoff may make the codified text stale,
 - detect likely conflicts when ordinance text references affected sections,
 - render a resident-facing public code lookup surface under `/civiccode`,
+- serve the React/Vite resident app under `/civiccode/app` with live API search
+  and answer calls,
 - render a resident-facing cited-answer page under `/civiccode/answer` when one
   adopted section and exact citation ground the response,
 - show accessible search success, empty, refusal, stale-source, and section
   detail states,
 - import local CSV/file-drop bundles and official HTML extract fixtures through
   staff-only endpoints,
+- prove that import/search/cited-answer path against a source-attributed
+  Portland municipal code fixture without treating that fixture as a full city
+  corpus,
 - record import jobs with success or actionable failure states,
 - persist import job status, counts, provenance, failure details, and completion
   timestamps with `CIVICCODE_SOURCE_REGISTRY_DB_URL` so staff can inspect
@@ -188,7 +203,7 @@ and mistaken v1.0.0 releases are historical evidence only.
   CivicCode mock-city environment report,
 - write a secret-free mock-city environment JSON report with planned delta URLs,
 - run `docker compose up --build` against PostgreSQL 17 with pgvector,
-  migrations, source-registry persistence, and City of Brookfield demo data
+  migrations, source-registry persistence, and Portland Title 13 demo data
   enabled by `CIVICCODE_DEMO_SEED=1`,
 - smoke the Docker demo with `scripts/docker-demo-smoke.sh`,
 - rehearse the Docker/PostgreSQL backup and restore path with
@@ -260,15 +275,15 @@ docker compose up --build
 ```
 
 Expected Docker truth today: Compose starts PostgreSQL 17 with pgvector and the
-CivicCode API, runs CivicCore then CivicCode migrations before serving traffic,
+CivicCode API bound to `127.0.0.1:${CIVICCODE_PORT:-8000}` for local operator
+evaluation, runs CivicCore then CivicCode migrations before serving traffic,
 persists source registry, section lifecycle, popular-question, staff-note,
 plain-language summary, CivicClerk handoff, handoff audit, import job, codifier sync, and operational state records through
 `CIVICCODE_SOURCE_REGISTRY_DB_URL`, and
-seeds the City of Brookfield demo when `CIVICCODE_DEMO_SEED=1`. Open
-`http://127.0.0.1:8000/civiccode`, search for `6.12.040`, or open
-`/staff/code` through the trusted staff shell headers to review the seeded
-staff workspace. The default Compose password is local-demo only; change it in
-`.env` before any shared environment.
+seeds the Portland Title 13 demo when `CIVICCODE_DEMO_SEED=1`. Open
+`http://127.0.0.1:8000/civiccode` and search for `13.40.020` to review the
+seeded public lookup path. The default Compose password is local-demo only;
+change it in `.env` before any shared environment.
 
 Docker demo smoke:
 
@@ -276,14 +291,18 @@ Docker demo smoke:
 bash scripts/docker-demo-smoke.sh
 ```
 
+The smoke test verifies public lookup behavior and confirms that forged
+`X-CivicCode-*` staff headers sent through the published demo port receive HTTP
+403. It does not publish or certify a staff shell.
+
 Docker/PostgreSQL backup-restore rehearsal:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1 -Strict
+powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1
 ```
 
 ```bash
-bash scripts/start_docker_backup_restore_rehearsal.sh --strict
+bash scripts/start_docker_backup_restore_rehearsal.sh
 ```
 
 The rehearsal expects the Compose stack to be running. It writes a
@@ -293,8 +312,8 @@ application tables, writes
 `backup/civiccode-docker-backup-manifest.json` with a SHA-256 checksum, and
 drops the temporary restore database unless `--keep-restore-database` is used.
 Both launchers call `scripts/check_docker_backup_restore_rehearsal.py`, which
-can also be run directly with `--print-only` to review the plan without touching
-Docker.
+now runs in strict mode by default and can also be run directly with
+`--print-only` to review the plan without touching Docker.
 If it fails, confirm Docker Desktop is running, start the stack with
 `docker compose up -d`, inspect `docker compose logs postgres api`, and rerun
 with a fresh run id.
@@ -385,11 +404,15 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/questions/answer \
 ```
 
 Expected Q&A truth today: successful answers quote adopted section text, include
-one citation object, set `classification=information_not_determination`, set
-`llm_provider=not_used`, and state that the answer is not a legal
-determination. Code-answer behavior is limited to `citation_grounded` responses.
-Legal-advice, uncited, stale, missing, ambiguous, or
-contradictory requests return structured refusals.
+one citation object, set `classification=information_not_determination`, and
+state that the answer is not a legal determination. Without local Ollama
+configuration the response sets `llm_provider=not_configured` and returns the
+deterministic cited extract. With `CIVICCODE_AI_MODE=ollama`,
+`CIVICCODE_OLLAMA_URL`, and `CIVICCODE_OLLAMA_MODEL`, CivicCode calls the local
+Ollama `/api/generate` endpoint with only the retrieved cited section text and
+marks the answer `ai_review_required=true`. Code-answer behavior remains
+limited to cited adopted text. Legal-advice, uncited, stale, missing,
+ambiguous, or contradictory requests return structured refusals.
 
 Staff workbench smoke:
 
@@ -410,15 +433,12 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
 Expected staff-workbench truth today: staff endpoints require
 `X-CivicCode-Role: staff` and `X-CivicCode-Actor` from a trusted proxy source.
 Local mock runs allow loopback (`127.0.0.1/32` and `::1/128`) by default; shared
-environments should set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` to the reverse
-proxy CIDR list and strip client-supplied staff headers before CivicCode sees
-the request. Staff interpretation notes are returned only to staff endpoints,
+environments must keep the API behind a header-stripping reverse proxy, set
+`CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse proxy CIDR list, and
+strip client-supplied staff headers before CivicCode sees the request. Do not
+trust the Docker bridge CIDR on a published API port. Staff interpretation notes are returned only to staff endpoints,
 staff Q&A adds `staff_context` with `staff_only_do_not_publish`, and public
 lookup, search, and Q&A never expose staff notes or staff note counts.
-The local Docker Compose demo also trusts the Docker bridge CIDR
-(`172.16.0.0/12`) so `scripts/docker-demo-smoke.sh` can verify the seeded staff
-workspace without weakening the production instruction to set an explicit
-trusted reverse-proxy CIDR.
 
 Plain-language summary smoke:
 

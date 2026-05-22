@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import importlib
+import json
 from pathlib import Path
+from threading import Thread
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import urllib.error
+import urllib.request
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -119,7 +124,8 @@ async def test_question_answer_returns_cited_extract_for_explicit_section(
     assert payload["status"] == "ok"
     assert payload["classification"] == "information_not_determination"
     assert payload["code_answer_behavior"] == "citation_grounded"
-    assert payload["llm_provider"] == "not_used"
+    assert payload["llm_provider"] == "not_configured"
+    assert payload["ai_authority"] == "deterministic_citation_extract"
     assert "Residents may keep up to six backyard chickens" in payload["answer"]
     assert "This is not a legal determination" in payload["answer"]
     assert len(payload["citations"]) == 1
@@ -128,6 +134,122 @@ async def test_question_answer_returns_cited_extract_for_explicit_section(
     assert citation["version_id"] == "v_chickens_current"
     assert citation["source_id"] == "municode_active"
     assert citation["effective_start"] == "2026-01-01"
+
+
+@pytest.mark.asyncio
+async def test_question_answer_uses_local_ollama_when_configured(
+    client: AsyncClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    await seed_qa_fixture(client)
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_POST(self) -> None:  # noqa: N802
+            length = int(self.headers["Content-Length"])
+            body = json.loads(self.rfile.read(length).decode("utf-8"))
+            assert body["model"] == "civiccode-test-model"
+            assert "6.12.040" in body["prompt"]
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(
+                json.dumps(
+                    {
+                        "response": (
+                            "Section 6.12.040 says residents may keep backyard "
+                            "chickens with the cited permit conditions."
+                        )
+                    }
+                ).encode("utf-8")
+            )
+
+        def log_message(self, format: str, *args: object) -> None:  # noqa: A002
+            return
+
+    server = HTTPServer(("127.0.0.1", 0), Handler)
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_MODEL", "civiccode-test-model")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_URL", f"http://127.0.0.1:{server.server_port}")
+    try:
+        response = await client.post(
+            "/api/v1/civiccode/questions/answer",
+            json={
+                "question": "What does section 6.12.040 say about backyard chickens?",
+                "section_number": "6.12.040",
+            },
+        )
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["llm_provider"] == "ollama"
+    assert payload["llm_model"] == "civiccode-test-model"
+    assert payload["ai_review_required"] is True
+    assert payload["ai_authority"] == "non_authoritative_staff_review_required"
+    assert "Source:" in payload["answer"]
+
+
+def _ollama_generate_available() -> bool:
+    body = json.dumps(
+        {
+            "model": "gemma3:12b",
+            "prompt": "Reply with exactly: ok",
+            "stream": False,
+            "options": {"temperature": 0},
+        }
+    ).encode("utf-8")
+    request = urllib.request.Request(
+        "http://127.0.0.1:11434/api/generate",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=90) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+    except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        return False
+    return bool(str(payload.get("response", "")).strip())
+
+
+@pytest.mark.skipif(
+    not _ollama_generate_available(),
+    reason="gemma3:12b is not available from local Ollama",
+)
+@pytest.mark.asyncio
+async def test_question_answer_exercises_real_local_ollama_model(
+    client: AsyncClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_MODEL", "gemma3:12b")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_URL", "http://127.0.0.1:11434")
+    monkeypatch.setenv("CIVICCODE_OLLAMA_TIMEOUT_SECONDS", "120")
+    await seed_qa_fixture(client)
+
+    response = await client.post(
+        "/api/v1/civiccode/questions/answer",
+        json={
+            "question": "What does section 6.12.040 say about backyard chickens?",
+            "section_number": "6.12.040",
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "ok"
+    assert payload["llm_provider"] == "ollama"
+    assert payload["llm_model"] == "gemma3:12b"
+    assert payload["ai_review_required"] is True
+    assert payload["ai_authority"] == "non_authoritative_staff_review_required"
+    assert payload["matched_section_number"] == "6.12.040"
+    assert "Source:" in payload["answer"]
+    assert "This is not a legal determination" in payload["answer"]
 
 
 @pytest.mark.asyncio

@@ -63,8 +63,12 @@ PY
 echo "==> Product test suite"
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
-echo "==> Release-provenance tooling tests against published CivicCore"
-${PYTHON_BIN} - <<'PY'
+if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
+  echo "==> Release-provenance tooling tests against published CivicCore"
+  echo "SKIP: isolated provenance test already ran in this CI job"
+else
+  echo "==> Release-provenance tooling tests against published CivicCore"
+  ${PYTHON_BIN} - <<'PY'
 from __future__ import annotations
 
 import shutil
@@ -110,6 +114,7 @@ try:
 finally:
     shutil.rmtree(temp_dir, ignore_errors=True)
 PY
+fi
 
 echo "==> Documentation gate"
 bash scripts/verify-docs.sh
@@ -119,6 +124,16 @@ ${PYTHON_BIN} scripts/check-civiccore-placeholder-imports.py
 
 echo "==> Ruff"
 ${PYTHON_BIN} -m ruff check .
+
+echo "==> React frontend build"
+if command -v npm >/dev/null 2>&1; then
+  npm ci
+  npm run typecheck
+  npm run build
+else
+  echo "FAIL: npm not found. Install Node.js to typecheck and build the CivicCode React frontend." >&2
+  exit 1
+fi
 
 echo "==> Public browser QA"
 if command -v node >/dev/null 2>&1; then
