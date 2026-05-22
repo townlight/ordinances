@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 from civiccode import semantic_search
-from civiccode.shared_ingestion import _extract_sections, _async_db_url
+from types import SimpleNamespace
+
+import pytest
+
+from civiccode.shared_ingestion import (
+    SharedIngestionError,
+    _dedupe_overlapping_chunk_text,
+    _extract_sections,
+    _validate_pdf_path,
+    _async_db_url,
+)
 
 
 def test_longmont_section_extractor_structures_sections_from_pdf_text() -> None:
@@ -65,3 +75,34 @@ def test_semantic_search_delegates_embeddings_to_civiccore(monkeypatch) -> None:
             "batch_size": 8,
         }
     ]
+
+
+def test_shared_pdf_path_must_stay_inside_allowlisted_corpus(tmp_path, monkeypatch) -> None:
+    allowed = tmp_path / "allowed"
+    outside = tmp_path / "outside"
+    allowed.mkdir()
+    outside.mkdir()
+    good_pdf = allowed / "code.pdf"
+    bad_pdf = outside / "code.pdf"
+    good_pdf.write_text("allowed", encoding="utf-8")
+    bad_pdf.write_text("outside", encoding="utf-8")
+    monkeypatch.setenv("CIVICCODE_SHARED_INGEST_ALLOWED_DIR", str(allowed))
+
+    assert _validate_pdf_path(good_pdf) == good_pdf.resolve()
+    with pytest.raises(SharedIngestionError) as exc:
+        _validate_pdf_path(bad_pdf)
+
+    assert exc.value.status_code == 403
+    assert "outside the allowed CivicCode corpus" in exc.value.message
+
+
+def test_chunk_text_reconstruction_removes_overlap_duplication() -> None:
+    chunks = [
+        SimpleNamespace(page_number=1, chunk_index=0, content_text="Sec. 1.01.010. Purpose. Alpha beta gamma."),
+        SimpleNamespace(page_number=1, chunk_index=1, content_text="Alpha beta gamma. Sec. 1.01.020. Scope. Delta."),
+    ]
+
+    merged = _dedupe_overlapping_chunk_text(chunks)
+
+    assert merged.count("Alpha beta gamma.") == 1
+    assert "Sec. 1.01.020. Scope." in merged

@@ -160,7 +160,7 @@ public-use release audit clears a future v1.0.0 tag. Runtime implementation
 must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- audited CivicCore shared-ingestion dependency
+- CivicCore shared-ingestion dependency
   `80799976d1b50a76f549400afebeb994b935ff0c`,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,

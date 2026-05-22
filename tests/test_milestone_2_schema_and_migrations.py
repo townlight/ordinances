@@ -456,7 +456,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             )
 
         assert civiccore_revision == "civiccore_0002_llm"
-        assert civiccode_revision == "civiccode_0011_semantic_search"
+        assert civiccode_revision == "civiccode_0012_drop_local_search"
         assert civiccode_tables == set(CANONICAL_TABLES) | {
             "source_registry_records",
             "popular_question_records",
@@ -474,7 +474,6 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             "codifier_sync_source_records",
             "codifier_sync_delta_plan_records",
             "operational_state_records",
-            "section_search_embeddings",
         }
     finally:
         subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)

@@ -16,13 +16,13 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-      - name: Install audited CivicCore shared-ingestion dependency
+      - name: Install CivicCore shared-ingestion dependency
         run: python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
-      - name: Run product tests against audited CivicCore shared-ingestion dependency
+      - name: Run product tests against CivicCore shared-ingestion dependency
         run: python -m pytest --ignore=tests/test_release_provenance_gate.py
-      - name: Run release-provenance tooling tests against audited CivicCore shared-ingestion dependency
+      - name: Run release-provenance tooling tests against CivicCore shared-ingestion dependency
         run: |
           python -m pip install --force-reinstall "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
           python -m pytest tests/test_release_provenance_gate.py

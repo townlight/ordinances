@@ -18,7 +18,7 @@ plain-language summaries, staff workbench, citation-grounded Q&A, citation
 contract, search and permalink, section/version, source registry, runtime
 foundation, and canonical schema foundations: an
 installable Python package, a FastAPI app shell, `/` and `/health` endpoints,
-an audited CivicCore shared-ingestion dependency, canonical SQLAlchemy table
+a CivicCore shared-ingestion dependency, canonical SQLAlchemy table
 metadata, Alembic migrations under the `civiccode` schema, source registry APIs,
 optional database-backed source registry persistence, staff-header-protected
 source registry mutations and staff source reads, staff source registry
@@ -215,7 +215,7 @@ evidence only.
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the audited CivicCore shared-ingestion commit
+- consume the CivicCore shared-ingestion commit
   `80799976d1b50a76f549400afebeb994b935ff0c`,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
@@ -263,7 +263,7 @@ Read these upstream documents first:
 
 ## Development status
 
-Install the audited CivicCore shared-ingestion dependency, then install
+Install the CivicCore shared-ingestion dependency, then install
 CivicCode in editable mode:
 
 ```bash
@@ -271,6 +271,10 @@ python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archi
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
+
+The CivicCore archive pin is active-branch audit evidence only. Before any
+public release, CivicCore must publish a release artifact containing the shared
+ingestion pipeline and CivicCode must consume that released artifact.
 
 Docker demo path:
 
@@ -429,7 +433,8 @@ $env:CIVICCODE_EMBEDDING_MODE='ollama'
 $env:CIVICCODE_AI_MODE='ollama'
 $env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
 $env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
-python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+$env:CIVICCODE_SEMANTIC_SCORE_FLOOR='0.58'
+python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL --force-reingest
 ```
 
 Expected Longmont proof today: the full Longmont PDF is parsed through
@@ -438,6 +443,19 @@ Ollama embeddings, structured into CivicCode titles, chapters, sections, and
 versions, searched through PostgreSQL pgvector, and answered through a cited,
 staff-review-required local Ollama response. See
 `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md`.
+
+Chunk-count reconciliation: current CivicCore parser/chunker output for the same
+12,394,756-byte PDF is 1,604 pages, 4,505,994 parsed characters, and 2,931
+chunks with `chunk_size=500` / `chunk_overlap=50`. Older evidence that listed
+1,789 chunks is stale or from a non-identical run and is not used as current
+CivicCode proof.
+
+For staff API imports, `pdf_path` must resolve inside
+`CIVICCODE_SHARED_INGEST_ALLOWED_DIRS`/`CIVICCODE_SHARED_INGEST_ALLOWED_DIR`,
+or the default local `longmont-code-corpus` / module `fixtures` directories.
+Semantic nearest-neighbor results below `CIVICCODE_SEMANTIC_SCORE_FLOOR`
+(`0.58` by default) are filtered out instead of returning low-confidence
+sections for unrelated resident queries.
 
 Staff workbench smoke:
 

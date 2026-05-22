@@ -2,7 +2,7 @@
 
 ## [0.6.0 active completion branch] - 2026-05-21
 
-- Repointed active-branch CivicCode to the audited CivicCore shared-ingestion
+- Repointed active-branch CivicCode to the CivicCore shared-ingestion
   commit `80799976d1b50a76f549400afebeb994b935ff0c` instead of the older
   `v1.1.0` wheel so full PDF parsing, chunking, and embedding come from
   CivicCore.
@@ -10,12 +10,15 @@
   ingesting a municipal code PDF through CivicCore and structuring the result
   into CivicCode title/chapter/section/version records.
 - Switched CivicCode embedding calls to the CivicCore ingestion embedder and
-  made PostgreSQL semantic ranking prefer shared CivicCore `document_chunks`
-  pgvector rows before legacy fallback.
+  made PostgreSQL semantic ranking use shared CivicCore `document_chunks`
+  pgvector rows instead of CivicCode-local section embedding storage.
 - Added `scripts/prove-longmont-shared-ingestion.py` and
   `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
   full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,445
   structured sections, shared pgvector search, and local Ollama cited Q&A.
+  Follow-up parser/chunker reconciliation records the exact input basis:
+  1,604 pages, 4,505,994 parsed characters, `chunk_size=500`, and
+  `chunk_overlap=50`.
 - CivicCode remains `0.6.0`. This is active-branch evidence for independent
   audit, not a v1.0.0 release claim.
 - Added source-bounded local Ollama answer generation for citation-grounded
@@ -24,10 +27,11 @@
 - Added the React/Vite/TypeScript resident app at `/civiccode/app`, served by
   FastAPI and verified against live search and cited-answer API calls.
 - Replaced the local hash-bucket search stand-in with configured Ollama
-  embeddings, persisted search embeddings, and a PostgreSQL pgvector ranking
-  path. The search test suite now proves a zero-literal-overlap retrieval
-  through local `nomic-embed-text` and a disposable `pgvector/pgvector:pg17`
-  database when those runtimes are available.
+  embeddings and, in this follow-up, removed the CivicCode-local section
+  embedding store so runtime semantic retrieval depends on shared CivicCore
+  `document_chunks`. The search test suite now proves a zero-literal-overlap
+  retrieval through local `nomic-embed-text` and a disposable
+  `pgvector/pgvector:pg17` database when those runtimes are available.
 - Added adversarial tests and evidence for bad input, missing/stale records,
   public/staff boundary failures, spoofed staff headers, unavailable Ollama
   fallback behavior, live Ollama, route inventory, staff browser QA,

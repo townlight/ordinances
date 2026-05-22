@@ -56,16 +56,19 @@ async def build_longmont_import_from_shared_ingestion(
     pdf_path: str | Path,
     db_url: str,
     actor: str,
+    force_reingest: bool = False,
 ) -> SharedIngestionImport:
     """Ingest the full Longmont PDF through CivicCore, then structure sections for CivicCode."""
 
-    resolved_pdf = Path(pdf_path).resolve()
+    resolved_pdf = _validate_pdf_path(pdf_path)
     if not resolved_pdf.exists():
         raise SharedIngestionError(
             f"PDF '{resolved_pdf}' was not found.",
             "Provide the full path to the Longmont Code of Ordinances PDF and retry.",
             status_code=404,
         )
+    chunk_size = int(os.environ.get("CIVICCODE_SHARED_INGEST_CHUNK_SIZE", "500"))
+    chunk_overlap = int(os.environ.get("CIVICCODE_SHARED_INGEST_CHUNK_OVERLAP", "50"))
     _ensure_civiccore_schema(db_url)
     async_url = _async_db_url(db_url)
     engine = create_async_engine(async_url, future=True)
@@ -84,13 +87,16 @@ async def build_longmont_import_from_shared_ingestion(
                     )
                 )
             ).scalar_one_or_none()
+            if force_reingest and document is not None:
+                await _delete_existing_document(session, document_id=document.id)
+                document = None
             if document is None:
                 document = await ingest_file(
                     session=session,
                     file_path=resolved_pdf,
                     source_id=source.id,
-                    chunk_size=int(os.environ.get("CIVICCODE_SHARED_INGEST_CHUNK_SIZE", "1500")),
-                    chunk_overlap=int(os.environ.get("CIVICCODE_SHARED_INGEST_CHUNK_OVERLAP", "100")),
+                    chunk_size=chunk_size,
+                    chunk_overlap=chunk_overlap,
                 )
             chunks = (
                 await session.execute(
@@ -110,7 +116,14 @@ async def build_longmont_import_from_shared_ingestion(
                 document=document,
                 chunks=chunks,
             )
-            proof = _build_proof(document=document, chunks=chunks, payload=payload)
+            proof = _build_proof(
+                document=document,
+                chunks=chunks,
+                payload=payload,
+                chunk_size=chunk_size,
+                chunk_overlap=chunk_overlap,
+                force_reingest=force_reingest,
+            )
             return SharedIngestionImport(payload=payload, proof=proof)
     finally:
         await engine.dispose()
@@ -121,11 +134,17 @@ def build_longmont_import_from_shared_ingestion_sync(
     pdf_path: str | Path,
     db_url: str,
     actor: str,
+    force_reingest: bool = False,
 ) -> SharedIngestionImport:
     """Synchronous wrapper for scripts and tests."""
 
     return asyncio.run(
-        build_longmont_import_from_shared_ingestion(pdf_path=pdf_path, db_url=db_url, actor=actor)
+        build_longmont_import_from_shared_ingestion(
+            pdf_path=pdf_path,
+            db_url=db_url,
+            actor=actor,
+            force_reingest=force_reingest,
+        )
     )
 
 
@@ -189,6 +208,39 @@ async def _ensure_civiccore_actor(session, *, actor_uuid: uuid.UUID, actor: str)
     await session.commit()
 
 
+async def _delete_existing_document(session, *, document_id) -> None:
+    from civiccore.ingest import Document, DocumentChunk
+
+    await session.execute(sa.delete(DocumentChunk).where(DocumentChunk.document_id == document_id))
+    await session.execute(sa.delete(Document).where(Document.id == document_id))
+    await session.commit()
+
+
+def _validate_pdf_path(pdf_path: str | Path) -> Path:
+    resolved_pdf = Path(pdf_path).resolve()
+    allowed_roots = _allowed_pdf_roots()
+    if not any(resolved_pdf == root or root in resolved_pdf.parents for root in allowed_roots):
+        roots = ", ".join(str(root) for root in allowed_roots)
+        raise SharedIngestionError(
+            f"PDF '{resolved_pdf}' is outside the allowed CivicCode corpus directories.",
+            f"Move the file under one of these directories and retry: {roots}",
+            status_code=403,
+        )
+    return resolved_pdf
+
+
+def _allowed_pdf_roots() -> list[Path]:
+    roots: list[Path] = []
+    configured = os.environ.get("CIVICCODE_SHARED_INGEST_ALLOWED_DIRS") or os.environ.get(
+        "CIVICCODE_SHARED_INGEST_ALLOWED_DIR"
+    )
+    if configured:
+        roots.extend(Path(value).resolve() for value in configured.split(os.pathsep) if value.strip())
+    roots.append((Path(__file__).resolve().parents[2] / "longmont-code-corpus").resolve())
+    roots.append((Path(__file__).resolve().parents[1] / "fixtures").resolve())
+    return roots
+
+
 def _actor_email(actor: str) -> str:
     value = actor.strip().lower()
     if "@" in value:
@@ -202,7 +254,7 @@ def _build_civiccode_payload(
     document,
     chunks: list,
 ) -> dict[str, Any]:
-    full_text = "\n\n".join(chunk.content_text for chunk in chunks)
+    full_text = _dedupe_overlapping_chunk_text(chunks)
     extracted_sections = _extract_sections(full_text)
     if not extracted_sections:
         raise SharedIngestionError(
@@ -321,6 +373,47 @@ def _extract_sections(full_text: str) -> list[dict[str, str]]:
     return sections
 
 
+def _dedupe_overlapping_chunk_text(chunks: list) -> str:
+    pages: dict[int, list] = {}
+    unpaged: list[str] = []
+    for chunk in chunks:
+        page_number = getattr(chunk, "page_number", None)
+        if page_number is None:
+            unpaged.append(str(chunk.content_text))
+            continue
+        pages.setdefault(int(page_number), []).append(chunk)
+    page_texts: list[str] = []
+    for page_number in sorted(pages):
+        page_chunks = sorted(pages[page_number], key=lambda item: item.chunk_index)
+        page_texts.append(_merge_chunk_texts([str(chunk.content_text) for chunk in page_chunks]))
+    if unpaged:
+        page_texts.append(_merge_chunk_texts(unpaged))
+    return "\n\n".join(page_texts)
+
+
+def _merge_chunk_texts(texts: list[str]) -> str:
+    merged = ""
+    for text in texts:
+        cleaned = text.strip()
+        if not cleaned:
+            continue
+        if not merged:
+            merged = cleaned
+            continue
+        overlap = _suffix_prefix_overlap(merged, cleaned)
+        separator = "" if overlap else "\n\n"
+        merged = f"{merged}{separator}{cleaned[overlap:]}"
+    return merged
+
+
+def _suffix_prefix_overlap(left: str, right: str) -> int:
+    max_len = min(len(left), len(right), 2000)
+    for size in range(max_len, 10, -1):
+        if left[-size:] == right[:size]:
+            return size
+    return 0
+
+
 def _normalize_text(text: str) -> str:
     text = text.replace("\u0e07", " ")
     text = re.sub(r"[ \t]+", " ", text)
@@ -354,6 +447,9 @@ def _build_proof(
     document,
     chunks: list,
     payload: dict[str, Any],
+    chunk_size: int,
+    chunk_overlap: int,
+    force_reingest: bool,
 ) -> dict[str, Any]:
     sample = chunks[0] if chunks else None
     vector = sample.embedding if sample is not None else None
@@ -374,8 +470,14 @@ def _build_proof(
         "civiccore_file_type": document.file_type,
         "civiccore_file_size": document.file_size,
         "civiccore_document_chunk_count": document.chunk_count,
+        "civiccore_document_metadata": document.metadata_ or {},
+        "civiccore_page_count": (document.metadata_ or {}).get("page_count"),
+        "chunk_size": chunk_size,
+        "chunk_overlap": chunk_overlap,
+        "force_reingest": force_reingest,
         "queryable_chunk_rows": len(chunks),
         "embedded_chunk_rows": sum(1 for chunk in chunks if chunk.embedding is not None),
+        "parsed_character_count": sum(len(str(chunk.content_text)) for chunk in chunks),
         "sample_chunk_index": sample.chunk_index if sample else None,
         "sample_chunk_page": sample.page_number if sample else None,
         "sample_chunk_text": sample.content_text[:320] if sample else None,

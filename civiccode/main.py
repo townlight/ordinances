@@ -476,6 +476,7 @@ class SharedPdfImportCreate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     pdf_path: str = Field(min_length=1)
+    force_reingest: bool = False
 
 
 class CodifierSyncConfigureRequest(BaseModel):
@@ -1529,6 +1530,7 @@ async def create_shared_pdf_import_job(
             pdf_path=request.pdf_path,
             db_url=db_url,
             actor=actor,
+            force_reingest=request.force_reingest,
         )
         job = _get_import_store().run_import(shared_import.payload, actor=actor)
     except SharedIngestionError as exc:

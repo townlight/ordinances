@@ -13,7 +13,8 @@ $env:CIVICCODE_AI_MODE='ollama'
 $env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
 $env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
 $env:CIVICCODE_OLLAMA_TIMEOUT_SECONDS='120'
-python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+$env:CIVICCODE_SEMANTIC_SCORE_FLOOR='0.58'
+python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL --force-reingest
 ```
 
 Corpus:
@@ -25,6 +26,9 @@ Corpus:
 
 Shared CivicCore ingestion output:
 
+- Parser page count: `1604`.
+- Parsed character count: `4505994`.
+- Chunking parameters: `chunk_size=500`, `chunk_overlap=50`.
 - Queryable `document_chunks` rows: `2931`.
 - Embedded chunk rows: `2931`.
 - Sample chunk index: `0`.
@@ -56,7 +60,15 @@ CivicCode structuring output:
 
 Semantic search proof:
 
-Query: `public access to procurement documents`
+Queries exercised by the proof script:
+
+1. `public access to procurement documents`
+2. `rules for emergency purchases`
+3. `bid protest appeal`
+4. `disposal of surplus city property`
+5. `city manager purchasing authority`
+
+Representative query: `public access to procurement documents`
 
 Top results included:
 
@@ -74,6 +86,10 @@ Search metadata:
   "ranked_document_count": 5
 }
 ```
+
+Low-relevance guard: PostgreSQL semantic search filters shared chunk matches
+below `CIVICCODE_SEMANTIC_SCORE_FLOOR` (`0.58` for this proof) before mapping
+chunks back to CivicCode sections.
 
 Local LLM cited Q&A proof:
 
@@ -102,5 +118,6 @@ through December 2025, effective 2025-12-31
 Known evidence limits:
 
 - This proves full-corpus ingestion, shared pgvector chunk search, CivicCode structuring, and local Ollama cited Q&A on this machine.
+- Chunk-count reconciliation was rerun directly against the current CivicCore parser/chunker for the same 12,394,756-byte PDF. It returned 1,604 pages, 4,505,994 parsed characters, and 2,931 chunks with `chunk_size=500` / `chunk_overlap=50`; older evidence that listed 1,789 chunks is stale or from a non-identical run and is not used as current CivicCode proof.
 - This is not a v1.0.0 release claim.
 - Independent audit is still required before any release tag.

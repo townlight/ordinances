@@ -36,10 +36,21 @@ def main() -> int:
         default=os.environ.get("CIVICCODE_SOURCE_REGISTRY_DB_URL") or os.environ.get("DATABASE_URL"),
     )
     parser.add_argument("--actor", default="shared-ingestion-proof@longmont.example.gov")
-    parser.add_argument("--query", default="public access to procurement documents")
+    parser.add_argument(
+        "--query",
+        action="append",
+        dest="queries",
+        default=None,
+        help="Search query to prove. May be supplied more than once.",
+    )
     parser.add_argument(
         "--question",
         default="What does the Longmont code say about public access to procurement documents?",
+    )
+    parser.add_argument(
+        "--force-reingest",
+        action="store_true",
+        help="Delete the existing Longmont CivicCore document for this source/hash before ingesting.",
     )
     args = parser.parse_args()
     if not args.db_url:
@@ -50,6 +61,7 @@ def main() -> int:
         pdf_path=args.pdf,
         db_url=args.db_url,
         actor=args.actor,
+        force_reingest=args.force_reingest,
     )
     source_store = SourceRegistryRepository(db_url=args.db_url)
     section_store = SectionLifecycleRepository(db_url=args.db_url)
@@ -59,8 +71,25 @@ def main() -> int:
         db_url=args.db_url,
     )
     job = import_store.run_import(shared_import.payload, actor=args.actor)
-    search_payload = section_store.search(args.query)
-    pinned_section = _first_section_number(search_payload)
+    queries = args.queries or [
+        "public access to procurement documents",
+        "rules for emergency purchases",
+        "bid protest appeal",
+        "disposal of surplus city property",
+        "city manager purchasing authority",
+    ]
+    searches = []
+    for query in queries:
+        search_payload = section_store.search(query)
+        searches.append(
+            {
+                "query": query,
+                "count": search_payload["count"],
+                "semantic_search": search_payload["semantic_search"],
+                "top_results": search_payload["results"][:3],
+            }
+        )
+    pinned_section = _first_section_number(searches[0])
     answer_payload = build_grounded_answer(
         QuestionRequestContext(question=args.question, section_number=pinned_section),
         search=section_store.search,
@@ -74,12 +103,7 @@ def main() -> int:
     output: dict[str, Any] = {
         "proof": shared_import.proof,
         "import_job": job_to_dict(job),
-        "search": {
-            "query": args.query,
-            "count": search_payload["count"],
-            "semantic_search": search_payload["semantic_search"],
-            "top_results": search_payload["results"][:3],
-        },
+        "searches": searches,
         "answer": {
             "question": args.question,
             "status": answer_payload.get("status"),
@@ -96,12 +120,6 @@ def main() -> int:
 
 
 def _first_section_number(search_payload: dict[str, Any]) -> str | None:
-    for result in search_payload.get("results", []):
-        label = " ".join(
-            str(result.get(key, "")) for key in ["section_number", "section_heading", "label"]
-        ).lower()
-        if "4.12.040" in label or "public access to procurement documents" in label:
-            return str(result["section_number"])
     for result in search_payload.get("results", []):
         if result.get("section_number"):
             return str(result["section_number"])

@@ -64,10 +64,10 @@ echo "==> Product test suite"
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
 if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
-  echo "==> Release-provenance tooling tests against audited CivicCore shared-ingestion dependency"
+  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
   echo "SKIP: isolated provenance test already ran in this CI job"
 else
-  echo "==> Release-provenance tooling tests against audited CivicCore shared-ingestion dependency"
+  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
   ${PYTHON_BIN} - <<'PY'
 from __future__ import annotations
 

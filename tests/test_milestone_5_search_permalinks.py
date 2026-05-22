@@ -13,8 +13,9 @@ from pathlib import Path
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
+from civiccode.semantic_search import embed_texts, embedding_config_from_env
 from civiccode.section_lifecycle import SectionLifecycleRepository
 
 
@@ -183,7 +184,7 @@ def _ollama_embedding_available() -> bool:
     reason="nomic-embed-text is not available from local Ollama",
 )
 @pytest.mark.asyncio
-async def test_real_ollama_embedding_search_retrieves_zero_literal_overlap(
+async def test_sqlite_runtime_does_not_claim_semantic_search_without_shared_pgvector(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -218,24 +219,15 @@ async def test_real_ollama_embedding_search_retrieves_zero_literal_overlap(
     )
     assert noise_version.status_code == 201, noise_version.text
 
-    query = "poultry coops"
-    response = await client.get("/api/v1/civiccode/search", params={"q": query})
+    response = await client.get("/api/v1/civiccode/search", params={"q": "poultry coops"})
 
     assert response.status_code == 200
     payload = response.json()
-    top = payload["results"][0]
-    top_words = set(
-        " ".join([top["section_number"], top["section_heading"], "Residents may keep up to six backyard chickens with a city permit."])
-        .lower()
-        .replace(".", " ")
-        .split()
-    )
-    assert set(query.split()).isdisjoint(top_words)
-    assert payload["semantic_search"]["enabled"] is True
+    assert payload["semantic_search"]["enabled"] is False
     assert payload["semantic_search"]["embedding_provider"] == "ollama:nomic-embed-text"
-    assert top["section_number"] == "6.12.040"
-    assert top["match_type"] == "semantic"
-    assert top["semantic_score"] > 0
+    assert payload["semantic_search"]["pgvector_runtime"] == "not_available_without_civiccore_pgvector"
+    assert payload["results"] == []
+    assert payload["empty_state"]["message"] == "No public CivicCode results matched that search."
 
 
 @pytest.mark.skipif(
@@ -349,6 +341,49 @@ def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
                 "is_current": True,
             }
         )
+        config = embedding_config_from_env()
+        assert config is not None
+        chicken_embedding, noise_embedding = embed_texts(
+            [
+                "6.12.040 Backyard chickens. Residents may keep hens with city permits.",
+                "6.12.080 Noise limits. Amplified music must obey nighttime decibel limits.",
+            ],
+            config=config,
+        )
+        with engine.begin() as connection:
+            connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+            connection.execute(
+                text(
+                    """
+                    CREATE TABLE IF NOT EXISTS public.document_chunks (
+                        content_text text NOT NULL,
+                        embedding vector(768) NOT NULL
+                    )
+                    """
+                )
+            )
+            connection.execute(text("DELETE FROM public.document_chunks"))
+            connection.execute(
+                text(
+                    """
+                    INSERT INTO public.document_chunks (content_text, embedding)
+                    VALUES (:chicken_text, CAST(:chicken_embedding AS vector)),
+                           (:noise_text, CAST(:noise_embedding AS vector))
+                    """
+                ),
+                {
+                    "chicken_text": (
+                        "6.12.040 Backyard chickens. Residents may keep up to six backyard "
+                        "chickens with a city permit."
+                    ),
+                    "chicken_embedding": _pgvector_literal(chicken_embedding),
+                    "noise_text": (
+                        "6.12.080 Noise limits. Amplified music may not exceed the city "
+                        "nighttime decibel limit."
+                    ),
+                    "noise_embedding": _pgvector_literal(noise_embedding),
+                },
+            )
 
         payload = store.search("poultry coops")
 
@@ -356,8 +391,18 @@ def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
         assert payload["semantic_search"]["pgvector_runtime"] == "postgresql_pgvector"
         assert payload["results"][0]["section_number"] == "6.12.040"
         assert payload["results"][0]["match_type"] == "semantic"
+        assert payload["results"][0]["semantic_score"] >= 0.58
+
+        low_relevance = store.search("astronomy telescope nebula")
+
+        assert low_relevance["results"] == []
+        assert low_relevance["empty_state"]["message"] == "No public CivicCode results matched that search."
     finally:
         subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)
+
+
+def _pgvector_literal(embedding: list[float]) -> str:
+    return "[" + ",".join(f"{value:.9f}" for value in embedding) + "]"
 
 
 @pytest.mark.asyncio
