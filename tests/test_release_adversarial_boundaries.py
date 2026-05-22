@@ -210,6 +210,27 @@ async def test_spoofed_staff_headers_from_untrusted_remote_are_rejected(app_modu
 
 
 @pytest.mark.asyncio
+async def test_shipped_compose_trust_rejects_docker_bridge_staff_header_spoof(
+    app_module,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS", "127.0.0.1/32,::1/128")
+    async with AsyncClient(
+        transport=ASGITransport(app=app_module.app, client=("172.18.0.1", 45678)),
+        base_url="http://testserver",
+    ) as remote_client:
+        response = await remote_client.get(
+            "/api/v1/civiccode/staff/audit-events",
+            headers=STAFF_HEADERS,
+        )
+
+    assert response.status_code == 403
+    detail = response.json()["detail"]
+    assert "approved proxy" in detail["message"]
+    assert "CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS" in detail["fix"]
+
+
+@pytest.mark.asyncio
 async def test_unavailable_ollama_returns_cited_deterministic_fallback_with_fix_path(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,

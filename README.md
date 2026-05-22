@@ -275,15 +275,15 @@ docker compose up --build
 ```
 
 Expected Docker truth today: Compose starts PostgreSQL 17 with pgvector and the
-CivicCode API, runs CivicCore then CivicCode migrations before serving traffic,
+CivicCode API bound to `127.0.0.1:${CIVICCODE_PORT:-8000}` for local operator
+evaluation, runs CivicCore then CivicCode migrations before serving traffic,
 persists source registry, section lifecycle, popular-question, staff-note,
 plain-language summary, CivicClerk handoff, handoff audit, import job, codifier sync, and operational state records through
 `CIVICCODE_SOURCE_REGISTRY_DB_URL`, and
 seeds the Portland Title 13 demo when `CIVICCODE_DEMO_SEED=1`. Open
-`http://127.0.0.1:8000/civiccode`, search for `13.40.020`, or open
-`/staff/code` through the trusted staff shell headers to review the seeded
-staff workspace. The default Compose password is local-demo only; change it in
-`.env` before any shared environment.
+`http://127.0.0.1:8000/civiccode` and search for `13.40.020` to review the
+seeded public lookup path. The default Compose password is local-demo only;
+change it in `.env` before any shared environment.
 
 Docker demo smoke:
 
@@ -291,14 +291,18 @@ Docker demo smoke:
 bash scripts/docker-demo-smoke.sh
 ```
 
+The smoke test verifies public lookup behavior and confirms that forged
+`X-CivicCode-*` staff headers sent through the published demo port receive HTTP
+403. It does not publish or certify a staff shell.
+
 Docker/PostgreSQL backup-restore rehearsal:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1 -Strict
+powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1
 ```
 
 ```bash
-bash scripts/start_docker_backup_restore_rehearsal.sh --strict
+bash scripts/start_docker_backup_restore_rehearsal.sh
 ```
 
 The rehearsal expects the Compose stack to be running. It writes a
@@ -308,8 +312,8 @@ application tables, writes
 `backup/civiccode-docker-backup-manifest.json` with a SHA-256 checksum, and
 drops the temporary restore database unless `--keep-restore-database` is used.
 Both launchers call `scripts/check_docker_backup_restore_rehearsal.py`, which
-can also be run directly with `--print-only` to review the plan without touching
-Docker.
+now runs in strict mode by default and can also be run directly with
+`--print-only` to review the plan without touching Docker.
 If it fails, confirm Docker Desktop is running, start the stack with
 `docker compose up -d`, inspect `docker compose logs postgres api`, and rerun
 with a fresh run id.
@@ -429,15 +433,12 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
 Expected staff-workbench truth today: staff endpoints require
 `X-CivicCode-Role: staff` and `X-CivicCode-Actor` from a trusted proxy source.
 Local mock runs allow loopback (`127.0.0.1/32` and `::1/128`) by default; shared
-environments should set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` to the reverse
-proxy CIDR list and strip client-supplied staff headers before CivicCode sees
-the request. Staff interpretation notes are returned only to staff endpoints,
+environments must keep the API behind a header-stripping reverse proxy, set
+`CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse proxy CIDR list, and
+strip client-supplied staff headers before CivicCode sees the request. Do not
+trust the Docker bridge CIDR on a published API port. Staff interpretation notes are returned only to staff endpoints,
 staff Q&A adds `staff_context` with `staff_only_do_not_publish`, and public
 lookup, search, and Q&A never expose staff notes or staff note counts.
-The local Docker Compose demo also trusts the Docker bridge CIDR
-(`172.16.0.0/12`) so `scripts/docker-demo-smoke.sh` can verify the seeded staff
-workspace without weakening the production instruction to set an explicit
-trusted reverse-proxy CIDR.
 
 Plain-language summary smoke:
 

@@ -4,13 +4,13 @@ set -euo pipefail
 rehearsal_root=".docker-backup-restore-rehearsal"
 run_id="run-$(date -u +%Y%m%d-%H%M%S)"
 compose_project_name=""
-strict=0
+strict=1
 print_only=0
 keep_restore_database=0
 
 usage() {
   cat <<'EOF'
-Usage: bash scripts/start_docker_backup_restore_rehearsal.sh [--rehearsal-root PATH] [--run-id ID] [--compose-project-name NAME] [--strict] [--print-only] [--keep-restore-database]
+Usage: bash scripts/start_docker_backup_restore_rehearsal.sh [--rehearsal-root PATH] [--run-id ID] [--compose-project-name NAME] [--print-only] [--keep-restore-database]
 
 Creates a Docker Compose PostgreSQL backup/restore rehearsal using pg_dump,
 restores into a temporary database, verifies restored tables, and drops the
@@ -43,10 +43,6 @@ while [[ $# -gt 0 ]]; do
       fi
       compose_project_name="$2"
       shift 2
-      ;;
-    --strict)
-      strict=1
-      shift
       ;;
     --print-only)
       print_only=1

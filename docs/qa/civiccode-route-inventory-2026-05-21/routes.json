@@ -29,8 +29,8 @@
         "POST"
       ],
       "endpoint": "create_chapter",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },
@@ -84,8 +84,8 @@
         "POST"
       ],
       "endpoint": "create_section",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },
@@ -150,8 +150,8 @@
         "POST"
       ],
       "endpoint": "create_section_version",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },
@@ -194,8 +194,8 @@
         "POST"
       ],
       "endpoint": "create_source",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },
@@ -227,8 +227,8 @@
         "POST"
       ],
       "endpoint": "transition_source",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },
@@ -238,8 +238,8 @@
         "POST"
       ],
       "endpoint": "create_title",
-      "audience": "public",
-      "auth_requirement": "none",
+      "audience": "staff",
+      "auth_requirement": "staff headers required",
       "desktop_mobile_qa_status": "api/integration coverage required",
       "state_coverage": "API state coverage required"
     },

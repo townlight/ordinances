@@ -79,6 +79,9 @@ Evidence:
 - `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18052 bash scripts/docker-demo-smoke.sh`
 - `python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-product-completion-verify-3 --compose-project-name civiccode_product_completion_debug --strict`
 - `docker compose -p civiccode_product_completion_debug down -v`
+- `CIVICCODE_PORT=18067 docker compose -p civiccode_staff_surface_fix up -d --build`
+- `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18067 bash scripts/docker-demo-smoke.sh`
+- `docker compose -p civiccode_staff_surface_fix down -v`
 
 The full `bash scripts/verify-release.sh` command passed in the current session
 after the Portland Title 13 demo-seed alignment.
@@ -95,7 +98,7 @@ Results:
 - Docker image build: PASS.
 - PostgreSQL health dependency: PASS.
 - Seeded public lookup smoke: PASS.
-- Seeded staff workspace smoke: PASS.
+- Forged staff headers on the published demo port rejected with HTTP 403: PASS.
 - `pg_dump` backup: PASS.
 - Temporary restore database creation: PASS.
 - `pg_restore` restore: PASS.
@@ -104,3 +107,7 @@ Results:
 
 The rehearsal manifest and restore verification were written under
 `.docker-backup-restore-rehearsal/civiccode-product-completion-verify-3/`.
+
+The default Docker path does not certify a staff shell through the published
+port. Staff access requires a trusted, header-stripping staff-shell proxy or the
+optional in-container smoke path documented in `scripts/docker-demo-smoke.sh`.

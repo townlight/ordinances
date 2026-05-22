@@ -6,26 +6,26 @@ Route count: 55
 |---|---|---|---|---|---|
 | operator | GET | `/health` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/chapters` | none | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/chapters` | staff headers required | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/citations/build` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/popular-questions` | none | api/integration coverage required | API state coverage required |
 | public | POST | `/api/v1/civiccode/questions/answer` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/search` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/sections` | none | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/sections` | staff headers required | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/lookup` | none | api/integration coverage required | API state coverage required |
 | public | POST | `/api/v1/civiccode/sections/resolve` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/{section_id}/history` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/{section_id}/permalink` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/{section_id}/summaries` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/sections/{section_id}/versions` | none | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/sections/{section_id}/versions` | staff headers required | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/{section_number}/related` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sections/{section_ref}/export` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sources` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/sources` | none | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/sources` | staff headers required | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sources/catalog` | none | api/integration coverage required | API state coverage required |
 | public | GET | `/api/v1/civiccode/sources/{source_id}` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/sources/{source_id}/transitions` | none | api/integration coverage required | API state coverage required |
-| public | POST | `/api/v1/civiccode/titles` | none | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/sources/{source_id}/transitions` | staff headers required | api/integration coverage required | API state coverage required |
+| staff | POST | `/api/v1/civiccode/titles` | staff headers required | api/integration coverage required | API state coverage required |
 | public | GET | `/civiccode` | none | covered by current browser harness | loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses |
 | public | GET | `/civiccode/answer` | none | covered by current browser harness | loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses |
 | public | GET | `/civiccode/app` | none | covered by current browser harness | loading/success/empty/error/partial for React app; success/empty/error for server-rendered public/staff harnesses |

@@ -34,7 +34,9 @@ release gate and independent audit sign-off are complete.
    artifacts.
 9. Self-audit: local verifier, browser QA, Docker smoke, and backup/restore were
    rerun; the first Docker attempt failed due an occupied host port and was
-   rerun on host port `18052` with successful smoke and restore proof.
+   rerun on host port `18052` with successful smoke and restore proof. The
+   staff-surface audit fix was later rerun on host port `18067`; the smoke
+   proved forged staff headers on the published demo port return HTTP 403.
 
 ## Verification
 
@@ -47,3 +49,8 @@ release gate and independent audit sign-off are complete.
   passed.
 - `python scripts/check_docker_backup_restore_rehearsal.py --run-id civiccode-product-completion-verify-3 --compose-project-name civiccode_product_completion_debug --strict`
   passed.
+- `CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18067 bash scripts/docker-demo-smoke.sh`
+  passed against project `civiccode_staff_surface_fix`, including the forged
+  staff-header rejection check.
+- `bash scripts/verify-release.sh` passed after the staff-surface fix with
+  `207 passed` in the product test suite.

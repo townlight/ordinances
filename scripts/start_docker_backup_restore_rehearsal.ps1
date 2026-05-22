@@ -2,7 +2,6 @@ param(
     [string]$RehearsalRoot = ".docker-backup-restore-rehearsal",
     [string]$RunId = "",
     [string]$ComposeProjectName = "",
-    [switch]$Strict,
     [switch]$PrintOnly,
     [switch]$KeepRestoreDatabase
 )
@@ -20,9 +19,7 @@ $ArgsList = @($PythonScript, "--rehearsal-root", $RehearsalRoot, "--run-id", $Ru
 if ($ComposeProjectName) {
     $ArgsList += @("--compose-project-name", $ComposeProjectName)
 }
-if ($Strict) {
-    $ArgsList += "--strict"
-}
+$ArgsList += "--strict"
 if ($PrintOnly) {
     $ArgsList += "--print-only"
 }

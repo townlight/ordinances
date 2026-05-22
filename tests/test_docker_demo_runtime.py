@@ -74,12 +74,17 @@ def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
     assert "pgvector/pgvector:pg17" in compose
     assert "CIVICCODE_DEMO_SEED" in compose
     assert "CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS" in compose
+    assert "127.0.0.1:${CIVICCODE_PORT:-8000}:8000" in compose
+    assert "172.16.0.0/12" not in compose
+    assert "172.16.0.0/12" not in env_example
     assert "alembic -c civiccode/migrations/alembic.ini upgrade head" in dockerfile
     assert "POSTGRES_PASSWORD=civiccode-local-only" in env_example
-    assert "172.16.0.0/12" in env_example
     assert ".tmp-*" in dockerignore
     assert "docs/*.png" in dockerignore
     assert "DOCKER-DEMO-SMOKE: PASSED" in smoke
+    assert "rejects forged staff headers" in smoke
+    assert "/api/v1/civiccode/staff/audit-events" in smoke
+    assert 'staff_status" != "403"' in smoke
     for text in [readme, manual, landing]:
         assert "Docker Compose" in text
         assert "CIVICCODE_DEMO_SEED=1" in text

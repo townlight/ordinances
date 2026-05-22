@@ -8,7 +8,7 @@ Status: request for independent audit review only. This is not release clearance
 - Target: future v1.0.0 only after the full Definition of Done and independent audit.
 - Current honest version: v0.6.0.
 - Branch: `work/civiccode-product-completion`.
-- Head at packet refresh: pending new commit after semantic search and data fixes.
+- Head at packet refresh: pending new commit after semantic search, data, and staff-surface audit fixes.
 - Queued modules are not part of this work.
 
 ## Branch Changes Since `origin/main`
@@ -28,6 +28,7 @@ Status: request for independent audit review only. This is not release clearance
 | Semantic search / pgvector | `civiccode/semantic_search.py`; migration `civiccode_0011_semantic_search.py`; `tests/test_milestone_5_search_permalinks.py` proves configured Ollama embeddings, persisted pgvector rows, live pgvector ranking, and zero-literal-overlap retrieval when the local runtimes are available. |
 | Real municipal data | `civiccode/real_municipal_fixtures.py`; `civiccode/fixtures/portland/code/`; `tests/test_real_municipal_data_fixture.py`; Portland Title 13 proof covers two official chapter sources, five adopted sections, and package-local provenance artifacts. |
 | Staff/public routes | `docs/qa/civiccode-route-inventory-2026-05-21/summary.md` and `routes.json`; 55 routes inventoried. |
+| Staff-surface protection | `docker-compose.yml` binds the published API port to loopback and trusts only loopback by default; `scripts/docker-demo-smoke.sh` now verifies forged `X-CivicCode-*` staff headers on the published demo port fail with HTTP 403; `tests/test_release_adversarial_boundaries.py` covers the shipped Compose trust boundary. |
 | Staff browser QA | `docs/qa/civiccode-staff-browser-qa-2026-05-21/summary.md`; 16 staff scenarios recorded. |
 | Installed stack | `docs/qa/civiccode-installed-stack-proof-2026-05-21/summary.md`; successful `*-3` logs cover Docker/PostgreSQL smoke and backup/restore rehearsal. |
 | Suite installer selection | `docs/qa/civiccode-suite-installer-selection-proof-2026-05-21/summary.md`; custom profile resolves CivicCore + CivicClerk + CivicCode and `verify-installer-plan.py` passed. |
@@ -45,7 +46,7 @@ bash scripts/verify-release.sh
 Observed result:
 
 - Version surface check: PASS.
-- Product tests: `205 passed`.
+- Product tests: `207 passed`.
 - Release-provenance tooling test against published CivicCore: `1 passed`.
 - Documentation gate: PASS.
 - Placeholder import gate: PASS.
@@ -58,10 +59,22 @@ Observed result:
 Additional targeted command:
 
 ```powershell
-python -m pytest -q tests/test_real_municipal_data_fixture.py tests/test_release_adversarial_boundaries.py tests/test_milestone_5_search_permalinks.py tests/test_milestone_7_citation_grounded_qa.py tests/test_docker_demo_runtime.py
+python -m pytest tests\test_release_adversarial_boundaries.py tests\test_docker_demo_runtime.py tests\test_docker_backup_restore_rehearsal_helper.py -q
 ```
 
-Observed result: `29 passed`.
+Observed result: `15 passed`.
+
+Additional Docker command:
+
+```powershell
+$project='civiccode_staff_surface_fix'
+$env:CIVICCODE_PORT='18067'
+docker compose -p $project up -d --build
+bash -lc 'CIVICCODE_SMOKE_BASE_URL=http://127.0.0.1:18067 scripts/docker-demo-smoke.sh'
+docker compose -p $project down -v
+```
+
+Observed result: `DOCKER-DEMO-SMOKE: PASSED`; the smoke includes the forged-staff-header 403 check on the published demo port.
 
 ## Known Boundaries For Auditor
 
@@ -70,6 +83,7 @@ Observed result: `29 passed`.
 - CivicCode remains at v0.6.0 until the independent audit clears the full Definition of Done.
 - The real municipal data proof uses a bounded Portland Title 13 corpus with two official chapter sources and five adopted sections; it does not claim a complete city corpus or live codifier sync.
 - Local Ollama proof was captured against a local runtime and does not make AI output authoritative.
+- The default Docker Compose path does not expose a certified staff shell through the published port; staff access requires a trusted, header-stripping staff-shell proxy.
 - Suite truth PR #170 is separate scoped recovery work and had an unrelated installer-cleanroom lifecycle failure in CivicRecords login; this CivicCode branch does not attempt to fix that.
 - Historical scratch files are present in the local worktree and are intentionally not part of this branch.
 

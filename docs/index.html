@@ -191,8 +191,8 @@
         <li>Reusable mock-city codifier contracts for Municode, American Legal Publishing, Code Publishing Company, and General Code.</li>
         <li>Mock-city report reuses CivicCore municipal IdP and backup-retention contracts and writes a secret-free JSON report.</li>
         <li>Records-ready export API and accessible HTML export page for adopted sections.</li>
-        <li>Docker Compose product path with PostgreSQL 17 plus pgvector, migration startup, and Portland Title 13 seeded demo data enabled by <code>CIVICCODE_DEMO_SEED=1</code>.</li>
-        <li>Local Docker staff smoke checks trust loopback plus the Docker bridge CIDR for the demo; production deployments should set <code>CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS</code> to their actual staff-shell proxy CIDR list.</li>
+        <li>Docker Compose product path with PostgreSQL 17 plus pgvector, loopback-bound API port, migration startup, and Portland Title 13 seeded demo data enabled by <code>CIVICCODE_DEMO_SEED=1</code>.</li>
+        <li>Local Docker smoke checks public lookup and verifies forged staff headers on the published demo port fail with HTTP 403; shared deployments must use a header-stripping staff-shell proxy and must not trust the Docker bridge CIDR on a published API port.</li>
         <li>Docker/PostgreSQL backup-restore rehearsal with <code>pg_dump</code>, <code>pg_restore</code>, restored-table verification, <code>civiccode-docker-backup-manifest.json</code>, and Windows/Bash launchers.</li>
         <li>Semantic headings, labels, focus styling, and print-friendly export output.</li>
         <li>CivicAccess integration notes without a shipped CivicAccess runtime dependency.</li>
