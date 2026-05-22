@@ -145,6 +145,12 @@ def test_ci_runs_pytest_docs_and_placeholder_gates() -> None:
     workflow = ROOT / ".github" / "workflows" / "verify.yml"
     text = workflow.read_text(encoding="utf-8")
 
+    audited_civiccore_dependency = (
+        "civiccore @ https://github.com/CivicSuite/civiccore/archive/"
+        "80799976d1b50a76f549400afebeb994b935ff0c.zip"
+    )
+    assert audited_civiccore_dependency in text
+    assert "civiccore-1.1.0-py3-none-any.whl" not in text
     assert "python -m pytest" in text
     assert "bash scripts/verify-docs.sh" in text
     assert "python scripts/check-civiccore-placeholder-imports.py" in text
