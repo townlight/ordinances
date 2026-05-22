@@ -50,7 +50,7 @@ def main() -> int:
     parser.add_argument(
         "--answer-section-number",
         default=None,
-        help="Use a specific section for the cited Q&A proof instead of the top result from the first search.",
+        help="Also prove a direct-section Q&A lookup for this section; organic Q&A always uses the top search result.",
     )
     parser.add_argument(
         "--force-reingest",
@@ -94,9 +94,9 @@ def main() -> int:
                 "top_results": search_payload["results"][:3],
             }
         )
-    pinned_section = args.answer_section_number or _first_section_number(searches[0])
+    organic_section = _first_section_number(searches[0])
     answer_payload = build_grounded_answer(
-        QuestionRequestContext(question=args.question, section_number=pinned_section),
+        QuestionRequestContext(question=args.question, section_number=organic_section),
         search=section_store.search,
         build_citation=lambda section_number, as_of=None: _build_citation(
             section_store=section_store,
@@ -117,8 +117,30 @@ def main() -> int:
             "citations": answer_payload.get("citations", [])[:3],
             "llm_provider": answer_payload.get("llm_provider"),
             "llm_error": answer_payload.get("llm_error"),
+            "mode": "organic_top_search_result",
         },
     }
+    if args.answer_section_number:
+        direct_payload = build_grounded_answer(
+            QuestionRequestContext(question=args.question, section_number=args.answer_section_number),
+            search=section_store.search,
+            build_citation=lambda section_number, as_of=None: _build_citation(
+                section_store=section_store,
+                source_store=source_store,
+                section_number=section_number,
+                as_of=as_of,
+            ),
+        )
+        output["direct_section_answer"] = {
+            "question": args.question,
+            "status": direct_payload.get("status"),
+            "matched_section_number": direct_payload.get("matched_section_number"),
+            "answer": direct_payload.get("answer"),
+            "citations": direct_payload.get("citations", [])[:3],
+            "llm_provider": direct_payload.get("llm_provider"),
+            "llm_error": direct_payload.get("llm_error"),
+            "mode": "direct_section_override",
+        }
     print("CIVICCODE-LONGMONT-SHARED-INGESTION-PROOF")
     print(json.dumps(output, indent=2, default=str))
     return 0

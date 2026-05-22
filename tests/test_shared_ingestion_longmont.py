@@ -9,6 +9,7 @@ from civiccode.shared_ingestion import (
     SharedIngestionError,
     _dedupe_overlapping_chunk_text,
     _extract_sections,
+    _normalize_text,
     _validate_pdf_path,
     _async_db_url,
 )
@@ -106,3 +107,58 @@ def test_chunk_text_reconstruction_removes_overlap_duplication() -> None:
 
     assert merged.count("Alpha beta gamma.") == 1
     assert "Sec. 1.01.020. Scope." in merged
+
+
+def test_section_extractor_prefers_full_body_over_table_of_contents_duplicate() -> None:
+    text = """
+    Sec. 4.12.040. Public access to procurement documents.
+    Sec. 4.12.050. Confidential information.
+
+    CHAPTER 4.12. PURCHASING
+    Sec. 4.12.040. Public access to procurement
+    documents.
+    Procurement documents are public records to the extent provided in C.R.S. title 24,
+    article 72, as amended, and are available to the public as provided in such statute.
+    Sec. 4.12.050. Confidential information.
+    Confidential bid information is handled according to applicable law.
+    """
+
+    sections = _extract_sections(text)
+    by_number = {section["number"]: section for section in sections}
+
+    assert "Procurement documents are public records" in by_number["4.12.040"]["body"]
+    assert "Confidential bid information" in by_number["4.12.050"]["body"]
+
+
+def test_section_extractor_handles_multi_part_longmont_section_numbers() -> None:
+    sections = _extract_sections(
+        """
+        Sec. 4.99.5.010. Program fund.
+        The city creates a program fund for the named purpose.
+        Sec. 4.99.5.020. Uses.
+        The fund may be used only for program costs.
+        """
+    )
+
+    assert [section["number"] for section in sections] == ["4.99.5.010", "4.99.5.020"]
+
+
+def test_normalize_text_strips_running_headers_and_repairs_source_artifacts() -> None:
+    text = _normalize_text(
+        """
+        Sec. 4.12.040. Public access to procurement
+        documents.
+        Procurement documents are public records.
+        § 4.12.050
+        REVENUE AND FINANCE
+        electronic
+        transmis-
+        sions
+        [The next page is CD6:11]
+        """
+    )
+
+    assert "REVENUE AND FINANCE" not in text
+    assert "[The next page" not in text
+    assert "transmis-" not in text
+    assert "transmissions" in text

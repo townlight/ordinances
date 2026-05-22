@@ -23,13 +23,31 @@ LONGMONT_SOURCE_NAME = "Longmont, CO Code of Ordinances"
 LONGMONT_VERSION_LABEL = "Longmont Code codified through December 2025"
 LONGMONT_EFFECTIVE_START = date(2025, 12, 31)
 _SECTION_RE = re.compile(
-    r"(?:^|\n|\s)(?:Sec\.\s*)?(?P<number>\d{1,2}\.\d{2}\.\d{3})\.\s+"
-    r"(?P<heading>[A-Z][A-Za-z0-9 ,;:'\"()/&\\-]{2,180})\.",
+    r"(?:^|\n)\s*Sec\.\s*(?P<number>\d{1,2}(?:\.\d{1,3}){2,4})\.\s+"
+    r"(?P<heading>[A-Z][A-Za-z0-9 ,;:'\"()/&\\\-\n]{2,180})\.",
     re.MULTILINE,
 )
 _CHAPTER_RE_TEMPLATE = r"CHAPTER\s*{chapter}\.?\s+(?P<name>[A-Z][A-Z0-9 ,;:'\"()/&\\-]{{2,120}})"
-
-
+_SECTION_SYMBOL_RE = r"(?:\u00a7)"
+_RUNNING_TITLE_NAMES = (
+    "BUSINESS TAXES, LICENSES AND REGULATIONS",
+    "HEALTH AND SAFETY",
+    "LAND DEVELOPMENT CODE",
+    "LONGMONT CODE",
+    "REVENUE AND FINANCE",
+)
+_RUNNING_LINE_RE = re.compile(
+    (
+        r"^(?:"
+        rf"[A-Z][A-Z &]+ {_SECTION_SYMBOL_RE} \d{{1,2}}\.\d{{2}}(?:\.\d{{3}})?|"
+        rf"{_SECTION_SYMBOL_RE} \d{{1,2}}\.\d{{2}}(?:\.\d{{3}}){{0,2}}(?: LONGMONT(?: CODE)?)?|"
+        r"LONGMONT CODE|"
+        r"(?:Supp\. No\. \d+\s+)?CD\d+:\d+(?:\.\d+)?(?: CODE)?|"
+        r"Supp\. No\. \d+|"
+        + "|".join(re.escape(title) for title in _RUNNING_TITLE_NAMES)
+        + r")$"
+    )
+)
 class SharedIngestionError(ValueError):
     """Shared ingestion failure with an operator-facing fix path."""
 
@@ -254,7 +272,7 @@ def _build_civiccode_payload(
     document,
     chunks: list,
 ) -> dict[str, Any]:
-    full_text = _dedupe_overlapping_chunk_text(chunks)
+    full_text = _structuring_text_from_source(pdf_path=pdf_path, chunks=chunks)
     extracted_sections = _extract_sections(full_text)
     if not extracted_sections:
         raise SharedIngestionError(
@@ -267,7 +285,9 @@ def _build_civiccode_payload(
     sections: list[dict[str, Any]] = []
     versions: list[dict[str, Any]] = []
     for index, item in enumerate(extracted_sections, start=1):
-        title_number, chapter_part, _ = item["number"].split(".")
+        number_parts = item["number"].split(".")
+        title_number = number_parts[0]
+        chapter_part = number_parts[1]
         chapter_number = f"{title_number}.{chapter_part}"
         title_id = f"longmont-title-{title_number}"
         chapter_id = f"longmont-chapter-{chapter_number.replace('.', '-')}"
@@ -347,30 +367,200 @@ def _build_civiccode_payload(
 
 
 def _extract_sections(full_text: str) -> list[dict[str, str]]:
+    full_text = _trim_non_code_appendices(full_text)
     normalized = _normalize_text(full_text)
     matches = list(_SECTION_RE.finditer(normalized))
     sections: list[dict[str, str]] = []
-    seen: set[str] = set()
+    section_indexes: dict[str, int] = {}
     for index, match in enumerate(matches):
         number = match.group("number")
-        if number in seen:
-            continue
         start = match.start()
         end = matches[index + 1].start() if index + 1 < len(matches) else len(normalized)
         body = normalized[match.end() : end].strip()
         if len(body) < 40:
             continue
-        seen.add(number)
         chapter_number = ".".join(number.split(".")[:2])
-        sections.append(
-            {
-                "number": number,
-                "heading": _clean_heading(match.group("heading")),
-                "chapter_name": _chapter_name(normalized, start, chapter_number),
-                "body": f"{number}. {_clean_heading(match.group('heading'))}.\n\n{body}",
-            }
-        )
+        candidate = {
+            "number": number,
+            "heading": _clean_heading(match.group("heading")),
+            "chapter_name": _chapter_name(normalized, start, chapter_number),
+            "body": f"{number}. {_clean_heading(match.group('heading'))}.\n\n{body}",
+        }
+        if number in section_indexes:
+            existing_index = section_indexes[number]
+            if len(candidate["body"]) > len(sections[existing_index]["body"]):
+                sections[existing_index] = candidate
+            continue
+        section_indexes[number] = len(sections)
+        sections.append(candidate)
     return sections
+
+
+def _trim_non_code_appendices(text: str) -> str:
+    final_code_anchor = max(text.rfind("Sec. 20.20.080."), text.rfind("CHAPTER 20.20."))
+    if final_code_anchor == -1:
+        return text
+    markers = (
+        "\nCODE COMPARATIVE TABLE",
+        "\nCODE INDEX",
+        "\nINDEX\n",
+    )
+    cut_points = [
+        index
+        for marker in markers
+        if (index := text.find(marker, final_code_anchor)) != -1
+    ]
+    if not cut_points:
+        return text
+    return text[: min(cut_points)]
+
+
+def _structuring_text_from_source(*, pdf_path: Path, chunks: list) -> str:
+    if pdf_path.suffix.lower() == ".pdf" and pdf_path.exists():
+        try:
+            return _extract_pdf_column_text(pdf_path)
+        except Exception:
+            return _dedupe_overlapping_chunk_text(chunks)
+    return _dedupe_overlapping_chunk_text(chunks)
+
+
+def _extract_pdf_column_text(pdf_path: Path) -> str:
+    try:
+        return _extract_pdf_block_text(pdf_path)
+    except Exception:
+        return _extract_pdf_word_column_text(pdf_path)
+
+
+def _extract_pdf_block_text(pdf_path: Path) -> str:
+    import fitz
+
+    page_texts: list[str] = []
+    with fitz.open(pdf_path) as pdf:
+        for page in pdf:
+            page_text = _extract_page_block_text(page)
+            if _is_longmont_toc_or_intro_page(page_text):
+                continue
+            page_texts.append(page_text)
+    return "\n\n".join(page_texts)
+
+
+def _extract_page_block_text(page) -> str:
+    blocks = [
+        block
+        for block in page.get_text("blocks")
+        if len(block) >= 7 and block[6] == 0 and 45 < float(block[1]) < page.rect.height - 45
+    ]
+    ordered = sorted(
+        blocks,
+        key=lambda block: (
+            0 if ((float(block[0]) + float(block[2])) / 2) < (page.rect.width / 2) else 1,
+            float(block[1]),
+            float(block[0]),
+        ),
+    )
+    page_text = "\n\n".join(str(block[4]).strip() for block in ordered if str(block[4]).strip())
+    return _strip_page_toc_preamble(page_text)
+
+
+def _strip_page_toc_preamble(page_text: str) -> str:
+    chapter_match = re.search(r"(?:^|\n)\s*CHAPTER\s+\d{1,2}\.\d{2}\.", page_text)
+    if not chapter_match:
+        return page_text
+    preamble = page_text[: chapter_match.start()]
+    has_toc_like_sections = len(_SECTION_RE.findall(preamble)) >= 2
+    has_code_body_markers = "(Code " in preamble or "Ord. No." in preamble
+    if has_toc_like_sections and not has_code_body_markers:
+        return page_text[chapter_match.start() :].lstrip()
+    return page_text
+
+
+def _extract_pdf_word_column_text(pdf_path: Path) -> str:
+    import pdfplumber
+
+    page_texts: list[str] = []
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            page_text = _extract_page_column_text(page)
+            if _is_longmont_toc_or_intro_page(page_text):
+                continue
+            page_texts.append(page_text)
+    return "\n\n".join(page_texts)
+
+
+def _extract_page_column_text(page) -> str:
+    words = page.extract_words(
+        x_tolerance=1,
+        y_tolerance=3,
+        keep_blank_chars=False,
+        use_text_flow=False,
+    )
+    split_x = (page.width / 2) - 19
+    columns: list[list[str]] = [[], []]
+    for _, line_words in _group_words_by_line(
+        [
+            word
+            for word in words
+            if 45 < float(word["top"]) < page.height - 45
+        ]
+    ):
+        for segment in _split_line_segments(line_words):
+            column_index = 0 if _segment_center(segment) < split_x else 1
+            columns[column_index].append(
+                " ".join(str(word["text"]) for word in sorted(segment, key=lambda item: float(item["x0"])))
+            )
+    return "\n\n".join("\n".join(lines) for lines in columns if lines)
+
+
+def _group_words_by_line(words: list[dict[str, Any]]) -> list[tuple[float, list[dict[str, Any]]]]:
+    grouped: list[tuple[float, list[dict[str, Any]]]] = []
+    for word in sorted(words, key=lambda item: (round(float(item["top"]) / 3) * 3, float(item["x0"]))):
+        top = round(float(word["top"]) / 3) * 3
+        if not grouped or abs(grouped[-1][0] - top) > 3:
+            grouped.append((top, [word]))
+        else:
+            grouped[-1][1].append(word)
+    return grouped
+
+
+def _split_line_segments(words: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    segments: list[list[dict[str, Any]]] = []
+    current: list[dict[str, Any]] = []
+    prior_x1: float | None = None
+    for word in sorted(words, key=lambda item: float(item["x0"])):
+        x0 = float(word["x0"])
+        if current and prior_x1 is not None and x0 - prior_x1 > 45:
+            segments.append(current)
+            current = []
+        current.append(word)
+        prior_x1 = float(word["x1"])
+    if current:
+        segments.append(current)
+    return segments
+
+
+def _segment_center(words: list[dict[str, Any]]) -> float:
+    return (min(float(word["x0"]) for word in words) + max(float(word["x1"]) for word in words)) / 2
+
+
+def _is_longmont_toc_or_intro_page(page_text: str) -> bool:
+    compact = " ".join(page_text.split())
+    if not compact:
+        return True
+    intro_markers = (
+        "ADOPTING ORDINANCE",
+        "ORDINANCE O-2022-35",
+        "THE COUNCIL OF THE CITY OF LONGMONT",
+        "Page Numbering",
+        "History Notes",
+        "Source Materials",
+        "Numbering System",
+        "Chapter and Section Numbering",
+    )
+    if any(marker in compact for marker in intro_markers):
+        return True
+    section_header_count = len(re.findall(r"\bSec\. \d{1,2}\.\d{2}\.\d{3}\.", page_text))
+    code_history_count = compact.count("(Code ") + compact.count("Ord. No.")
+    return section_header_count >= 4 and code_history_count == 0
 
 
 def _dedupe_overlapping_chunk_text(chunks: list) -> str:
@@ -415,9 +605,63 @@ def _suffix_prefix_overlap(left: str, right: str) -> int:
 
 
 def _normalize_text(text: str) -> str:
+    text = text.replace("\x00", " ")
     text = text.replace("\u0e07", " ")
+    text = re.sub(r"([A-Za-z])-\n\s*([a-z])", r"\1\2", text)
+    text = _strip_running_lines(text)
+    text = _strip_running_fragments(text)
+    text = _repair_known_word_jams(text)
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
+
+
+def _strip_running_lines(text: str) -> str:
+    kept: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped and _RUNNING_LINE_RE.match(stripped):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
+def _strip_running_fragments(text: str) -> str:
+    text = re.sub(
+        rf"\s+{_SECTION_SYMBOL_RE}\s*\d{{1,2}}\.\d{{2}}(?:\.\d{{3}}){{0,2}}\s+[A-Z][A-Z &,]{{3,}}(?=\s|$)",
+        " ",
+        text,
+    )
+    text = re.sub(
+        rf"\s+[A-Z][A-Z &,]{{3,}}\s+{_SECTION_SYMBOL_RE}\s*\d{{1,2}}\.\d{{2}}(?:\.\d{{3}}){{0,2}}(?=\s|$)",
+        " ",
+        text,
+    )
+    for title in _RUNNING_TITLE_NAMES:
+        text = re.sub(
+            rf"\s+{_SECTION_SYMBOL_RE}\s*\d{{1,2}}\.\d{{2}}(?:\.\d{{3}}){{0,2}}\s+{re.escape(title)}\s+",
+            " ",
+            text,
+        )
+        text = re.sub(
+            rf"\s+{re.escape(title)}\s+{_SECTION_SYMBOL_RE}\s*\d{{1,2}}\.\d{{2}}(?:\.\d{{3}}){{0,2}}\s+",
+            " ",
+            text,
+        )
+    text = re.sub(r"\s+(?:Supp\. No\. \d+\s+)?CD\d+:\d+(?:\.\d+)?(?: CODE)?(?=\s|$)", " ", text)
+    text = re.sub(r"\s+\[The next page is CD\d+:\d+(?:\.\d+)?\]\s+", " ", text)
+    return text
+
+
+def _repair_known_word_jams(text: str) -> str:
+    replacements = {
+        "procurementdocuments": "procurement documents",
+        "electronictransmissions": "electronic transmissions",
+        "intergovernmentalagreements": "intergovernmental agreements",
+        "professionalservices": "professional services",
+    }
+    for bad, good in replacements.items():
+        text = re.sub(bad, good, text, flags=re.IGNORECASE)
     return text
 
 

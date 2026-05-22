@@ -12,16 +12,20 @@
 - Switched CivicCode embedding calls to the CivicCore ingestion embedder and
   made PostgreSQL semantic ranking use shared CivicCore `document_chunks`
   pgvector rows instead of CivicCode-local section embedding storage.
-- Added `scripts/prove-longmont-shared-ingestion.py` and
-  `scripts/prove-longmont-civiccore-chunk-params.py` plus
+- Added `scripts/prove-longmont-shared-ingestion.py`,
+  `scripts/prove-longmont-civiccore-chunk-params.py`, and
+  `scripts/prove-longmont-section-fidelity.py` plus
   `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
-  full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,443
+  full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,995
   structured sections, shared pgvector search, and local Ollama cited Q&A.
   The force-reingest proof records the exact input basis: 1,604 pages,
   12,394,756 source bytes, 2,931 chunks, `chunk_size=500`,
   `chunk_overlap=50`, and 768-dimensional embeddings; the dual-run script
   reproduces `chunk_size=900` / `chunk_overlap=90` as 1,789 chunks and
   `chunk_size=500` / `chunk_overlap=50` as 2,931 chunks from the same PDF.
+  The section-fidelity proof reports 0 empty bodies, 0 header/footer-polluted
+  bodies, and a `4.12.040` side-by-side source/structured sample with the full
+  public-records paragraph.
 - CivicCode remains `0.6.0`. This is active-branch evidence for independent
   audit, not a v1.0.0 release claim.
 - Added source-bounded local Ollama answer generation for citation-grounded

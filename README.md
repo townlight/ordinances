@@ -447,8 +447,11 @@ staff-review-required local Ollama response. See
 
 Fresh force-reingest proof for PR #61 completed against the same
 12,394,756-byte PDF with 1,604 pages, 2,931 queryable shared chunks, 2,931
-embedded rows, `chunk_size=500`, `chunk_overlap=50`, and 1,443 structured
-CivicCode sections. The committed dual-run proof script demonstrates that the
+embedded rows, `chunk_size=500`, `chunk_overlap=50`, and 1,995 structured
+CivicCode sections. The committed section-fidelity proof reports 0 empty
+bodies, 0 header/footer-polluted bodies, and a side-by-side `4.12.040`
+source/structured sample containing the full public-records paragraph. The
+committed dual-run proof script demonstrates that the
 older CivicCore evidence listing 1,789 chunks used `chunk_size=900` /
 `chunk_overlap=90`; that count is valid for its parameter set but must not be
 cited as the current CivicCode PR #61 proof count.
