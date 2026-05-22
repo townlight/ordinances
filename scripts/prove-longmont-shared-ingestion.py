@@ -120,7 +120,8 @@ def main() -> int:
 
 
 def _first_section_number(search_payload: dict[str, Any]) -> str | None:
-    for result in search_payload.get("results", []):
+    results = search_payload.get("top_results") or search_payload.get("results") or []
+    for result in results:
         if result.get("section_number"):
             return str(result["section_number"])
     return None

@@ -14,11 +14,11 @@
   pgvector rows instead of CivicCode-local section embedding storage.
 - Added `scripts/prove-longmont-shared-ingestion.py` and
   `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
-  full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,445
+  full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,443
   structured sections, shared pgvector search, and local Ollama cited Q&A.
-  Follow-up parser/chunker reconciliation records the exact input basis:
-  1,604 pages, 4,505,994 parsed characters, `chunk_size=500`, and
-  `chunk_overlap=50`.
+  The force-reingest proof records the exact input basis: 1,604 pages,
+  12,394,756 source bytes, 2,931 chunks, `chunk_size=500`,
+  `chunk_overlap=50`, and 768-dimensional embeddings.
 - CivicCode remains `0.6.0`. This is active-branch evidence for independent
   audit, not a v1.0.0 release claim.
 - Added source-bounded local Ollama answer generation for citation-grounded

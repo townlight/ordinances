@@ -444,11 +444,12 @@ versions, searched through PostgreSQL pgvector, and answered through a cited,
 staff-review-required local Ollama response. See
 `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md`.
 
-Chunk-count reconciliation: current CivicCore parser/chunker output for the same
-12,394,756-byte PDF is 1,604 pages, 4,505,994 parsed characters, and 2,931
-chunks with `chunk_size=500` / `chunk_overlap=50`. Older evidence that listed
-1,789 chunks is stale or from a non-identical run and is not used as current
-CivicCode proof.
+Fresh force-reingest proof for PR #61 head `8241e2a` completed against the
+same 12,394,756-byte PDF with 1,604 pages, 2,931 queryable shared chunks, 2,931
+embedded rows, `chunk_size=500`, `chunk_overlap=50`, and 1,443 structured
+CivicCode sections. The older CivicCore evidence that listed 1,789 chunks used
+`chunk_size=900` / `chunk_overlap=90`; it is valid for that parameter set but
+must not be cited as the current CivicCode PR #61 proof count.
 
 For staff API imports, `pdf_path` must resolve inside
 `CIVICCODE_SHARED_INGEST_ALLOWED_DIRS`/`CIVICCODE_SHARED_INGEST_ALLOWED_DIR`,
