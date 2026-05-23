@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.8] - 2026-05-23
+
+- Installs the Playwright Chromium browser immediately before public browser QA
+  in the release workflow so `npm ci` cannot replace the Playwright package
+  after the browser cache has been prepared.
+- Keeps the explicit `workflow_dispatch` release fallback, valid workflow YAML,
+  conservative action versions, split bounded release verification, PR #61
+  shared-ingestion implementation, CivicCore v1.2.0 release wheel pin, and
+  Longmont end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1 through v1.0.7 tag attempts
+  without rewriting those tags.
+
 ## [1.0.7] - 2026-05-23
 
 - Fixes the release workflow YAML syntax error that kept v1.0.5 and v1.0.6
