@@ -34,17 +34,17 @@ def test_pyproject_declares_runtime_package_and_release_version() -> None:
     data = load_pyproject()
 
     assert data["project"]["name"] == "civiccode"
-    assert data["project"]["version"] == "0.6.0"
+    assert data["project"]["version"] == "1.0.0"
     assert "CivicCode" in data["project"]["description"]
 
 
-def test_pyproject_consumes_published_civiccore_v100_wheel() -> None:
+def test_pyproject_consumes_civiccore_shared_ingestion_commit() -> None:
     data = load_pyproject()
     dependencies = data["project"]["dependencies"]
 
     assert (
-        "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
-        "v1.1.0/civiccore-1.1.0-py3-none-any.whl#sha256=3ab146f4fea2ae99640d5b1b013be1a9676de5f91b783eaeaa913043a2ae2b87"
+        "civiccore @ https://github.com/CivicSuite/civiccore/archive/"
+        "80799976d1b50a76f549400afebeb994b935ff0c.zip"
     ) in dependencies
     assert not any("civiccore>=" in dep or "civiccore~=" in dep for dep in dependencies)
 
@@ -97,7 +97,7 @@ async def test_root_endpoint_explains_current_user_experience() -> None:
     assert payload["api_base"] == "/api/v1/civiccode"
     assert payload["future_public_path"] == "/civiccode"
     assert payload["next_step"] == (
-        "CivicCode v0.6.0 persists section/version lifecycle records, "
+        "CivicCode v1.0.0 persists section/version lifecycle records, "
         "popular-question discovery aids, staff notes, plain-language "
         "summaries, CivicClerk handoff records, handoff audit events, and "
         "local import job ledgers, codifier sync source state, and "
@@ -136,7 +136,7 @@ async def test_health_endpoint_is_actionable_for_it_staff() -> None:
     assert payload == {
         "status": "ok",
         "service": "civiccode",
-        "version": "0.6.0",
+        "version": "1.0.0",
         "civiccore": "1.1.0",
     }
 
@@ -145,6 +145,12 @@ def test_ci_runs_pytest_docs_and_placeholder_gates() -> None:
     workflow = ROOT / ".github" / "workflows" / "verify.yml"
     text = workflow.read_text(encoding="utf-8")
 
+    civiccore_shared_ingestion_dependency = (
+        "civiccore @ https://github.com/CivicSuite/civiccore/archive/"
+        "80799976d1b50a76f549400afebeb994b935ff0c.zip"
+    )
+    assert civiccore_shared_ingestion_dependency in text
+    assert "civiccore-1.1.0-py3-none-any.whl" not in text
     assert "python -m pytest" in text
     assert "bash scripts/verify-docs.sh" in text
     assert "python scripts/check-civiccore-placeholder-imports.py" in text

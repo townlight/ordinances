@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
+import os
+import re
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime
 from typing import Any
@@ -14,15 +14,15 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.dialects.postgresql import JSONB
 
 from civiccode.semantic_search import (
-    SearchEmbedding,
     SemanticSearchError,
     embed_texts,
     embedding_config_from_env,
-    rank_embeddings,
 )
 
 
 VERSION_STATUSES = {"draft", "pending", "adopted", "superseded", "retired"}
+SECTION_NUMBER_RE = re.compile(r"\b\d{1,2}\.\d{2}\.\d{3}\b")
+DEFAULT_SEMANTIC_SCORE_FLOOR = 0.58
 
 
 class SectionLifecycleError(ValueError):
@@ -103,7 +103,6 @@ class SectionLifecycleStore:
         self._chapters: dict[str, CodeChapter] = {}
         self._sections: dict[str, CodeSection] = {}
         self._versions: dict[str, SectionVersion] = {}
-        self._search_embeddings: dict[str, SearchEmbedding] = {}
 
     def create_title(self, data: dict[str, Any]) -> CodeTitle:
         title = CodeTitle(
@@ -240,8 +239,6 @@ class SectionLifecycleStore:
             for prior in self._versions_for_section(section_id):
                 if prior.version_id != version.version_id and prior.is_current:
                     prior.is_current = False
-            self._remove_stale_search_embeddings(section_id)
-        self._refresh_search_embedding(version)
         return version
 
     def lookup_section(self, section_number: str, as_of: date | None = None) -> dict[str, Any]:
@@ -529,7 +526,6 @@ class SectionLifecycleStore:
         self._chapters.clear()
         self._sections.clear()
         self._versions.clear()
-        self._search_embeddings.clear()
 
     def _versions_for_section(self, section_id: str) -> list[SectionVersion]:
         return [
@@ -556,88 +552,24 @@ class SectionLifecycleStore:
                 "embedding_provider": None,
                 "pgvector_runtime": "not_configured",
             }
+        runtime_label = self._semantic_runtime_label()
+        if runtime_label == "not_available_without_civiccore_pgvector":
+            return {
+                "enabled": False,
+                "embedding_provider": f"ollama:{config.model}",
+                "pgvector_runtime": runtime_label,
+            }
         return {
             "enabled": True,
             "embedding_provider": f"ollama:{config.model}",
-            "pgvector_runtime": self._semantic_runtime_label(),
+            "pgvector_runtime": runtime_label,
         }
 
     def _semantic_runtime_label(self) -> str:
-        return "in_memory_vector_store"
+        return "not_available_without_civiccore_pgvector"
 
     def _rank_semantic_results(self, query: str) -> list[dict[str, Any]]:
-        config = embedding_config_from_env()
-        if not config:
-            return []
-        self._refresh_all_search_embeddings()
-        embeddings = list(self._search_embeddings.values())
-        if not embeddings:
-            return []
-        try:
-            query_embedding = embed_texts([query], config=config)[0]
-        except SemanticSearchError:
-            return []
-        return rank_embeddings(query_embedding, embeddings)
-
-    def _refresh_all_search_embeddings(self) -> None:
-        for section in list(self._sections.values()):
-            current = self._current_adopted_version(section.section_id)
-            if current:
-                self._refresh_search_embedding(current)
-
-    def _refresh_search_embedding(self, version: SectionVersion) -> None:
-        if version.status != "adopted" or not version.is_current:
-            return
-        config = embedding_config_from_env()
-        if not config:
-            return
-        section = self._sections.get(version.section_id)
-        if not section:
-            return
-        text = self._semantic_document_text(section, version)
-        checksum = hashlib.sha256(text.encode("utf-8")).hexdigest()
-        existing = self._search_embeddings.get(section.section_id)
-        if (
-            existing
-            and existing.section_version_id == version.version_id
-            and existing.embedding_model == config.model
-            and existing.source_text_checksum == checksum
-        ):
-            return
-        try:
-            embedding = embed_texts([text], config=config)[0]
-        except SemanticSearchError:
-            return
-        record = SearchEmbedding(
-            section_id=section.section_id,
-            section_version_id=version.version_id,
-            embedding_model=config.model,
-            embedding=embedding,
-            source_text_checksum=checksum,
-        )
-        self._search_embeddings[section.section_id] = record
-        self._persist_search_embedding(record)
-
-    def _persist_search_embedding(self, record: SearchEmbedding) -> None:
-        return None
-
-    def _remove_stale_search_embeddings(self, section_id: str) -> None:
-        self._search_embeddings.pop(section_id, None)
-
-    def _semantic_document_text(self, section: CodeSection, version: SectionVersion) -> str:
-        chapter = self._chapters.get(section.chapter_id)
-        title = self._titles.get(chapter.title_id) if chapter else None
-        return " ".join(
-            value
-            for value in [
-                title.title_name if title else "",
-                chapter.chapter_name if chapter else "",
-                section.section_number,
-                section.section_heading,
-                version.body,
-            ]
-            if value
-        )
+        return []
 
     def _related_results(self, section: CodeSection, normalized: str) -> list[dict[str, Any]]:
         related_groups = [
@@ -728,19 +660,6 @@ section_version_records = sa.Table(
     schema="civiccode",
 )
 
-section_search_embedding_records = sa.Table(
-    "section_search_embeddings",
-    metadata,
-    sa.Column("section_id", sa.String(255), primary_key=True),
-    sa.Column("section_version_id", sa.String(255), nullable=False),
-    sa.Column("embedding_model", sa.String(255), nullable=False),
-    sa.Column("embedding", json_type, nullable=False),
-    sa.Column("source_text_checksum", sa.String(128), nullable=False),
-    sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
-    schema="civiccode",
-)
-
-
 class SectionLifecycleRepository(SectionLifecycleStore):
     """Database-backed section lifecycle store for Docker/PostgreSQL product paths."""
 
@@ -755,8 +674,6 @@ class SectionLifecycleRepository(SectionLifecycleStore):
                 connection.execute(sa.text("CREATE SCHEMA IF NOT EXISTS civiccode"))
                 connection.execute(sa.text("CREATE EXTENSION IF NOT EXISTS vector"))
         metadata.create_all(self.engine)
-        if self.engine.dialect.name == "postgresql":
-            self._ensure_pgvector_schema()
         self._load()
 
     def create_title(self, data: dict[str, Any]) -> CodeTitle:
@@ -792,7 +709,6 @@ class SectionLifecycleRepository(SectionLifecycleStore):
     def reset(self) -> None:
         super().reset()
         with self.engine.begin() as connection:
-            connection.execute(section_search_embedding_records.delete())
             connection.execute(section_version_records.delete())
             connection.execute(code_section_records.delete())
             connection.execute(code_chapter_records.delete())
@@ -807,112 +723,75 @@ class SectionLifecycleRepository(SectionLifecycleStore):
         config = embedding_config_from_env()
         if not config:
             return []
-        self._refresh_all_search_embeddings()
         if self.engine.dialect.name != "postgresql":
-            return super()._rank_semantic_results(query)
+            return []
         try:
             query_embedding = embed_texts([query], config=config)[0]
         except SemanticSearchError:
             return []
         vector_literal = _pgvector_literal(query_embedding)
+        score_floor = _semantic_score_floor()
         statement = sa.text(
             """
-            SELECT section_id,
-                   section_version_id,
-                   embedding_model,
-                   source_text_checksum,
+            SELECT content_text,
                    1 - (embedding <=> CAST(:query_embedding AS vector)) AS score
-            FROM civiccode.section_search_embeddings
-            WHERE embedding_model = :embedding_model
+            FROM public.document_chunks
+            WHERE embedding IS NOT NULL
+              AND 1 - (embedding <=> CAST(:query_embedding AS vector)) >= :score_floor
             ORDER BY embedding <=> CAST(:query_embedding AS vector)
-            LIMIT 5
+            LIMIT 20
             """
         )
-        with self.engine.begin() as connection:
-            rows = connection.execute(
-                statement,
-                {"query_embedding": vector_literal, "embedding_model": config.model},
-            ).mappings()
-            return [
-                {
-                    "id": row["section_id"],
-                    "version_id": row["section_version_id"],
-                    "score": round(float(row["score"]), 6),
-                    "embedding_model": row["embedding_model"],
-                }
-                for row in rows
+        ranked: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        try:
+            with self.engine.begin() as connection:
+                rows = connection.execute(
+                    statement,
+                    {"query_embedding": vector_literal, "score_floor": score_floor},
+                ).mappings()
+                for row in rows:
+                    match = self._section_for_shared_chunk(str(row["content_text"]))
+                    if match is None or match.section_id in seen:
+                        continue
+                    current = self._current_adopted_version(match.section_id)
+                    if current is None:
+                        continue
+                    ranked.append(
+                        {
+                            "id": match.section_id,
+                            "version_id": current.version_id,
+                            "score": round(float(row["score"]), 6),
+                            "embedding_model": config.model,
+                        }
+                    )
+                    seen.add(match.section_id)
+                    if len(ranked) >= 5:
+                        break
+        except Exception:
+            return []
+        return ranked
+
+    def _section_for_shared_chunk(self, chunk_text: str) -> CodeSection | None:
+        for section_number in SECTION_NUMBER_RE.findall(chunk_text):
+            matches = [
+                section
+                for section in self._sections.values()
+                if section.section_number == section_number
             ]
-
-    def _persist_search_embedding(self, record: SearchEmbedding) -> None:
-        values = search_embedding_to_record(record)
-        with self.engine.begin() as connection:
-            if self.engine.dialect.name == "postgresql":
-                connection.execute(
-                    sa.text(
-                        """
-                        INSERT INTO civiccode.section_search_embeddings
-                            (section_id, section_version_id, embedding_model, embedding,
-                             source_text_checksum, updated_at)
-                        VALUES
-                            (:section_id, :section_version_id, :embedding_model,
-                             CAST(:embedding AS vector), :source_text_checksum, :updated_at)
-                        ON CONFLICT (section_id) DO UPDATE SET
-                            section_version_id = EXCLUDED.section_version_id,
-                            embedding_model = EXCLUDED.embedding_model,
-                            embedding = EXCLUDED.embedding,
-                            source_text_checksum = EXCLUDED.source_text_checksum,
-                            updated_at = EXCLUDED.updated_at
-                        """
-                    ),
-                    {
-                        **values,
-                        "embedding": _pgvector_literal(record.embedding),
-                    },
-                )
-                return
-            existing = connection.execute(
-                sa.select(section_search_embedding_records.c.section_id).where(
-                    section_search_embedding_records.c.section_id == record.section_id
-                )
-            ).first()
-            if existing:
-                connection.execute(
-                    section_search_embedding_records.update()
-                    .where(section_search_embedding_records.c.section_id == record.section_id)
-                    .values(**values)
-                )
-            else:
-                connection.execute(section_search_embedding_records.insert().values(**values))
-
-    def _remove_stale_search_embeddings(self, section_id: str) -> None:
-        super()._remove_stale_search_embeddings(section_id)
-        with self.engine.begin() as connection:
-            connection.execute(
-                section_search_embedding_records.delete().where(
-                    section_search_embedding_records.c.section_id == section_id
-                )
-            )
-
-    def _ensure_pgvector_schema(self) -> None:
-        with self.engine.begin() as connection:
-            connection.execute(
-                sa.text(
-                    """
-                    ALTER TABLE civiccode.section_search_embeddings
-                    ALTER COLUMN embedding TYPE vector(768)
-                    USING embedding::text::vector
-                    """
-                )
-            )
-            connection.execute(
-                sa.text(
-                    """
-                    CREATE INDEX IF NOT EXISTS ix_section_search_embeddings_embedding
-                    ON civiccode.section_search_embeddings
-                    USING ivfflat (embedding vector_cosine_ops)
-                    """
-                )
-            )
+            if matches:
+                return matches[0]
+        normalized_chunk = " ".join(chunk_text.lower().split())
+        for version in self._versions.values():
+            if version.status != "adopted" or not version.is_current:
+                continue
+            body = " ".join(version.body.lower().split())
+            if not body:
+                continue
+            snippet = body[:240]
+            if len(snippet) >= 80 and snippet in normalized_chunk:
+                return self._sections.get(version.section_id)
+        return None
 
     def _load(self) -> None:
         with self.engine.begin() as connection:
@@ -928,9 +807,6 @@ class SectionLifecycleRepository(SectionLifecycleStore):
             for row in connection.execute(sa.select(section_version_records)).mappings():
                 version = version_from_record(row)
                 self._versions[version.version_id] = version
-            for row in connection.execute(sa.select(section_search_embedding_records)).mappings():
-                embedding = search_embedding_from_record(row)
-                self._search_embeddings[embedding.section_id] = embedding
 
 
 def title_to_record(title: CodeTitle) -> dict[str, Any]:
@@ -986,17 +862,6 @@ def version_to_record(version: SectionVersion) -> dict[str, Any]:
         "amendment_summary": version.amendment_summary,
         "prior_version_id": version.prior_version_id,
         "created_at": version.created_at,
-    }
-
-
-def search_embedding_to_record(record: SearchEmbedding) -> dict[str, Any]:
-    return {
-        "section_id": record.section_id,
-        "section_version_id": record.section_version_id,
-        "embedding_model": record.embedding_model,
-        "embedding": record.embedding,
-        "source_text_checksum": record.source_text_checksum,
-        "updated_at": datetime.now(UTC),
     }
 
 
@@ -1056,23 +921,18 @@ def version_from_record(row: Any) -> SectionVersion:
     )
 
 
-def search_embedding_from_record(row: Any) -> SearchEmbedding:
-    raw_embedding = row["embedding"]
-    if isinstance(raw_embedding, str):
-        embedding = [float(value) for value in json.loads(raw_embedding)]
-    else:
-        embedding = [float(value) for value in raw_embedding]
-    return SearchEmbedding(
-        section_id=row["section_id"],
-        section_version_id=row["section_version_id"],
-        embedding_model=row["embedding_model"],
-        embedding=embedding,
-        source_text_checksum=row["source_text_checksum"],
-    )
-
-
 def _pgvector_literal(embedding: list[float]) -> str:
     return "[" + ",".join(f"{value:.9f}" for value in embedding) + "]"
+
+
+def _semantic_score_floor() -> float:
+    raw = os.environ.get("CIVICCODE_SEMANTIC_SCORE_FLOOR")
+    if raw is None:
+        return DEFAULT_SEMANTIC_SCORE_FLOOR
+    try:
+        return float(raw)
+    except ValueError:
+        return DEFAULT_SEMANTIC_SCORE_FLOOR
 
 
 def title_to_dict(title: CodeTitle) -> dict[str, Any]:

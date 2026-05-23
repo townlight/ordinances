@@ -1,0 +1,277 @@
+﻿CIVICCODE-LONGMONT-SECTION-FIDELITY-PROOF
+{
+  "pdf": "C:\\Users\\scott\\OneDrive\\Desktop\\Claude\\longmont-code-corpus\\Longmont, CO Code of Ordinances.pdf",
+  "pdf_size_bytes": 12394756,
+  "section_count": 1995,
+  "quality": {
+    "empty_body_count": 0,
+    "too_short_body_count": 8,
+    "header_footer_polluted_count": 0,
+    "empty_body_sections": [],
+    "too_short_body_sections": [
+      "1.08.010",
+      "2.44.010",
+      "4.24.010",
+      "4.93.010",
+      "6.04.020",
+      "15.06.070",
+      "15.08.110",
+      "15.09.030"
+    ],
+    "header_footer_polluted_sections": []
+  },
+  "samples_requested": 25,
+  "samples_returned": 25,
+  "samples": [
+    {
+      "section_number": "1.04.000",
+      "heading": "Title; citation",
+      "structured_body_length": 602,
+      "source_pdf_excerpt": "Sec. 1.04.000. Title; citation. The ordinances contained in these chapters shall constitute and shall be designated the \"Code of Ordinances, City of Longmont, Colorado\" and may be so called in any prosecution for the violation of any provision thereof or in any proceeding at law or equity. Further reference may be made to titles, chapters, sections and subsections of the \"Longmont Municipal Code\" or \"City Code\" and such references shall apply to that numbered title, chapter, section or subsection as it appears in this Code. State law reference\u2014Municipal power to adopt ordinances, C.R.S. \u00a7 31-15-103.",
+      "structured_body_excerpt": "1.04.000. Title; citation. The ordinances contained in these chapters shall constitute and shall be designated the \"Code of Ordinances, City of Longmont, Colorado\" and may be so called in any prosecution for the violation of any provision thereof or in any proceeding at law or equity. Further reference may be made to titles, chapters, sections and subsections of the \"Longmont Municipal Code\" or \"City Code\" and such references shall apply to that numbered title, chapter, section or subsection as it appears in this Code. State law reference\u2014Municipal power to adopt ordinances, C.R.S. \u00a7 31-15-103.",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "1.12.010",
+      "heading": "Designated",
+      "structured_body_length": 535,
+      "source_pdf_excerpt": "Sec. 1.12.010. Designated. Whenever any section of this Code prohibits or requires any act or omission and this Code specifies no specific fine or penalty for the violation, the court may punish any person convicted of the violation by a fine of up to $500.00 and imprisonment up to 90 days or both such fine and imprisonment. (Code 1981, \u00a7 1-3-3; Code 1993, \u00a7 1.12.010; Code 2009, \u00a7 1.12.010; Ord. No. O-88-14, \u00a7 1; Ord. No. O-92-50, \u00a7 2; Ord. No. O-94-61, \u00a7 9) State law reference\u2014Penalties for ordinance violations, C.R.S. \u00a7 31-16-101.",
+      "structured_body_excerpt": "1.12.010. Designated. Whenever any section of this Code prohibits or requires any act or omission and this Code specifies no specific fine or penalty for the violation, the court may punish any person convicted of the violation by a fine of up to $500.00 and imprisonment up to 90 days or both such fine and imprisonment. (Code 1981, \u00a7 1-3-3; Code 1993, \u00a7 1.12.010; Code 2009, \u00a7 1.12.010; Ord. No. O-88-14, \u00a7 1; Ord. No. O-92-50, \u00a7 2; Ord. No. O-94-61, \u00a7 9) State law reference\u2014Penalties for ordinance violations, C.R.S. \u00a7 31-16-101.",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "2.04.010",
+      "heading": "Wards designated",
+      "structured_body_length": 2069,
+      "source_pdf_excerpt": "Sec. 2.04.010. Wards designated. The boundaries of the three wards within the city as contemplated at article II, section 2.6 of the Municipal Charter, are fixed, as designated and described below, all of which more fully appears on the election map of the city in section 2.04.025, which is fully made part of this chapter. The wards shall consist of whole election precincts as depicted on the precinct map set by the Board of County Commissioners for Boulder County on January 20, 2022, by the adoption of the board's Resolution No. 2022-016, and the Board of County Commissioners for Weld County on January 19, 2022, by the adoption of the board's Resolution No. 2022- 0245. The ward boundaries shall be as depicted on the election map of the city in section 2.04.025. The property shown on election map of the city in section 2.04.025 presently lying outside the city limits shall, upon annexati",
+      "structured_body_excerpt": "2.04.010. Wards designated. The boundaries of the three wards within the city as contemplated at article II, section 2.6 of the Municipal Charter, are fixed, as designated and described below, all of which more fully appears on the election map of the city in section 2.04.025, which is fully made part of this chapter. The wards shall consist of whole election precincts as depicted on the precinct map set by the Board of County Commissioners for Boulder County on January 20, 2022, by the adoption of the board's Resolution No. 2022-016, and the Board of County Commissioners for Weld County on January 19, 2022, by the adoption of the board's Resolution No. 2022- 0245. The ward boundaries shall be as depicted on the election map of the city in section 2.04.025. The property shown on election map of the city in section 2.04.025 presently lying outside the city limits shall, upon annexation, a",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "2.20.090",
+      "heading": "Administrative chart",
+      "structured_body_length": 364,
+      "source_pdf_excerpt": "Sec. 2.20.090. Administrative chart. The city manager shall prepare a chart of organization and transmit such chart to the city council. The organization chart shall reflect the administrative organization of this chapter and the municipal court as established in chapter 2.08. (Code 1993, \u00a7 2.20.090; Code 2009, \u00a7 2.20.090; Ord. No. O-83-25, \u00a7 1) ADMINISTRATION",
+      "structured_body_excerpt": "2.20.090. Administrative chart. The city manager shall prepare a chart of organization and transmit such chart to the city council. The organization chart shall reflect the administrative organization of this chapter and the municipal court as established in chapter 2.08. (Code 1993, \u00a7 2.20.090; Code 2009, \u00a7 2.20.090; Ord. No. O-83-25, \u00a7 1) ADMINISTRATION",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "2.68.030",
+      "heading": "Licensing duties; secretary",
+      "structured_body_length": 626,
+      "source_pdf_excerpt": "Sec. 2.68.030. Licensing duties; secretary. The city clerk or designee shall receive all applications for licenses, facilitate the departmental review for each application as described in the rules of procedure, issue the licenses granted by the local licensing authority upon payment of fees required, and maintain all licensing records of the city. The authority shall designate a secretary to provide the necessary notice of meetings, secretarial and reporting services for the authority. (Code 1981, \u00a7 1-21-4; Code 1993, \u00a7 2.68.030; Code 2009, \u00a7 2.68.030; Ord. No. O-97-38, \u00a7 1; Ord. No. O-2020-40, \u00a7 4, 10-13-2020)",
+      "structured_body_excerpt": "2.68.030. Licensing duties; secretary. The city clerk or designee shall receive all applications for licenses, facilitate the departmental review for each application as described in the rules of procedure, issue the licenses granted by the local licensing authority upon payment of fees required, and maintain all licensing records of the city. The authority shall designate a secretary to provide the necessary notice of meetings, secretarial and reporting services for the authority. (Code 1981, \u00a7 1-21-4; Code 1993, \u00a7 2.68.030; Code 2009, \u00a7 2.68.030; Ord. No. O-97-38, \u00a7 1; Ord. No. O-2020-40, \u00a7 4, 10-13-2020)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "3.04.010",
+      "heading": "Title and scope",
+      "structured_body_length": 303,
+      "source_pdf_excerpt": "Sec. 3.04.010. Title and scope. This chapter shall constitute and be referred to as the official \"personnel rules\" of the city. The provisions thereof shall apply to all employees of the city. (Code 1981, \u00a7 1-23-1; Code 1993, \u00a7 3.04.010; Code 2009, \u00a7 3.04.010; Ord. No. O-79-13; Ord. No. O-85-14, \u00a7 1)",
+      "structured_body_excerpt": "3.04.010. Title and scope. This chapter shall constitute and be referred to as the official \"personnel rules\" of the city. The provisions thereof shall apply to all employees of the city. (Code 1981, \u00a7 1-23-1; Code 1993, \u00a7 3.04.010; Code 2009, \u00a7 3.04.010; Ord. No. O-79-13; Ord. No. O-85-14, \u00a7 1)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "3.04.430",
+      "heading": "Reductions in force",
+      "structured_body_length": 1554,
+      "source_pdf_excerpt": "Sec. 3.04.430. Reductions in force. The city manager may eliminate regular positions and dismiss regular employees because of material changes in duties, shortage or stoppage of work or funds, or for other reasons, as the city manager deems in the best interest of the city. Within each department, the city shall dismiss employees under this section in the same job classification considering the following factors: A. Those with the lowest performance; B. Those with the most disciplinary actions, considering recency, number and severity of actions; C. Those with the least job-related knowledge, skills and abilities; and D. Those with the least active service as a regular employee in any regular position. The human resources director shall place all regular full-time employees dismissed under authority of this section on a reemployment list for one year and shall offer them the opportunity ",
+      "structured_body_excerpt": "3.04.430. Reductions in force. The city manager may eliminate regular positions and dismiss regular employees because of material changes in duties, shortage or stoppage of work or funds, or for other reasons, as the city manager deems in the best interest of the city. Within each department, the city shall dismiss employees under this section in the same job classification considering the following factors: A. Those with the lowest performance; B. Those with the most disciplinary actions, considering recency, number and severity of actions; C. Those with the least job-related knowledge, skills and abilities; and D. Those with the least active service as a regular employee in any regular position. The human resources director shall place all regular full-time employees dismissed under authority of this section on a reemployment list for one year and shall offer them the opportunity to re",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.04.380",
+      "heading": "Refunds; conviction of violation; recovery of other refunds; printing penalties on applications",
+      "structured_body_length": 596,
+      "source_pdf_excerpt": "Sec. 4.04.380. Refunds; conviction of violation; recovery of other refunds; printing penalties on applications. If any person is convicted under the provisions of section 4.04.370, such conviction shall be prima facie evidence that all refunds received by such person during the current year were obtained unlawfully, and the director of finance is empowered and directed to bring appropriate action for recovery of such refund. A brief summary of the abovementioned penalties shall be printed on each form application for a refund. (Code 1981, \u00a7 2-4-26; Code 1993, \u00a7 4.04.380; Code 2009, \u00a7 4.04.380)",
+      "structured_body_excerpt": "4.04.380. Refunds; conviction of violation; recovery of other refunds; printing penalties on applications. If any person is convicted under the provisions of section 4.04.370, such conviction shall be prima facie evidence that all refunds received by such person during the current year were obtained unlawfully, and the director of finance is empowered and directed to bring appropriate action for recovery of such refund. A brief summary of the abovementioned penalties shall be printed on each form application for a refund. (Code 1981, \u00a7 2-4-26; Code 1993, \u00a7 4.04.380; Code 2009, \u00a7 4.04.380)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.05.350",
+      "heading": "Distraint, seizure and sale; initiation",
+      "structured_body_length": 916,
+      "source_pdf_excerpt": "Sec. 4.05.350. Distraint, seizure and sale; initiation. After the notice contemplated at section 4.05.330 has been filed or concurrently therewith, or at any time when taxes due are unpaid, whether such notice is filed or not, the director of finance may issue a warrant under the director's official seal directly to any employee, agent or representative of the department of finance, or to the sheriff of any county of this state, commanding them or their designated agents to distrain, levy upon, seize and sell sufficient of the real and personal property of the tax debtor found within the city, or within the county in which the sheriff is situated, for the payment of the amount due, together with interest, penalties and costs of collection including, without limitation, the direct and indirect personnel costs of employees' time incurred by the city. (Code 2009, \u00a7 4.05.350; Ord. No. O-2007",
+      "structured_body_excerpt": "4.05.350. Distraint, seizure and sale; initiation. After the notice contemplated at section 4.05.330 has been filed or concurrently therewith, or at any time when taxes due are unpaid, whether such notice is filed or not, the director of finance may issue a warrant under the director's official seal directly to any employee, agent or representative of the department of finance, or to the sheriff of any county of this state, commanding them or their designated agents to distrain, levy upon, seize and sell sufficient of the real and personal property of the tax debtor found within the city, or within the county in which the sheriff is situated, for the payment of the amount due, together with interest, penalties and costs of collection including, without limitation, the direct and indirect personnel costs of employees' time incurred by the city. (Code 2009, \u00a7 4.05.350; Ord. No. O-2007-72, ",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.12.040",
+      "heading": "Public access to procurement documents",
+      "structured_body_length": 872,
+      "source_pdf_excerpt": "Sec. 4.12.040. Public access to procurement documents. Procurement documents are public records to the extent provided in C.R.S. title 24, article 72, as amended, and are available to the public as provided in such statute. However, any party submitting a bid or proposal to the city may designate certain portions confidential, proprietary or trade secret information, indicating the basis for such designation. In the event a request is submitted for disclosure of such a document, the city will forthwith notify the party submitting the bid or proposal who will, within two business days, advise the city whether it objects to the disclosure of the confidential, proprietary or trade secret information. The city will comply with applicable law relating to public open records. (Code 2009, \u00a7 4.12.040; Ord. No. O-2011-25, \u00a7 2, 4-26-2011; Ord. No. O-2023-03, \u00a7 2, 1-24-2023)",
+      "structured_body_excerpt": "4.12.040. Public access to procurement documents. Procurement documents are public records to the extent provided in C.R.S. title 24, article 72, as amended, and are available to the public as provided in such statute. However, any party submitting a bid or proposal to the city may designate certain portions confidential, proprietary or trade secret information, indicating the basis for such designation. In the event a request is submitted for disclosure of such a document, the city will forthwith notify the party submitting the bid or proposal who will, within two business days, advise the city whether it objects to the disclosure of the confidential, proprietary or trade secret information. The city will comply with applicable law relating to public open records. (Code 2009, \u00a7 4.12.040; Ord. No. O-2011-25, \u00a7 2, 4-26-2011; Ord. No. O-2023-03, \u00a7 2, 1-24-2023)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.12.050",
+      "heading": "Authorization for the use of electronic transmissions",
+      "structured_body_length": 632,
+      "source_pdf_excerpt": "Sec. 4.12.050. Authorization for the use of electronic transmissions. The use of electronic media, including acceptance of electronic signatures, is authorized consistent with the city's applicable regulatory or other guidance for use of such media, so long as such guidance provides for: A. Appropriate security to prevent unauthorized access to the bidding, approval, and award processes; and B. Accurate retrieval or conversion of electronic forms of such information into a medium which permits inspection and copying. (Code 2009, \u00a7 4.12.050; Ord. No. O-2011-25, \u00a7 2, 4-26-2011) II. OFFICE OF THE PURCHASING AND CONTRACTS MANAGER",
+      "structured_body_excerpt": "4.12.050. Authorization for the use of electronic transmissions. The use of electronic media, including acceptance of electronic signatures, is authorized consistent with the city's applicable regulatory or other guidance for use of such media, so long as such guidance provides for: A. Appropriate security to prevent unauthorized access to the bidding, approval, and award processes; and B. Accurate retrieval or conversion of electronic forms of such information into a medium which permits inspection and copying. (Code 2009, \u00a7 4.12.050; Ord. No. O-2011-25, \u00a7 2, 4-26-2011) II. OFFICE OF THE PURCHASING AND CONTRACTS MANAGER",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.12.160",
+      "heading": "Emergency procurements",
+      "structured_body_length": 901,
+      "source_pdf_excerpt": "Sec. 4.12.160. Emergency procurements. Notwithstanding any provisions of this chapter, the purchasing and contracts manager may make or authorize others to make emergency procurements of supplies, services or construction items when there exists a threat to public health, welfare or safety, provided that such emergency procurements will be made with such competition as is practicable under the circumstances. A written determination of the basis for the emergency and for the selection of the particular contractor will be included in the contract file. As soon as practicable, a record of each emergency procurement will be made and set forth the contractor's name, the amount and type of the contract, a listing of the item procured under the contract, and the identification number of the contract file. (Code 2009, \u00a7 4.12.160; Ord. No. O-2011-25, \u00a7 2, 4-26-2011; Ord. No. O-2023-03, \u00a7 2, 1-24-",
+      "structured_body_excerpt": "4.12.160. Emergency procurements. Notwithstanding any provisions of this chapter, the purchasing and contracts manager may make or authorize others to make emergency procurements of supplies, services or construction items when there exists a threat to public health, welfare or safety, provided that such emergency procurements will be made with such competition as is practicable under the circumstances. A written determination of the basis for the emergency and for the selection of the particular contractor will be included in the contract file. As soon as practicable, a record of each emergency procurement will be made and set forth the contractor's name, the amount and type of the contract, a listing of the item procured under the contract, and the identification number of the contract file. (Code 2009, \u00a7 4.12.160; Ord. No. O-2011-25, \u00a7 2, 4-26-2011; Ord. No. O-2023-03, \u00a7 2, 1-24-2023)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.12.165",
+      "heading": "Procurements to remediate emergencies or disasters declared by the city manager",
+      "structured_body_length": 779,
+      "source_pdf_excerpt": "Sec. 4.12.165. Procurements to remediate emergencies or disasters declared by the city manager. Notwithstanding any provisions of this chapter, in order to remediate emergencies or disasters declared by the city manager under the authority of this Code, the purchasing and contracts manager may make or authorize others to make emergency procurements of supplies, services or construction items and may raise the contract amounts specified in section 4.12.140 to align with current federal or state procurement guidelines, provided that such emergency or disaster procurements are made with such competition as is practicable under the circumstances. (Code 2009, \u00a7 4.12.165; Ord. No. O-2013-50, \u00a7 1, 10-8-2013; Ord. No. O-2016-59, \u00a7 2, 9-27-2016; Ord. No. O-2023-03, \u00a7 2, 1-24-2023)",
+      "structured_body_excerpt": "4.12.165. Procurements to remediate emergencies or disasters declared by the city manager. Notwithstanding any provisions of this chapter, in order to remediate emergencies or disasters declared by the city manager under the authority of this Code, the purchasing and contracts manager may make or authorize others to make emergency procurements of supplies, services or construction items and may raise the contract amounts specified in section 4.12.140 to align with current federal or state procurement guidelines, provided that such emergency or disaster procurements are made with such competition as is practicable under the circumstances. (Code 2009, \u00a7 4.12.165; Ord. No. O-2013-50, \u00a7 1, 10-8-2013; Ord. No. O-2016-59, \u00a7 2, 9-27-2016; Ord. No. O-2023-03, \u00a7 2, 1-24-2023)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "4.60.020",
+      "heading": "Revenue sources",
+      "structured_body_length": 297,
+      "source_pdf_excerpt": "Sec. 4.60.020. Revenue sources. The golf enterprise fund shall be funded through all revenues designated by the city council, including green fees, season passes, commissions from concessionaire sales, locker rentals and cart fees. (Code 1993, \u00a7 4.60.020; Code 2009, \u00a7 4.60.020; Ord. No. O-84-98, \u00a7 2)",
+      "structured_body_excerpt": "4.60.020. Revenue sources. The golf enterprise fund shall be funded through all revenues designated by the city council, including green fees, season passes, commissions from concessionaire sales, locker rentals and cart fees. (Code 1993, \u00a7 4.60.020; Code 2009, \u00a7 4.60.020; Ord. No. O-84-98, \u00a7 2)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "6.04.010",
+      "heading": "Applicability of Code provisions and current regulations",
+      "structured_body_length": 421,
+      "source_pdf_excerpt": "Sec. 6.04.010. Applicability of Code provisions and current regulations. All licenses which may be issued under any provisions of this Code shall be subject to the code and regulations applicable to such license which may be in force at the time of issuance of such license or which may be subsequently promulgated by the city council. (Code 1981, \u00a7 2-6-1; Code 1993, \u00a7 6.04.010; Code 2009, \u00a7 6.04.010; Ord. No. O-80-25, \u00a7 1)",
+      "structured_body_excerpt": "6.04.010. Applicability of Code provisions and current regulations. All licenses which may be issued under any provisions of this Code shall be subject to the code and regulations applicable to such license which may be in force at the time of issuance of such license or which may be subsequently promulgated by the city council. (Code 1981, \u00a7 2-6-1; Code 1993, \u00a7 6.04.010; Code 2009, \u00a7 6.04.010; Ord. No. O-80-25, \u00a7 1)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "6.65.190",
+      "heading": "Prohibition against children in a sexually oriented business",
+      "structured_body_length": 331,
+      "source_pdf_excerpt": "Sec. 6.65.190. Prohibition against children in a sexually oriented business. A licensee commits a violation of this chapter if the person knowingly allows a person under the age of 18 years on the premises of a sexually oriented business. (Code 1993, \u00a7 6.65.190; Code 2009, \u00a7 6.65.190; Ord. No. O-2001-49, \u00a7 1; Ord. No. O-2002-26, \u00a7 4)",
+      "structured_body_excerpt": "6.65.190. Prohibition against children in a sexually oriented business. A licensee commits a violation of this chapter if the person knowingly allows a person under the age of 18 years on the premises of a sexually oriented business. (Code 1993, \u00a7 6.65.190; Code 2009, \u00a7 6.65.190; Ord. No. O-2001-49, \u00a7 1; Ord. No. O-2002-26, \u00a7 4)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "6.101.060",
+      "heading": "Approval",
+      "structured_body_length": 341,
+      "source_pdf_excerpt": "Sec. 6.101.060. Approval. The city clerk, or the clerk's designee, shall issue the license, when the application complies with this chapter, all required fees have been paid, proof of insurance has been filed and the vehicles meet the standards in section 6.101.050. (Code 1993, \u00a7 6.101.060; Code 2009, \u00a7 6.101.060; Ord. No. O-95-108, \u00a7 1)",
+      "structured_body_excerpt": "6.101.060. Approval. The city clerk, or the clerk's designee, shall issue the license, when the application complies with this chapter, all required fees have been paid, proof of insurance has been filed and the vehicles meet the standards in section 6.101.050. (Code 1993, \u00a7 6.101.060; Code 2009, \u00a7 6.101.060; Ord. No. O-95-108, \u00a7 1)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "9.04.010",
+      "heading": "Designated generally; prohibited states of things",
+      "structured_body_length": 344,
+      "source_pdf_excerpt": "Sec. 9.04.010. Designated generally; prohibited states of things. As used in this chapter, and unless the context otherwise requires, the term \"nuisance\" means public nuisance and is any state of things this Code specifies as a nuisance or public nuisance. (Code 1981, \u00a7 5-5-1; Code 1993, \u00a7 9.04.010; Code 2009, \u00a7 9.04.010; Ord. No. O-2007-86, \u00a7 2)",
+      "structured_body_excerpt": "9.04.010. Designated generally; prohibited states of things. As used in this chapter, and unless the context otherwise requires, the term \"nuisance\" means public nuisance and is any state of things this Code specifies as a nuisance or public nuisance. (Code 1981, \u00a7 5-5-1; Code 1993, \u00a7 9.04.010; Code 2009, \u00a7 9.04.010; Ord. No. O-2007-86, \u00a7 2)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "9.20.120",
+      "heading": "Disposal of offal and trimmings; rendering offal prohibited",
+      "structured_body_length": 456,
+      "source_pdf_excerpt": "Sec. 9.20.120. Disposal of offal and trimmings; rendering offal prohibited. All slaughtering establishments shall dispose of offal and trimmings daily by means of a method approved by the state board of health. Any render- ing of inedible offal is expressly prohibited. Trimmings and offal shall be held in waterproof metal cans with tight-fitting metal lids, which shall be cleaned daily. (Code 1981, \u00a7 9-4-4(H); Code 1993, \u00a7 9.20.120; Code 2009, \u00a7 9.20.120)",
+      "structured_body_excerpt": "9.20.120. Disposal of offal and trimmings; rendering offal prohibited. All slaughtering establishments shall dispose of offal and trimmings daily by means of a method approved by the state board of health. Any render- ing of inedible offal is expressly prohibited. Trimmings and offal shall be held in waterproof metal cans with tight-fitting metal lids, which shall be cleaned daily. (Code 1981, \u00a7 9-4-4(H); Code 1993, \u00a7 9.20.120; Code 2009, \u00a7 9.20.120)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "10.08.080",
+      "heading": "False reporting to authorities",
+      "structured_body_length": 1228,
+      "source_pdf_excerpt": "Sec. 10.08.080. False reporting to authorities. It is unlawful to: A. Knowingly or negligently cause a false alarm of fire or other emergency to be sent to or within any fire district or department, an ambulance service or any agency of the city which deals with emergencies involving danger to life or property; B. Knowingly or negligently make a report or cause the transmission of a report to any police department of a crime or other incident within its official concern knowing that it did not occur; C. Knowingly or negligently make a report or purposely cause the transmission of a report to the police department pretending to furnish information about an offense or other incident within its official concern when the person reporting has no such information or knows that the information is false; or D. Knowingly provide false identifying information to law enforcement authorities. As use",
+      "structured_body_excerpt": "10.08.080. False reporting to authorities. It is unlawful to: A. Knowingly or negligently cause a false alarm of fire or other emergency to be sent to or within any fire district or department, an ambulance service or any agency of the city which deals with emergencies involving danger to life or property; B. Knowingly or negligently make a report or cause the transmission of a report to any police department of a crime or other incident within its official concern knowing that it did not occur; C. Knowingly or negligently make a report or purposely cause the transmission of a report to the police department pretending to furnish information about an offense or other incident within its official concern when the person reporting has no such information or knows that the information is false; or D. Knowingly provide false identifying information to law enforcement authorities. As used in ",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "10.50.100",
+      "heading": "Disposition of hazardous property",
+      "structured_body_length": 453,
+      "source_pdf_excerpt": "Sec. 10.50.100. Disposition of hazardous property. Notwithstanding any other provision of this chapter or this Code, the director of the department having possession of the property may immediately dispose of any property that reasonably appears to pose a sanitary or health hazard if stored. The director shall keep a log of all property disposed of for these reasons. (Code 2009, \u00a7 10.50.100; Ord. No. O-2017-10, \u00a7 14, 3-7-2017) CHAPTER 10.60. FIREWORKS",
+      "structured_body_excerpt": "10.50.100. Disposition of hazardous property. Notwithstanding any other provision of this chapter or this Code, the director of the department having possession of the property may immediately dispose of any property that reasonably appears to pose a sanitary or health hazard if stored. The director shall keep a log of all property disposed of for these reasons. (Code 2009, \u00a7 10.50.100; Ord. No. O-2017-10, \u00a7 14, 3-7-2017) CHAPTER 10.60. FIREWORKS",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "11.12.010",
+      "heading": "Authorized when",
+      "structured_body_length": 3944,
+      "source_pdf_excerpt": "Sec. 11.12.010. Authorized when. A. Members of the police department are authorized to remove or have removed a vehicle to the nearest place of safety, or to a garage designated or maintained by the police department, or by this municipality, under the circumstances listed here: 1. When any vehicle is left upon any bridge, causeway or viaduct, or in any subway or underpass, where the vehicle is an obstruction to traffic; 2. When a vehicle upon a street is so disabled as to be an obstruction to traffic, or the person in charge of the vehicle is, by *State law references\u2014Vehicles abandoned on public property, C.R.S. \u00a7 42-4-1801 et seq.; disposition of unclaimed vehicles, C.R.S. \u00a7 43-13-101 et seq. reason of physical injury or otherwise, incapacitated to such an extent as to be unable to provide for its custody and removal; 3. When a vehicle is being driven upon the streets and is not in pr",
+      "structured_body_excerpt": "11.12.010. Authorized when. A. Members of the police department are authorized to remove or have removed a vehicle to the nearest place of safety, or to a garage designated or maintained by the police department, or by this municipality, under the circumstances listed here: 1. When any vehicle is left upon any bridge, causeway or viaduct, or in any subway or underpass, where the vehicle is an obstruction to traffic; 2. When a vehicle upon a street is so disabled as to be an obstruction to traffic, or the person in charge of the vehicle is, by *State law references\u2014Vehicles abandoned on public property, C.R.S. \u00a7 42-4-1801 et seq.; disposition of unclaimed vehicles, C.R.S. \u00a7 43-13-101 et seq. reason of physical injury or otherwise, incapacitated to such an extent as to be unable to provide for its custody and removal; 3. When a vehicle is being driven upon the streets and is not in proper ",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "13.04.010",
+      "heading": "Work in the public way permit required when; standards for work; submission of engineering information",
+      "structured_body_length": 2671,
+      "source_pdf_excerpt": "Sec. 13.04.010. Work in the public way permit required when; standards for work; submission of engineering information. A. It is unlawful for any person to construct or reconstruct, make or alter any street, driveway, curb, sidewalk or excavation, or alter any opening, or to perform work of any kind within any existing or improved public way in the city that results in physical alterations thereof, or disrupts the normal flow of traffic, or to install any utilities or public or private improvements either underground or above ground, without a permit for the work. B. All physical alterations to the public way shall conform to the city public improvement design standards and construction specifications, and any other applicable design and construction standards. Persons desiring to perform work, as designated above, shall apply to the public works/ water utilities director for a permit on",
+      "structured_body_excerpt": "13.04.010. Work in the public way permit required when; standards for work; submission of engineering information. A. It is unlawful for any person to construct or reconstruct, make or alter any street, driveway, curb, sidewalk or excavation, or alter any opening, or to perform work of any kind within any existing or improved public way in the city that results in physical alterations thereof, or disrupts the normal flow of traffic, or to install any utilities or public or private improvements either underground or above ground, without a permit for the work. B. All physical alterations to the public way shall conform to the city public improvement design standards and construction specifications, and any other applicable design and construction standards. Persons desiring to perform work, as designated above, shall apply to the public works/ water utilities director for a permit on form",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "14.04.010",
+      "heading": "Water utility designated",
+      "structured_body_length": 318,
+      "source_pdf_excerpt": "Sec. 14.04.010. Water utility designated. All publicly owned and maintained works used to supply the city and users with water under the metered rates shall be known as the \"water utility.\" (Code 1981, \u00a7 8-1-1; Code 1993, \u00a7 14.04.010; Code 2009, \u00a7 14.04.010; Ord. No. O-93-33, \u00a7 1; Ord. No. O-2015-09, \u00a7 2, 1-27-2015)",
+      "structured_body_excerpt": "14.04.010. Water utility designated. All publicly owned and maintained works used to supply the city and users with water under the metered rates shall be known as the \"water utility.\" (Code 1981, \u00a7 8-1-1; Code 1993, \u00a7 14.04.010; Code 2009, \u00a7 14.04.010; Ord. No. O-93-33, \u00a7 1; Ord. No. O-2015-09, \u00a7 2, 1-27-2015)",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    },
+    {
+      "section_number": "15.02.010",
+      "heading": "Purpose of this chapter",
+      "structured_body_length": 2221,
+      "source_pdf_excerpt": "Sec. 15.02.010. Purpose of this chapter. b. Developments with applications for approval pending. An applicant that has submitted a complete application for a preliminary subdivision plat (excluding conveyance plats), overall development plan, site plan, conditional use, building permit, or any other type of approval (excluding concept plans), but where the decision-making body has not taken final action on such application before the effective date of the ordinance from which this development code is derived, may choose to have the standards and procedures of this development code apply to the application. Alternately, the applicant may choose to have the complete application reviewed under the previous code in effect, subject to the following provisions: i. Such complete application shall receive final city approval within the timeframes specified in the previous code, but no later than",
+      "structured_body_excerpt": "15.02.010. Purpose of this chapter. b. Developments with applications for approval pending. An applicant that has submitted a complete application for a preliminary subdivision plat (excluding conveyance plats), overall development plan, site plan, conditional use, building permit, or any other type of approval (excluding concept plans), but where the decision-making body has not taken final action on such application before the effective date of the ordinance from which this development code is derived, may choose to have the standards and procedures of this development code apply to the application. Alternately, the applicant may choose to have the complete application reviewed under the previous code in effect, subject to the following provisions: i. Such complete application shall receive final city approval within the timeframes specified in the previous code, but no later than six ",
+      "body_excerpt_found_in_source": true,
+      "header_footer_polluted": false,
+      "too_short": false
+    }
+  ]
+}

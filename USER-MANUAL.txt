@@ -114,21 +114,29 @@ routes legal-advice questions back to staff.
 
 ## For IT and technical staff
 
-This repo currently contains the v1.0.0 staff operations surfaces,
-CivicCore v1 contracts, durable import/codifier sync state, and
-documentation and verification gates. Runtime implementation must follow the
-CivicSuite pattern:
+This repo currently contains active-branch staff operations surfaces,
+CivicCore shared-ingestion contracts, durable import/codifier sync state, and
+documentation and verification gates. CivicCode remains v0.6.0 until an
+independent audit clears any future v1.0.0 release. Runtime implementation
+must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- published `civiccore v1.1.0` release-wheel dependency,
+- CivicCore shared-ingestion dependency
+  `80799976d1b50a76f549400afebeb994b935ff0c`,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,
 - no imports from unreleased CivicCore placeholder packages.
 
+The active branch can ingest the full Longmont Code of Ordinances PDF through
+CivicCore shared ingestion, persist 768-dimensional Ollama embeddings in shared
+document chunks, structure the corpus into CivicCode code records, and answer a
+cited question through local Ollama. This is audit evidence, not a release
+claim.
+
 Install and run:
 
 ```bash
-python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
@@ -448,7 +456,7 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v0.6.0 is the public-use municipal-code module release candidate. It
+CivicCode v0.6.0 is active-branch municipal-code module evidence for audit. It
 persists source registry records, title/chapter/section/version records,
 staff-approved popular questions, staff notes, plain-language summaries,
 CivicClerk handoffs, import jobs, and codifier sync source state through

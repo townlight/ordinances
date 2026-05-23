@@ -16,15 +16,15 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "22"
-      - name: Install CivicCore release wheel
-        run: python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+      - name: Install CivicCore shared-ingestion dependency
+        run: python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
-      - name: Run product tests against published CivicCore
+      - name: Run product tests against CivicCore shared-ingestion dependency
         run: python -m pytest --ignore=tests/test_release_provenance_gate.py
-      - name: Run release-provenance tooling tests against published CivicCore
+      - name: Run release-provenance tooling tests against CivicCore shared-ingestion dependency
         run: |
-          python -m pip install --force-reinstall https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+          python -m pip install --force-reinstall "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
           python -m pytest tests/test_release_provenance_gate.py
       - name: Verify docs
         run: bash scripts/verify-docs.sh
@@ -51,8 +51,8 @@ jobs:
           import hashlib
 
           dist = Path("dist")
-          wheel = dist / "civiccode-0.6.0-py3-none-any.whl"
-          sdist = dist / "civiccode-0.6.0.tar.gz"
+          wheel = dist / "civiccode-1.0.0-py3-none-any.whl"
+          sdist = dist / "civiccode-1.0.0.tar.gz"
           assert wheel.exists(), f"missing {wheel}"
           assert sdist.exists(), f"missing {sdist}"
           lines = []

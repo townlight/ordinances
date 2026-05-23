@@ -18,7 +18,7 @@ plain-language summaries, staff workbench, citation-grounded Q&A, citation
 contract, search and permalink, section/version, source registry, runtime
 foundation, and canonical schema foundations: an
 installable Python package, a FastAPI app shell, `/` and `/health` endpoints,
-a published `civiccore v1.1.0` release-wheel dependency, canonical SQLAlchemy table
+a CivicCore shared-ingestion dependency, canonical SQLAlchemy table
 metadata, Alembic migrations under the `civiccode` schema, source registry APIs,
 optional database-backed source registry persistence, staff-header-protected
 source registry mutations and staff source reads, staff source registry
@@ -66,17 +66,15 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
-real backend, database migrations, substantial municipal-code workflow logic,
-active-branch local AI integration, active-branch React frontend work, real
-Ollama embedding retrieval with PostgreSQL pgvector runtime proof,
-installed-stack, suite module-selection, and source-attributed Portland Title
-13 municipal data fixture proof, but the prior `v1.0.0` release was
-published in error. CivicCode is not finished, shipping, city-ready,
-product-ready, or public-use ready until complete public-use gate evidence and
-an independent Section 2 audit are complete. The
-existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical
-evidence only.
+The current CivicCode label is v1.0.0 after the independent release-gate audit
+cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
+CivicCode has a real backend, database migrations, substantial municipal-code
+workflow logic, local AI integration, React frontend work, real Ollama
+embedding retrieval with PostgreSQL pgvector runtime proof, installed-stack and
+suite module-selection evidence, source-attributed Portland Title 13 municipal
+data fixture proof, and full Longmont PDF ingestion through CivicCore shared
+ingestion. The older v0.1.17, v0.1.18, v0.5.0, and mistaken 2026-05-21 v1.0.0
+postures remain historical evidence only.
 
 - install and import the package,
 - expose health/root endpoints for IT smoke checks,
@@ -161,6 +159,9 @@ evidence only.
   detail states,
 - import local CSV/file-drop bundles and official HTML extract fixtures through
   staff-only endpoints,
+- ingest the full Longmont Code of Ordinances PDF through CivicCore shared
+  ingestion, then structure the resulting chunks into CivicCode titles,
+  chapters, sections, and adopted versions,
 - prove that import/search/cited-answer path against a source-attributed
   Portland municipal code fixture without treating that fixture as a full city
   corpus,
@@ -211,7 +212,8 @@ evidence only.
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the current shared CivicCore v1.1.0 release wheel,
+- consume the CivicCore shared-ingestion commit
+  `80799976d1b50a76f549400afebeb994b935ff0c`,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
@@ -258,14 +260,18 @@ Read these upstream documents first:
 
 ## Development status
 
-Install the CivicCore release wheel first, then install CivicCode in editable
-mode:
+Install the CivicCore shared-ingestion dependency, then install
+CivicCode in editable mode:
 
 ```bash
-python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/civiccore-1.1.0-py3-none-any.whl
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
+
+The CivicCore archive pin is active-branch audit evidence only. Before any
+public release, CivicCore must publish a release artifact containing the shared
+ingestion pipeline and CivicCode must consume that released artifact.
 
 Docker demo path:
 
@@ -413,6 +419,46 @@ Ollama `/api/generate` endpoint with only the retrieved cited section text and
 marks the answer `ai_review_required=true`. Code-answer behavior remains
 limited to cited adopted text. Legal-advice, uncited, stale, missing,
 ambiguous, or contradictory requests return structured refusals.
+
+Longmont shared-ingestion proof:
+
+```powershell
+$env:CIVICCODE_SOURCE_REGISTRY_DB_URL='postgresql+psycopg2://civiccode@localhost:33134/civiccode'
+$env:OLLAMA_BASE_URL='http://localhost:11434'
+$env:CIVICCODE_OLLAMA_EMBEDDING_URL='http://localhost:11434'
+$env:CIVICCODE_EMBEDDING_MODE='ollama'
+$env:CIVICCODE_AI_MODE='ollama'
+$env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
+$env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
+$env:CIVICCODE_SEMANTIC_SCORE_FLOOR='0.58'
+python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL --force-reingest
+python scripts\prove-longmont-civiccore-chunk-params.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+```
+
+Expected Longmont proof today: the full Longmont PDF is parsed through
+CivicCore shared ingestion, persisted as `document_chunks` with 768-dimensional
+Ollama embeddings, structured into CivicCode titles, chapters, sections, and
+versions, searched through PostgreSQL pgvector, and answered through a cited,
+staff-review-required local Ollama response. See
+`docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md`.
+
+Fresh force-reingest proof for PR #61 completed against the same
+12,394,756-byte PDF with 1,604 pages, 2,931 queryable shared chunks, 2,931
+embedded rows, `chunk_size=500`, `chunk_overlap=50`, and 1,995 structured
+CivicCode sections. The committed section-fidelity proof reports 0 empty
+bodies, 0 header/footer-polluted bodies, and a side-by-side `4.12.040`
+source/structured sample containing the full public-records paragraph. The
+committed dual-run proof script demonstrates that the
+older CivicCore evidence listing 1,789 chunks used `chunk_size=900` /
+`chunk_overlap=90`; that count is valid for its parameter set but must not be
+cited as the current CivicCode PR #61 proof count.
+
+For staff API imports, `pdf_path` must resolve inside
+`CIVICCODE_SHARED_INGEST_ALLOWED_DIRS`/`CIVICCODE_SHARED_INGEST_ALLOWED_DIR`,
+or the default local `longmont-code-corpus` / module `fixtures` directories.
+Semantic nearest-neighbor results below `CIVICCODE_SEMANTIC_SCORE_FLOOR`
+(`0.58` by default) are filtered out instead of returning low-confidence
+sections for unrelated resident queries.
 
 Staff workbench smoke:
 

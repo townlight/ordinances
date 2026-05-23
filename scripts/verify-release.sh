@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.6.0"
+VERSION="1.0.0"
 
 find_python() {
   local candidates=()
@@ -40,7 +40,7 @@ ${PYTHON_BIN} - <<'PY'
 from pathlib import Path
 import tomllib
 
-version = "0.6.0"
+version = "1.0.0"
 root = Path(".")
 pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
 assert pyproject["project"]["version"] == version, pyproject["project"]["version"]
@@ -64,10 +64,10 @@ echo "==> Product test suite"
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
 if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
-  echo "==> Release-provenance tooling tests against published CivicCore"
+  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
   echo "SKIP: isolated provenance test already ran in this CI job"
 else
-  echo "==> Release-provenance tooling tests against published CivicCore"
+  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
   ${PYTHON_BIN} - <<'PY'
 from __future__ import annotations
 
@@ -77,10 +77,7 @@ import tempfile
 import venv
 from pathlib import Path
 
-wheel_url = (
-    "https://github.com/CivicSuite/civiccore/releases/download/v1.1.0/"
-    "civiccore-1.1.0-py3-none-any.whl"
-)
+wheel_url = "https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
 temp_dir = Path(tempfile.mkdtemp(prefix="civiccode-release-provenance-"))
 
 try:
@@ -162,8 +159,8 @@ from pathlib import Path
 import hashlib
 
 dist = Path("dist")
-wheel = dist / "civiccode-0.6.0-py3-none-any.whl"
-sdist = dist / "civiccode-0.6.0.tar.gz"
+wheel = dist / "civiccode-1.0.0-py3-none-any.whl"
+sdist = dist / "civiccode-1.0.0.tar.gz"
 assert wheel.exists(), f"missing {wheel}"
 assert sdist.exists(), f"missing {sdist}"
 lines = []

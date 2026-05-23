@@ -87,6 +87,10 @@ from civiccode.section_lifecycle import (
     title_to_dict,
     version_to_dict,
 )
+from civiccode.shared_ingestion import (
+    SharedIngestionError,
+    build_longmont_import_from_shared_ingestion,
+)
 from civiccode.staff_sources import (
     render_staff_source_required_page,
     render_staff_source_workspace,
@@ -466,6 +470,15 @@ class ImportBundleCreate(BaseModel):
     provenance: dict[str, Any] = Field(default_factory=dict)
 
 
+class SharedPdfImportCreate(BaseModel):
+    """Request body for CivicCore shared PDF ingestion into CivicCode."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    pdf_path: str = Field(min_length=1)
+    force_reingest: bool = False
+
+
 class CodifierSyncConfigureRequest(BaseModel):
     """Request body for enabling staff-controlled codifier sync readiness."""
 
@@ -510,6 +523,10 @@ def _raise_handoff_error(exc: OrdinanceHandoffError) -> None:
 
 
 def _raise_import_error(exc: CivicCodeImportError) -> None:
+    raise HTTPException(status_code=exc.status_code, detail=exc.detail()) from exc
+
+
+def _raise_shared_ingestion_error(exc: SharedIngestionError) -> None:
     raise HTTPException(status_code=exc.status_code, detail=exc.detail()) from exc
 
 
@@ -757,7 +774,7 @@ async def root() -> dict[str, str]:
         "api_base": "/api/v1/civiccode",
         "future_public_path": "/civiccode",
         "next_step": (
-            "CivicCode v0.6.0 persists section/version lifecycle records, "
+            "CivicCode v1.0.0 persists section/version lifecycle records, "
             "popular-question discovery aids, staff notes, plain-language "
             "summaries, CivicClerk handoff records, handoff audit events, and "
             "local import job ledgers, codifier sync source state, and "
@@ -1489,6 +1506,40 @@ async def create_local_import_job(
     actor = _require_staff(x_civiccode_role, x_civiccode_actor)
     job = _get_import_store().run_import(request.model_dump(), actor=actor)
     return job_to_dict(job)
+
+
+@app.post("/api/v1/civiccode/staff/imports/shared-pdf", status_code=201)
+async def create_shared_pdf_import_job(
+    request: SharedPdfImportCreate,
+    x_civiccode_role: str | None = Header(default=None),
+    x_civiccode_actor: str | None = Header(default=None),
+) -> dict[str, Any]:
+    """Ingest a municipal code PDF through CivicCore, then structure it for CivicCode."""
+    actor = _require_staff(x_civiccode_role, x_civiccode_actor)
+    db_url = os.environ.get("CIVICCODE_SOURCE_REGISTRY_DB_URL") or os.environ.get("DATABASE_URL")
+    if db_url is None:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "message": "Shared PDF ingestion requires a durable PostgreSQL runtime.",
+                "fix": "Set CIVICCODE_SOURCE_REGISTRY_DB_URL or DATABASE_URL to the CivicCode PostgreSQL DSN.",
+            },
+        )
+    try:
+        shared_import = await build_longmont_import_from_shared_ingestion(
+            pdf_path=request.pdf_path,
+            db_url=db_url,
+            actor=actor,
+            force_reingest=request.force_reingest,
+        )
+        job = _get_import_store().run_import(shared_import.payload, actor=actor)
+    except SharedIngestionError as exc:
+        _raise_shared_ingestion_error(exc)
+    return {
+        "job": job_to_dict(job),
+        "shared_ingestion": shared_import.proof,
+        "code_answer_behavior": "semantic_retrieval_available",
+    }
 
 
 @app.get("/api/v1/civiccode/staff/imports")

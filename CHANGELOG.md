@@ -1,27 +1,53 @@
 # Changelog
 
-## [0.6.0 active completion branch] - 2026-05-21
+## [1.0.0] - 2026-05-22
 
+- Repointed active-branch CivicCode to the CivicCore shared-ingestion
+  commit `80799976d1b50a76f549400afebeb994b935ff0c` instead of the older
+  `v1.1.0` wheel so full PDF parsing, chunking, and embedding come from
+  CivicCore.
+- Added the staff-only `/api/v1/civiccode/staff/imports/shared-pdf` path for
+  ingesting a municipal code PDF through CivicCore and structuring the result
+  into CivicCode title/chapter/section/version records.
+- Switched CivicCode embedding calls to the CivicCore ingestion embedder and
+  made PostgreSQL semantic ranking use shared CivicCore `document_chunks`
+  pgvector rows instead of CivicCode-local section embedding storage.
+- Added `scripts/prove-longmont-shared-ingestion.py`,
+  `scripts/prove-longmont-civiccore-chunk-params.py`, and
+  `scripts/prove-longmont-section-fidelity.py` plus
+  `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
+  full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,995
+  structured sections, shared pgvector search, and local Ollama cited Q&A.
+  The force-reingest proof records the exact input basis: 1,604 pages,
+  12,394,756 source bytes, 2,931 chunks, `chunk_size=500`,
+  `chunk_overlap=50`, and 768-dimensional embeddings; the dual-run script
+  reproduces `chunk_size=900` / `chunk_overlap=90` as 1,789 chunks and
+  `chunk_size=500` / `chunk_overlap=50` as 2,931 chunks from the same PDF.
+  The section-fidelity proof reports 0 empty bodies, 0 header/footer-polluted
+  bodies, and a `4.12.040` side-by-side source/structured sample with the full
+  public-records paragraph.
+- Promoted CivicCode to `1.0.0` after independent release-gate re-audit #5
+  cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major
+  findings.
 - Added source-bounded local Ollama answer generation for citation-grounded
   questions. AI output remains non-authoritative, cited, and
   staff-review-required; deterministic citation extraction remains the fallback.
 - Added the React/Vite/TypeScript resident app at `/civiccode/app`, served by
   FastAPI and verified against live search and cited-answer API calls.
 - Replaced the local hash-bucket search stand-in with configured Ollama
-  embeddings, persisted search embeddings, and a PostgreSQL pgvector ranking
-  path. The search test suite now proves a zero-literal-overlap retrieval
-  through local `nomic-embed-text` and a disposable `pgvector/pgvector:pg17`
-  database when those runtimes are available.
+  embeddings and, in this follow-up, removed the CivicCode-local section
+  embedding store so runtime semantic retrieval depends on shared CivicCore
+  `document_chunks`. The search test suite now proves a zero-literal-overlap
+  retrieval through local `nomic-embed-text` and a disposable
+  `pgvector/pgvector:pg17` database when those runtimes are available.
 - Added adversarial tests and evidence for bad input, missing/stale records,
   public/staff boundary failures, spoofed staff headers, unavailable Ollama
   fallback behavior, live Ollama, route inventory, staff browser QA,
   Docker/PostgreSQL installed-stack smoke, backup/restore, suite custom
   module-selection, and source-attributed Portland Title 13 municipal data
   import/search/Q&A proof.
-- Kept package, verifier, documentation, and artifact version surfaces at the
-  honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
-  city-ready, product-ready, or public-use ready until an independent audit
-  clears the full release gate.
+- Updated package, verifier, documentation, and artifact version surfaces to
+  `1.0.0` for the audited CivicCode release.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 

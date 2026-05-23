@@ -9,7 +9,6 @@ ROOT = Path(__file__).resolve().parent.parent
 PLACEHOLDERS = {
     "rbac",
     "audit",
-    "ingestion",
     "search",
     "notifications",
     "connectors",

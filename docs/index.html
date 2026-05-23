@@ -148,7 +148,7 @@
       <ul>
         <li>Installable Python package.</li>
         <li>FastAPI runtime foundation with <code>/</code> and <code>/health</code>.</li>
-        <li>Published <code>civiccore v1.1.0</code> release-wheel dependency.</li>
+        <li>CivicCore shared-ingestion dependency at commit <code>80799976d1b50a76f549400afebeb994b935ff0c</code>.</li>
         <li>Staff-header-protected source registry mutations and staff source reads.</li>
         <li>Staff source registry workspace at <code>/staff/sources</code> with empty, active, stale, failed, and access-required states.</li>
         <li>Staff code lifecycle workspace at <code>/staff/code</code> with access-required, empty, readiness-snapshot, section-card, draft-summary, and pending-codification states.</li>
@@ -188,6 +188,7 @@
         <li>Staff operational-state API at <code>/api/v1/civiccode/staff/operational-state</code> summarizing handoff, import, and sync readiness from existing records without external deployment proof or outbound network.</li>
         <li>Delta request planning for Municode, American Legal Publishing, Code Publishing Company, and General Code.</li>
         <li>Local codifier payload runs through the import path with CivicCore circuit-breaker health, shared source-list health projection, and actionable operator copy.</li>
+        <li>Active-branch Longmont proof ingests the full Code of Ordinances PDF through CivicCore shared ingestion, persists 768-dimensional embeddings in shared document chunks, structures CivicCode sections, and returns cited local-Ollama Q&amp;A.</li>
         <li>Reusable mock-city codifier contracts for Municode, American Legal Publishing, Code Publishing Company, and General Code.</li>
         <li>Mock-city report reuses CivicCore municipal IdP and backup-retention contracts and writes a secret-free JSON report.</li>
         <li>Records-ready export API and accessible HTML export page for adopted sections.</li>
@@ -203,7 +204,7 @@
     </section>
     <section>
       <h2>Release status</h2>
-      <p>CivicCode v0.6.0 is the honest corrective-demotion label after the mistaken 2026-05-21 v1.0.0 publication. CivicCode has a real backend, database migrations, substantial municipal-code workflow logic, active-branch local AI integration, active-branch React frontend work, real embedding retrieval proof, installed-stack proof, suite module-selection proof, and source-attributed real municipal data fixture proof, but it is not finished, shipping, city-ready, product-ready, or public-use ready until the complete public-use gate evidence and independent Section 2 audit sign-off are complete. Existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical evidence only.</p>
+      <p>CivicCode v1.0.0 is the audited municipal-code module release after PR #61 re-audit #5 cleared head <code>bfaffc01</code> with 0 Blocker, 0 Critical, and 0 Major findings. CivicCode has a real backend, database migrations, substantial municipal-code workflow logic, local AI integration, React frontend work, real embedding retrieval proof, installed-stack proof, suite module-selection proof, source-attributed Portland Title 13 municipal data fixture proof, and full Longmont PDF shared-ingestion proof. Existing v0.1.17, v0.1.18, v0.5.0, and the mistaken 2026-05-21 v1.0.0 posture are historical evidence only.</p>
       <p>The service is intentionally honest: code-answer behavior remains citation-grounded; refusals keep <code>not_available</code>, and local AI answers are marked <code>ai_review_required</code>.</p>
     </section>
   </div>
