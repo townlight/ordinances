@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "civiccode"
-version = "1.0.0"
+version = "1.0.1"
 description = "CivicCode municipal code and ordinance access module."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ authors = [
   { name = "CivicSuite contributors" }
 ]
 dependencies = [
-  "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip",
+  "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7",
   "alembic>=1.13.0,<2.0.0",
   "asyncpg>=0.29.0,<1.0.0",
   "fastapi>=0.115.0,<1.0.0",

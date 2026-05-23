@@ -1,10 +1,17 @@
 # Changelog
 
+## [1.0.1] - 2026-05-22
+
+- Replaced the CivicCore shared-ingestion commit-archive dependency with the
+  published CivicCore v1.2.0 release wheel for the city-core release train.
+- Preserves the PR #61 shared-ingestion implementation and Longmont
+  end-to-end proof while making v1.0.1 the release-truth tag that supersedes
+  the earlier v1.0.0 publication.
+
 ## [1.0.0] - 2026-05-22
 
 - Repointed active-branch CivicCode to the CivicCore shared-ingestion
-  commit `80799976d1b50a76f549400afebeb994b935ff0c` instead of the older
-  `v1.1.0` wheel so full PDF parsing, chunking, and embedding come from
+  published CivicCore v1.2.0 release wheel instead of the older `v1.1.0` wheel so full PDF parsing, chunking, and embedding come from
   CivicCore.
 - Added the staff-only `/api/v1/civiccode/staff/imports/shared-pdf` path for
   ingesting a municipal code PDF through CivicCore and structuring the result
@@ -47,7 +54,7 @@
   module-selection, and source-attributed Portland Title 13 municipal data
   import/search/Q&A proof.
 - Updated package, verifier, documentation, and artifact version surfaces to
-  `1.0.0` for the audited CivicCode release.
+  `1.0.0` for the PR #61 release-gate-cleared CivicCode release.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 

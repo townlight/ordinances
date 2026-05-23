@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 find_python() {
   local candidates=()
@@ -40,7 +40,7 @@ ${PYTHON_BIN} - <<'PY'
 from pathlib import Path
 import tomllib
 
-version = "1.0.0"
+version = "1.0.1"
 root = Path(".")
 pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
 assert pyproject["project"]["version"] == version, pyproject["project"]["version"]
@@ -77,7 +77,7 @@ import tempfile
 import venv
 from pathlib import Path
 
-wheel_url = "https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
+wheel_url = "https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
 temp_dir = Path(tempfile.mkdtemp(prefix="civiccode-release-provenance-"))
 
 try:
@@ -159,8 +159,8 @@ from pathlib import Path
 import hashlib
 
 dist = Path("dist")
-wheel = dist / "civiccode-1.0.0-py3-none-any.whl"
-sdist = dist / "civiccode-1.0.0.tar.gz"
+wheel = dist / "civiccode-1.0.1-py3-none-any.whl"
+sdist = dist / "civiccode-1.0.1.tar.gz"
 assert wheel.exists(), f"missing {wheel}"
 assert sdist.exists(), f"missing {sdist}"
 lines = []
