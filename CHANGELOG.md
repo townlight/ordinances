@@ -1,14 +1,16 @@
 # Changelog
 
-## [1.0.1] - 2026-05-22
+## [1.0.2] - 2026-05-23
 
 - Replaced the CivicCore shared-ingestion commit-archive dependency with the
   published CivicCore v1.2.0 release wheel for the city-core release train.
 - Preserves the PR #61 shared-ingestion implementation and Longmont
-  end-to-end proof while making v1.0.1 the release-truth tag that supersedes
+  end-to-end proof while making v1.0.2 the release-truth tag that supersedes
   the earlier v1.0.0 publication.
+- Supersedes the failed, unpublished v1.0.1 tag attempt without rewriting the
+  v1.0.1 tag.
 
-## [1.0.0] - 2026-05-22
+## [1.0.0] - 2026-05-23
 
 - Repointed active-branch CivicCode to the CivicCore shared-ingestion
   published CivicCore v1.2.0 release wheel instead of the older `v1.1.0` wheel so full PDF parsing, chunking, and embedding come from
@@ -22,7 +24,7 @@
 - Added `scripts/prove-longmont-shared-ingestion.py`,
   `scripts/prove-longmont-civiccore-chunk-params.py`, and
   `scripts/prove-longmont-section-fidelity.py` plus
-  `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md` with
+  `docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-23.md` with
   full Longmont PDF proof: 2,931 shared chunks, 2,931 embedded rows, 1,995
   structured sections, shared pgvector search, and local Ollama cited Q&A.
   The force-reingest proof records the exact input basis: 1,604 pages,
