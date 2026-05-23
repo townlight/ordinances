@@ -98,7 +98,9 @@ jobs:
 
       - name: Run public browser QA
         timeout-minutes: 15
-        run: node scripts/browser-public-surfaces-qa.cjs
+        run: |
+          npx playwright install chromium
+          node scripts/browser-public-surfaces-qa.cjs
 
       - name: Mark release verification passed
         run: |
