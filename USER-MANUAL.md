@@ -155,7 +155,7 @@ back to staff.
 
 This repo contains staff operations surfaces, CivicCore v1 contracts, durable
 import/codifier sync state, and documentation and verification gates. CivicCode
-is at v1.0.6 after independent release-gate re-audit #5 cleared PR #61 at
+is at v1.0.7 after independent release-gate re-audit #5 cleared PR #61 at
 `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings. Runtime
 implementation must follow the CivicSuite pattern:
 
@@ -547,7 +547,7 @@ civiccode municipal-code module
 future consumers: civiczone, civiclegal, civicaccess, civiccomms
 ```
 
-CivicCode v1.0.6 supersedes the earlier v1.0.0 municipal-code module release. The
+CivicCode v1.0.7 supersedes the earlier v1.0.0 municipal-code module release. The
 older v0.1.17, v0.1.18, v0.5.0, and mistaken 2026-05-21 v1.0.0 publications are historical pre-gate releases; check
 `docs/ops/tier1-retrofit-ledger.md` before relying on those older artifacts.
 The product line

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.7] - 2026-05-23
+
+- Fixes the release workflow YAML syntax error that kept v1.0.5 and v1.0.6
+  from registering runnable release jobs or the manual dispatch fallback.
+- Keeps the explicit `workflow_dispatch` release fallback, conservative action
+  versions, split bounded release verification, PR #61 shared-ingestion
+  implementation, CivicCore v1.2.0 release wheel pin, and Longmont
+  end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1 through v1.0.6 tag attempts
+  without rewriting those tags.
+
 ## [1.0.6] - 2026-05-23
 
 - Normalizes the release workflow to conservative GitHub Actions versions after
