@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.6.0 active completion branch] - 2026-05-21
+## [1.0.0] - 2026-05-22
 
 - Repointed active-branch CivicCode to the CivicCore shared-ingestion
   commit `80799976d1b50a76f549400afebeb994b935ff0c` instead of the older
@@ -26,8 +26,9 @@
   The section-fidelity proof reports 0 empty bodies, 0 header/footer-polluted
   bodies, and a `4.12.040` side-by-side source/structured sample with the full
   public-records paragraph.
-- CivicCode remains `0.6.0`. This is active-branch evidence for independent
-  audit, not a v1.0.0 release claim.
+- Promoted CivicCode to `1.0.0` after independent release-gate re-audit #5
+  cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major
+  findings.
 - Added source-bounded local Ollama answer generation for citation-grounded
   questions. AI output remains non-authoritative, cited, and
   staff-review-required; deterministic citation extraction remains the fallback.
@@ -45,10 +46,8 @@
   Docker/PostgreSQL installed-stack smoke, backup/restore, suite custom
   module-selection, and source-attributed Portland Title 13 municipal data
   import/search/Q&A proof.
-- Kept package, verifier, documentation, and artifact version surfaces at the
-  honest `0.6.0` label. CivicCode is not v1.0.0, finished, shipping,
-  city-ready, product-ready, or public-use ready until an independent audit
-  clears the full release gate.
+- Updated package, verifier, documentation, and artifact version surfaces to
+  `1.0.0` for the audited CivicCode release.
 - Kept earlier v0.1.x and v0.5.0 releases documented as historical
   pre-final-gate evidence rather than current release truth.
 

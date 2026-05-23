@@ -175,7 +175,7 @@ Migration smoke
 Release
 -------
 
-CivicCode v0.6.0 is active-branch municipal-code module evidence for audit. It
+CivicCode v1.0.0 is the audited municipal-code module release. It
 persists source registry records, title/chapter/section/version records,
 staff-approved popular questions, staff notes, plain-language summaries,
 CivicClerk handoff records, handoff audit events, local import job records, and codifier sync source records through
