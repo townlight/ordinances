@@ -69,6 +69,7 @@ jobs:
           npx playwright install chromium
 
       - name: Run release verification
+        timeout-minutes: 90
         run: bash scripts/verify-release.sh
 
       - name: Build release artifacts

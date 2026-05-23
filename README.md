@@ -66,7 +66,7 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode label is v1.0.1 after the independent release-gate audit
+The current CivicCode label is v1.0.2 after the independent release-gate audit
 cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
 CivicCode has a real backend, database migrations, substantial municipal-code
 workflow logic, local AI integration, React frontend work, real Ollama
@@ -437,7 +437,7 @@ CivicCore shared ingestion, persisted as `document_chunks` with 768-dimensional
 Ollama embeddings, structured into CivicCode titles, chapters, sections, and
 versions, searched through PostgreSQL pgvector, and answered through a cited,
 staff-review-required local Ollama response. See
-`docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-22.md`.
+`docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-23.md`.
 
 Fresh force-reingest proof for PR #61 completed against the same
 12,394,756-byte PDF with 1,604 pages, 2,931 queryable shared chunks, 2,931
