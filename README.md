@@ -66,7 +66,7 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode label is v1.0.6 after the independent release-gate audit
+The current CivicCode label is v1.0.7 after the independent release-gate audit
 cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
 CivicCode has a real backend, database migrations, substantial municipal-code
 workflow logic, local AI integration, React frontend work, real Ollama

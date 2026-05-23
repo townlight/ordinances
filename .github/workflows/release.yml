@@ -101,7 +101,8 @@ jobs:
         run: node scripts/browser-public-surfaces-qa.cjs
 
       - name: Mark release verification passed
-        run: echo "VERIFY-RELEASE: PASSED"
+        run: |
+          echo "VERIFY-RELEASE: PASSED"
 
       - name: Build release artifacts
         run: |

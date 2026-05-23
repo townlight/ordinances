@@ -175,7 +175,7 @@ Migration smoke
 Release
 -------
 
-CivicCode v1.0.6 supersedes the earlier v1.0.0 municipal-code module release. It
+CivicCode v1.0.7 supersedes the earlier v1.0.0 municipal-code module release. It
 persists source registry records, title/chapter/section/version records,
 staff-approved popular questions, staff notes, plain-language summaries,
 CivicClerk handoff records, handoff audit events, local import job records, and codifier sync source records through
