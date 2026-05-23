@@ -1,12 +1,25 @@
 # Changelog
 
+## [1.0.3] - 2026-05-23
+
+- Hardens the CivicCode release workflow after the v1.0.2 tag attempt wedged
+  in GitHub Actions without publishing a release.
+- Adds a job-level timeout plus a shell-level `timeout 90m` wrapper around the
+  release-verification command so future release runs fail visibly instead of
+  remaining indefinitely in progress.
+- Keeps the PR #61 shared-ingestion implementation, CivicCore v1.2.0 release
+  wheel pin, and Longmont end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1 and v1.0.2 tag attempts without
+  rewriting either tag.
+
 ## [1.0.2] - 2026-05-23
 
 - Replaced the CivicCore shared-ingestion commit-archive dependency with the
   published CivicCore v1.2.0 release wheel for the city-core release train.
 - Preserves the PR #61 shared-ingestion implementation and Longmont
-  end-to-end proof while making v1.0.2 the release-truth tag that supersedes
-  the earlier v1.0.0 publication.
+  end-to-end proof. The v1.0.2 tag attempt did not publish a release because
+  the GitHub Actions release-verification step wedged before artifact
+  publication.
 - Supersedes the failed, unpublished v1.0.1 tag attempt without rewriting the
   v1.0.1 tag.
 
