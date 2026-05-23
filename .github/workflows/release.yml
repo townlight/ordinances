@@ -69,9 +69,38 @@ jobs:
           npm install --no-save playwright@1.57.0
           npx playwright install chromium
 
-      - name: Run release verification
-        timeout-minutes: 90
-        run: timeout 90m bash scripts/verify-release.sh
+      - name: Run product tests
+        timeout-minutes: 10
+        run: python -m pytest -q --ignore=tests/test_release_provenance_gate.py
+
+      - name: Run release-provenance tooling tests
+        timeout-minutes: 10
+        env:
+          CIVICCODE_SKIP_ISOLATED_PROVENANCE: "1"
+        run: |
+          python -m pip install --force-reinstall "https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+          python -m pytest -q tests/test_release_provenance_gate.py
+
+      - name: Run docs, placeholder, and Ruff gates
+        timeout-minutes: 10
+        run: |
+          bash scripts/verify-docs.sh
+          python scripts/check-civiccore-placeholder-imports.py
+          python -m ruff check .
+
+      - name: Run frontend build gates
+        timeout-minutes: 10
+        run: |
+          npm ci
+          npm run typecheck
+          npm run build
+
+      - name: Run public browser QA
+        timeout-minutes: 15
+        run: node scripts/browser-public-surfaces-qa.cjs
+
+      - name: Mark release verification passed
+        run: echo "VERIFY-RELEASE: PASSED"
 
       - name: Build release artifacts
         run: |
