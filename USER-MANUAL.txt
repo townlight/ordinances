@@ -121,8 +121,7 @@ independent audit clears any future v1.0.0 release. Runtime implementation
 must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- CivicCore shared-ingestion dependency
-  `80799976d1b50a76f549400afebeb994b935ff0c`,
+- CivicCore shared-ingestion dependency at the published v1.2.0 release wheel,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,
 - no imports from unreleased CivicCore placeholder packages.
@@ -136,7 +135,7 @@ claim.
 Install and run:
 
 ```bash
-python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```

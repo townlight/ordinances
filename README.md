@@ -66,7 +66,7 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode label is v1.0.0 after the independent release-gate audit
+The current CivicCode label is v1.0.1 after the independent release-gate audit
 cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
 CivicCode has a real backend, database migrations, substantial municipal-code
 workflow logic, local AI integration, React frontend work, real Ollama
@@ -212,8 +212,7 @@ postures remain historical evidence only.
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the CivicCore shared-ingestion commit
-  `80799976d1b50a76f549400afebeb994b935ff0c`,
+- consume the CivicCore shared-ingestion pipeline from the published v1.2.0 release wheel,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
@@ -264,14 +263,12 @@ Install the CivicCore shared-ingestion dependency, then install
 CivicCode in editable mode:
 
 ```bash
-python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/archive/80799976d1b50a76f549400afebeb994b935ff0c.zip"
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
 
-The CivicCore archive pin is active-branch audit evidence only. Before any
-public release, CivicCore must publish a release artifact containing the shared
-ingestion pipeline and CivicCode must consume that released artifact.
+The CivicCore v1.2.0 release wheel is the shared-ingestion dependency for this release train.
 
 Docker demo path:
 
