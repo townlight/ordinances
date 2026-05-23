@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.4] - 2026-05-23
+
+- Splits the CivicCode release workflow verification from one monolithic
+  `verify-release.sh` step into explicit bounded test, documentation,
+  placeholder-import, Ruff, frontend-build, and public-browser-QA steps after
+  the v1.0.3 tag run also wedged before artifact publication.
+- Preserves the same release verification coverage proven locally by
+  `bash scripts/verify-release.sh` while making the GitHub release workflow
+  produce step-level evidence and fail at the specific bounded gate.
+- Keeps the PR #61 shared-ingestion implementation, CivicCore v1.2.0 release
+  wheel pin, and Longmont end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1, v1.0.2, and v1.0.3 tag attempts
+  without rewriting those tags.
+
 ## [1.0.3] - 2026-05-23
 
 - Hardens the CivicCode release workflow after the v1.0.2 tag attempt wedged
@@ -9,8 +23,8 @@
   remaining indefinitely in progress.
 - Keeps the PR #61 shared-ingestion implementation, CivicCore v1.2.0 release
   wheel pin, and Longmont end-to-end proof unchanged.
-- Supersedes the failed, unpublished v1.0.1 and v1.0.2 tag attempts without
-  rewriting either tag.
+- The v1.0.3 tag attempt also wedged before artifact publication; v1.0.4
+  replaces it without rewriting the tag.
 
 ## [1.0.2] - 2026-05-23
 
