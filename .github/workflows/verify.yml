@@ -51,8 +51,8 @@ jobs:
           import hashlib
 
           dist = Path("dist")
-          wheel = dist / "civiccode-0.6.0-py3-none-any.whl"
-          sdist = dist / "civiccode-0.6.0.tar.gz"
+          wheel = dist / "civiccode-1.0.0-py3-none-any.whl"
+          sdist = dist / "civiccode-1.0.0.tar.gz"
           assert wheel.exists(), f"missing {wheel}"
           assert sdist.exists(), f"missing {sdist}"
           lines = []

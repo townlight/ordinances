@@ -66,18 +66,15 @@ Staff interpretation notes are staff-only and must not be published to public
 endpoints. CivicClerk handoff events warn about pending codification but do not
 replace adopted code text.
 
-The current CivicCode label is v0.6.0 after corrective demotion. CivicCode has a
-real backend, database migrations, substantial municipal-code workflow logic,
-active-branch local AI integration, active-branch React frontend work, real
-Ollama embedding retrieval with PostgreSQL pgvector runtime proof,
-installed-stack, suite module-selection, source-attributed Portland Title
-13 municipal data fixture proof, and active-branch full Longmont PDF ingestion
-through CivicCore shared ingestion, but the prior `v1.0.0` release was
-published in error. CivicCode is not finished, shipping, city-ready,
-product-ready, or public-use ready until complete public-use gate evidence and
-an independent Section 2 audit are complete. The
-existing v0.1.17, v0.1.18, v0.5.0, and mistaken v1.0.0 releases are historical
-evidence only.
+The current CivicCode label is v1.0.0 after the independent release-gate audit
+cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
+CivicCode has a real backend, database migrations, substantial municipal-code
+workflow logic, local AI integration, React frontend work, real Ollama
+embedding retrieval with PostgreSQL pgvector runtime proof, installed-stack and
+suite module-selection evidence, source-attributed Portland Title 13 municipal
+data fixture proof, and full Longmont PDF ingestion through CivicCore shared
+ingestion. The older v0.1.17, v0.1.18, v0.5.0, and mistaken 2026-05-21 v1.0.0
+postures remain historical evidence only.
 
 - install and import the package,
 - expose health/root endpoints for IT smoke checks,
