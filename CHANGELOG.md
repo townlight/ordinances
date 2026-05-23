@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.6] - 2026-05-23
+
+- Normalizes the release workflow to conservative GitHub Actions versions after
+  the v1.0.5 tag still produced empty-job release workflow failures before
+  artifact publication.
+- Keeps the explicit `workflow_dispatch` release fallback, split bounded
+  release verification, PR #61 shared-ingestion implementation, CivicCore
+  v1.2.0 release wheel pin, and Longmont end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1, v1.0.2, v1.0.3, v1.0.4, and
+  v1.0.5 tag attempts without rewriting those tags.
+
 ## [1.0.5] - 2026-05-23
 
 - Adds an explicit `workflow_dispatch` release fallback after the v1.0.4 tag
