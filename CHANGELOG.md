@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.5] - 2026-05-23
+
+- Adds an explicit `workflow_dispatch` release fallback after the v1.0.4 tag
+  push produced immediate no-job GitHub Actions failures for `release.yml`
+  before artifact publication.
+- Keeps the split, bounded release verification steps from v1.0.4 so the
+  workflow provides step-level evidence for product tests, release-provenance
+  tests, docs/placeholder/Ruff gates, frontend build, public browser QA,
+  artifacts, attestation, and publication.
+- Keeps the PR #61 shared-ingestion implementation, CivicCore v1.2.0 release
+  wheel pin, and Longmont end-to-end proof unchanged.
+- Supersedes the failed, unpublished v1.0.1, v1.0.2, v1.0.3, and v1.0.4 tag
+  attempts without rewriting those tags.
+
 ## [1.0.4] - 2026-05-23
 
 - Splits the CivicCode release workflow verification from one monolithic
@@ -11,8 +25,9 @@
   produce step-level evidence and fail at the specific bounded gate.
 - Keeps the PR #61 shared-ingestion implementation, CivicCore v1.2.0 release
   wheel pin, and Longmont end-to-end proof unchanged.
-- Supersedes the failed, unpublished v1.0.1, v1.0.2, and v1.0.3 tag attempts
-  without rewriting those tags.
+- The v1.0.4 tag attempt produced immediate no-job GitHub Actions failures for
+  `release.yml` before artifact publication; v1.0.5 replaces it without
+  rewriting the tag.
 
 ## [1.0.3] - 2026-05-23
 
