@@ -5,14 +5,105 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Published release tag to rehearse from cold caches"
+        required: true
+        default: "v1.0.8"
 
 permissions:
   contents: write
   id-token: write
 
 jobs:
+  cleanroom-rehearsal:
+    name: cleanroom-rehearsal
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: scott-desktop-cleanroom-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python for direct-pip cleanroom
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node for frontend cleanroom
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cleanroom cache strip (scoped, CivicSuite-only)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import shutil
+
+          runner_temp = os.environ["RUNNER_TEMP"]
+          for rel in (".npm", ".cache/pip"):
+              shutil.rmtree(os.path.join(runner_temp, rel), ignore_errors=True)
+          PY
+          docker builder prune --all --force --filter "label=civicsuite-cleanroom=1" || true
+          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker network rm || true
+          docker volume ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker volume rm || true
+
+      - name: Install published wheel from release URL
+        shell: bash
+        run: |
+          TAG="${{ inputs.release_tag }}"
+          VERSION="${TAG#v}"
+          WHEEL_URL="https://github.com/CivicSuite/civiccode/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
+          echo "Cleanroom wheel URL: ${WHEEL_URL}"
+          python -m venv .cleanroom-venv
+          . .cleanroom-venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install --no-cache-dir --force-reinstall "${WHEEL_URL}"
+          TESTING=1 python - <<PY
+          import civiccode
+          from civiccore.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
+
+          expected = "${VERSION}"
+          print(f"civiccode.__version__={civiccode.__version__}")
+          if civiccode.__version__ != expected:
+              raise SystemExit(f"Expected CivicCode {expected}, got {civiccode.__version__}")
+          print(
+              "civiccore dependency import ok: "
+              f"{Document.__name__}, {DocumentChunk.__name__}, {compute_file_hash.__name__}, {ingest_file.__name__}"
+          )
+          PY
+
+      - name: Frontend clean install and build
+        shell: bash
+        run: |
+          python - <<'PY'
+          import shutil
+          shutil.rmtree("node_modules", ignore_errors=True)
+          PY
+          npm ci --prefer-online --no-cache --no-audit --no-fund \
+            --cache "${RUNNER_TEMP}/.npm"
+          npm run typecheck
+          npm run build
+
+      - name: Always-run cleanup
+        if: always()
+        shell: bash
+        run: |
+          docker compose -p civicsuite-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
+          docker ps -a --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker container rm --force || true
+          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker network rm || true
+
   preflight:
     name: Preflight release provenance fixtures
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,6 +130,7 @@ jobs:
 
   build:
     name: Build, attest, and verify release candidate
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: preflight
     timeout-minutes: 120
@@ -175,8 +267,9 @@ jobs:
             release-attestation.json
             release-attestation.json.bundle
 
-  release:
-    name: Publish GitHub release
+  create-draft-release:
+    name: Create draft GitHub release
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -189,38 +282,161 @@ jobs:
 
       - name: Write release notes with exact provenance command
         run: |
+          export VERSION="${GITHUB_REF_NAME#v}"
+          export REPO="${GITHUB_REPOSITORY}"
+          export TAG="${GITHUB_REF_NAME}"
+          export WORKFLOW_RUN_ID="${GITHUB_RUN_ID}"
+          export WHEEL_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
+          export CLEANROOM_TIMESTAMP="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           cat > release-notes.md <<EOF
-          CivicCode ${{ github.ref_name }} release.
+          CivicCode ${TAG} release.
+
+          Cleanroom rehearsal: PASSED in workflow run ${WORKFLOW_RUN_ID}.
+          Verified clean install of ${WHEEL_URL} from cold caches at ${CLEANROOM_TIMESTAMP}.
 
           Release provenance:
           - The Git tag is a release pointer; the trust artifact is release-attestation.json plus release-attestation.json.bundle.
-          - Pre-flight provenance fixtures and live attestation verification ran before publication in workflow run ${{ github.run_id }}.
+          - Pre-flight provenance fixtures and live attestation verification ran before publication in workflow run ${WORKFLOW_RUN_ID}.
           - Verify with:
 
           \`\`\`bash
           cosign verify-blob release-attestation.json \\
             --bundle release-attestation.json.bundle \\
-            --certificate-identity "https://github.com/${{ github.repository }}/.github/workflows/release.yml@refs/tags/${{ github.ref_name }}" \\
+            --certificate-identity "https://github.com/${REPO}/.github/workflows/release.yml@refs/tags/${TAG}" \\
             --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
           sha256sum -c SHA256SUMS.txt
-          python scripts/verify-release-provenance.py "${{ github.ref_name }}" \\
-            --repo "${{ github.repository }}" \\
+          python scripts/verify-release-provenance.py "${TAG}" \\
+            --repo "${REPO}" \\
             --attestation release-attestation.json \\
             --bundle release-attestation.json.bundle \\
             --artifacts-dir .
           \`\`\`
           EOF
 
-      - name: Create GitHub release with wheel + sdist
+      - name: Create draft GitHub release with wheel + sdist
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ github.ref_name }}" \
+            --draft \
             dist/* \
             release-attestation.json \
             release-attestation.json.bundle \
             --repo "$GH_REPO" \
             --title "civiccode ${{ github.ref_name }}" \
             --notes-file release-notes.md
+
+  release-cleanroom-rehearsal:
+    name: cleanroom-rehearsal (release asset)
+    if: github.event_name == 'push'
+    needs: [create-draft-release]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: scott-desktop-cleanroom-${{ github.repository }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python for release-asset cleanroom
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node for frontend cleanroom
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cleanroom cache strip (scoped, CivicSuite-only)
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import shutil
+
+          runner_temp = os.environ["RUNNER_TEMP"]
+          for rel in (".npm", ".cache/pip"):
+              shutil.rmtree(os.path.join(runner_temp, rel), ignore_errors=True)
+          PY
+          docker builder prune --all --force --filter "label=civicsuite-cleanroom=1" || true
+          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker network rm || true
+          docker volume ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker volume rm || true
+
+      - name: Download uploaded wheel from draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          mkdir -p .cleanroom-assets
+          gh release download "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" \
+            --pattern 'civiccode-*-py3-none-any.whl' \
+            --dir .cleanroom-assets
+          find .cleanroom-assets -maxdepth 1 -type f -print
+
+      - name: Install uploaded wheel in cleanroom venv
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          WHEEL="$(find .cleanroom-assets -name 'civiccode-*-py3-none-any.whl' -type f | head -1)"
+          if [ -z "$WHEEL" ]; then
+            echo "::error::No CivicCode wheel downloaded from draft release."
+            exit 1
+          fi
+          echo "Cleanroom wheel asset: ${WHEEL}"
+          python -m venv .cleanroom-venv
+          . .cleanroom-venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install --no-cache-dir --force-reinstall "${WHEEL}"
+          TESTING=1 python - <<PY
+          import civiccode
+          from civiccore.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
+
+          expected = "${VERSION}"
+          print(f"civiccode.__version__={civiccode.__version__}")
+          if civiccode.__version__ != expected:
+              raise SystemExit(f"Expected CivicCode {expected}, got {civiccode.__version__}")
+          print(
+              "civiccore dependency import ok: "
+              f"{Document.__name__}, {DocumentChunk.__name__}, {compute_file_hash.__name__}, {ingest_file.__name__}"
+          )
+          PY
+
+      - name: Frontend clean install and build
+        shell: bash
+        run: |
+          python - <<'PY'
+          import shutil
+          shutil.rmtree("node_modules", ignore_errors=True)
+          PY
+          npm ci --prefer-online --no-cache --no-audit --no-fund \
+            --cache "${RUNNER_TEMP}/.npm"
+          npm run typecheck
+          npm run build
+
+      - name: Always-run cleanup
+        if: always()
+        shell: bash
+        run: |
+          docker compose -p civicsuite-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
+          docker ps -a --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker container rm --force || true
+          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+            | xargs -r docker network rm || true
+
+  publish-release:
+    name: Publish GitHub release
+    if: github.event_name == 'push'
+    needs: [release-cleanroom-rehearsal]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish release after cleanroom rehearsal
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit "${{ github.ref_name }}" --repo "$GH_REPO" --draft=false
