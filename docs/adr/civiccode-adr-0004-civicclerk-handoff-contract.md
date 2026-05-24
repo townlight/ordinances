@@ -12,12 +12,19 @@ ordinance events.
 
 ## Decision
 
-Status: Proposed.
+Status: Accepted for intake; live CivicClerk emitter counterpart available when
+both services share the configured intake URL and authorization value.
 
 CivicCode accepts CivicClerk ordinance handoffs keyed by CivicClerk
 `external_event_id` and the source payload fields that preserve meeting,
 agenda item, ordinance, affected section, source document, status, text, and
 failure provenance.
+
+CivicClerk now emits newly created ordinance/resolution handoff records to this
+intake endpoint when `CIVICCODE_INTAKE_URL` and `CIVICCODE_INTAKE_SECRET` are
+configured. CivicCode validates the existing staff headers and, when
+`CIVICCODE_INTAKE_SECRET` is set on CivicCode, also requires the matching
+`X-CivicCode-Intake-Secret` header before accepting the handoff.
 
 Replaying the same accepted `external_event_id` with the same source payload is
 idempotent: CivicCode returns the existing handoff event and does not create a
