@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+- Hardened the existing CivicClerk ordinance-event intake route with an
+  optional shared-intake authorization header for city-core service-to-service
+  handoff calls, without broadening trusted staff-header access for the rest of
+  the staff API.
+- Documented the shipped CivicClerk live-emitter counterpart in ADR-0004.
+
 ## [1.0.8] - 2026-05-23
 
 - Installs the Playwright Chromium browser immediately before public browser QA

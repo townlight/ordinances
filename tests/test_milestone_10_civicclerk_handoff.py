@@ -143,6 +143,51 @@ async def test_valid_civicclerk_handoff_is_accepted_with_provenance(
 
 
 @pytest.mark.asyncio
+async def test_configured_civicclerk_handoff_requires_matching_intake_auth(
+    client: AsyncClient,
+    app_module,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    await seed_handoff_fixture(client)
+    monkeypatch.setenv(app_module.CIVICCODE_INTAKE_AUTH_ENV_VAR, "shared-test-value")
+
+    missing = await client.post(
+        "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+        headers=STAFF_HEADERS,
+        json=handoff_payload(),
+    )
+    accepted = await client.post(
+        "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+        headers={**STAFF_HEADERS, app_module.CIVICCODE_INTAKE_AUTH_HEADER: "shared-test-value"},
+        json=handoff_payload(event_id="auth_event", external_event_id="auth_external"),
+    )
+
+    assert missing.status_code == 403
+    assert "authorization failed" in missing.json()["detail"]["message"]
+    assert accepted.status_code == 201
+    assert accepted.json()["external_event_id"] == "auth_external"
+
+
+@pytest.mark.asyncio
+async def test_matching_intake_auth_allows_service_to_service_without_trusted_proxy_headers(
+    client: AsyncClient,
+    app_module,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    await seed_handoff_fixture(client)
+    monkeypatch.setenv(app_module.CIVICCODE_INTAKE_AUTH_ENV_VAR, "shared-test-value")
+
+    accepted = await client.post(
+        "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+        headers={app_module.CIVICCODE_INTAKE_AUTH_HEADER: "shared-test-value"},
+        json=handoff_payload(event_id="service_event", external_event_id="service_external"),
+    )
+
+    assert accepted.status_code == 201
+    assert accepted.json()["external_event_id"] == "service_external"
+
+
+@pytest.mark.asyncio
 async def test_replayed_civicclerk_handoff_returns_existing_event(
     client: AsyncClient,
 ) -> None:

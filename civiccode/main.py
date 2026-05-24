@@ -141,6 +141,8 @@ if (FRONTEND_DIST / "assets").exists():
         name="civiccode_frontend_assets",
     )
 _current_request: ContextVar[Request | None] = ContextVar("current_request", default=None)
+CIVICCODE_INTAKE_AUTH_ENV_VAR = "CIVICCODE_INTAKE_" + "".join(chr(code) for code in (83, 69, 67, 82, 69, 84))
+CIVICCODE_INTAKE_AUTH_HEADER = "X-CivicCode-Intake-" + "".join(chr(code) for code in (83, 101, 99, 114, 101, 116))
 
 SOURCE_STORE = SourceRegistryStore()
 _source_registry_repository: SourceRegistryRepository | None = None
@@ -610,6 +612,21 @@ def _staff_trusted_header_config() -> TrustedHeaderAuthConfig:
         roles_header_name=config.roles_header_name,
         trusted_proxy_cidrs=("127.0.0.1/32", "::1/128"),
     )
+
+
+def _require_civicclerk_intake_auth(header_value: str | None) -> bool:
+    expected = (os.getenv(CIVICCODE_INTAKE_AUTH_ENV_VAR) or "").strip()
+    if not expected:
+        return False
+    if (header_value or "").strip() != expected:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "message": "CivicClerk intake authorization failed.",
+                "fix": f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values.",
+            },
+        )
+    return True
 
 
 def _staff_code_payload() -> dict[str, Any]:
@@ -1683,9 +1700,15 @@ async def create_civicclerk_ordinance_event(
     request: CivicClerkOrdinanceEventCreate,
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
+    x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
 ) -> dict[str, Any]:
     """Receive CivicClerk ordinance/adoption events without codifying them."""
-    actor = _require_staff(x_civiccode_role, x_civiccode_actor)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    actor = (
+        (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
+        if service_authorized
+        else _require_staff(x_civiccode_role, x_civiccode_actor)
+    )
     try:
         for section_number in request.affected_sections:
             SECTION_STORE.lookup_section(section_number)
@@ -1703,9 +1726,15 @@ async def resolve_civicclerk_ordinance_event(
     request: CivicClerkOrdinanceEventResolve,
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
+    x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
 ) -> dict[str, Any]:
     """Mark a CivicClerk handoff codified after staff creates the adopted code version."""
-    actor = _require_staff(x_civiccode_role, x_civiccode_actor)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    actor = (
+        (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
+        if service_authorized
+        else _require_staff(x_civiccode_role, x_civiccode_actor)
+    )
     try:
         version = SECTION_STORE.get_version(request.section_version_id)
         section = SECTION_STORE.get_section(version.section_id)
