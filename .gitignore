@@ -14,3 +14,5 @@ node_modules/
 .tmp-chrome-cdp-*/
 docs/browser-qa-*-dom.html
 tests/fixtures/release_provenance/.generated/
+
+.agent-runs/
