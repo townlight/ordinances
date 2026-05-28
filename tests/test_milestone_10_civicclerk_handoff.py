@@ -4,14 +4,13 @@ import importlib
 from pathlib import Path
 
 import pytest
+from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
 
 ROOT = Path(__file__).resolve().parents[1]
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
-}
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.fixture()

@@ -7,10 +7,9 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
-}
+from conftest import build_suite_staff_headers
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.fixture()

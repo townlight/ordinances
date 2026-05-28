@@ -4,6 +4,7 @@ import importlib
 from pathlib import Path
 
 import pytest
+from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
 from civiccode.source_registry import SOURCE_STATES, SOURCE_TRANSITIONS, validate_transition
@@ -14,6 +15,8 @@ LEGACY_STAFF_HEADERS = {
     "X-CivicCode-Role": "staff",
     "X-CivicCode-Actor": "clerk@example.gov",
 }
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.fixture()

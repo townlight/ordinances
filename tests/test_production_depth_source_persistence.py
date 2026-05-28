@@ -13,10 +13,9 @@ from civiccode.staff_workbench import StaffWorkbenchRepository
 from civiccode.source_registry import SourceRegistryRepository
 
 
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
-}
+from conftest import build_suite_staff_headers
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 def active_official_source(source_id: str = "municode_persistent") -> dict[str, object]:
