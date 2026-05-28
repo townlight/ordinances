@@ -627,16 +627,32 @@ def _staff_trusted_header_config() -> TrustedHeaderAuthConfig:
     )
 
 
-def _require_civicclerk_intake_auth(header_value: str | None) -> bool:
+def _extract_bearer_token(authorization_value: str | None) -> str:
+    prefix = "bearer "
+    value = (authorization_value or "").strip()
+    if not value.lower().startswith(prefix):
+        return ""
+    return value[len(prefix) :].strip()
+
+
+def _require_civicclerk_intake_auth(
+    header_value: str | None,
+    authorization_value: str | None = None,
+) -> bool:
     expected = (os.getenv(CIVICCODE_INTAKE_AUTH_ENV_VAR) or "").strip()
     if not expected:
         return False
-    if (header_value or "").strip() != expected:
+    header_matches = (header_value or "").strip() == expected
+    bearer_matches = _extract_bearer_token(authorization_value) == expected
+    if not header_matches and not bearer_matches:
         raise HTTPException(
             status_code=403,
             detail={
                 "message": "CivicClerk intake authorization failed.",
-                "fix": f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values.",
+                "fix": (
+                    f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values, "
+                    "then send that value as either the CivicCode intake header or a suite bearer token."
+                ),
             },
         )
     return True
@@ -1716,9 +1732,10 @@ async def create_civicclerk_ordinance_event(
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
+    authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Receive CivicClerk ordinance/adoption events without codifying them."""
-    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
         if service_authorized
@@ -1742,9 +1759,10 @@ async def resolve_civicclerk_ordinance_event(
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
+    authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Mark a CivicClerk handoff codified after staff creates the adopted code version."""
-    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
         if service_authorized
