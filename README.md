@@ -82,8 +82,9 @@ postures remain historical evidence only.
 - create the canonical CivicCode schema tables,
 - register official and explicitly non-official source records,
 - persist source registry records with `CIVICCODE_SOURCE_REGISTRY_DB_URL`,
-- require trusted staff headers before source registry mutations and staff-only
-  source reads,
+- require CivicCore suite-session bearer auth before source registry creation,
+  and require either suite-session bearer auth or trusted staff headers before
+  staff-only source reads,
 - open `/staff/sources` through the trusted staff shell to review source
   readiness, stale/failed blockers, and staff-only notes,
 - open `/staff/code` through the trusted staff shell to review section readiness,
@@ -363,8 +364,10 @@ curl http://127.0.0.1:8000/api/v1/civiccode/sources/catalog
 
 Expected source-registry truth today: source types include Municode, American
 Legal, Code Publishing, General Code, official XML/DOCX exports, official file
-drops, and official web scrape/export paths. Source states are `draft`,
-`active`, `stale`, `superseded`, and `failed`. Set
+drops, and official web scrape/export paths. Source creation requires a
+CivicCore suite-session bearer token with a CivicCode staff role; legacy
+`X-CivicCode-Role` / `X-CivicCode-Actor` headers alone cannot create sources.
+Source states are `draft`, `active`, `stale`, `superseded`, and `failed`. Set
 `CIVICCODE_SOURCE_REGISTRY_DB_URL` before source registry persistence smoke
 checks; without it, the runtime uses the in-memory store for local demos.
 
@@ -473,15 +476,18 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
   -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
 ```
 
-Expected staff-workbench truth today: staff endpoints require
-`X-CivicCode-Role: staff` and `X-CivicCode-Actor` from a trusted proxy source.
-Local mock runs allow loopback (`127.0.0.1/32` and `::1/128`) by default; shared
-environments must keep the API behind a header-stripping reverse proxy, set
-`CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse proxy CIDR list, and
-strip client-supplied staff headers before CivicCode sees the request. Do not
-trust the Docker bridge CIDR on a published API port. Staff interpretation notes are returned only to staff endpoints,
-staff Q&A adds `staff_context` with `staff_only_do_not_publish`, and public
-lookup, search, and Q&A never expose staff notes or staff note counts.
+Expected staff-workbench truth today: staff endpoints accept CivicCore
+suite-session bearer tokens. Legacy `X-CivicCode-Role: staff` and
+`X-CivicCode-Actor` headers are accepted only from a trusted proxy source for
+staff read/workbench flows; source creation requires the suite-session bearer
+contract. Local mock runs allow loopback (`127.0.0.1/32` and `::1/128`) by
+default; shared environments must keep the API behind a header-stripping
+reverse proxy, set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse
+proxy CIDR list, and strip client-supplied staff headers before CivicCode sees
+the request. Do not trust the Docker bridge CIDR on a published API port. Staff
+interpretation notes are returned only to staff endpoints, staff Q&A adds
+`staff_context` with `staff_only_do_not_publish`, and public lookup, search, and
+Q&A never expose staff notes or staff note counts.
 
 Plain-language summary smoke:
 
@@ -511,7 +517,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/civicclerk/ordinance-e
   -H "Content-Type: application/json" \
   -H "X-CivicCode-Role: staff" \
   -H "X-CivicCode-Actor: clerk@example.gov" \
-  -d '{"external_event_id":"cc_event_2026_041","civicclerk_meeting_id":"meeting_2026_04_27","civicclerk_agenda_item_id":"agenda_14","ordinance_number":"2026-041","title":"Ordinance amending backyard chicken permits","status":"adopted","affected_sections":["6.12.040"],"source_document_url":"https://example.gov/minutes/2026-041.pdf","source_document_hash":"sha256:abc123","ordinance_text":"An ordinance amending Section 6.12.040."}'
+  -d '{"external_event_id":"cc_event_2026_041","civicclerk_meeting_id":"meeting_2026_04_27","civicclerk_agenda_item_id":"agenda_14","ordinance_number":"2026-041","title":"Ordinance amending backyard chicken permits","status":"adopted","affected_sections":["6.12.040"],"source_document_url":"https://example.gov/minutes/2026-041.pdf","source_document_hash":"sha256:REPLACE_WITH_HASH_OF_SOURCE_DOCUMENT","ordinance_text":"An ordinance amending Section 6.12.040."}'
 
 curl "http://127.0.0.1:8000/api/v1/civiccode/sections/lookup?section_number=6.12.040"
 ```

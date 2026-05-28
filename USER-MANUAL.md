@@ -47,7 +47,9 @@ Current truth:
   migrations run,
 - staff can register source records for official and explicitly non-official
   municipal code materials,
-- source registry mutations and staff-only source reads require staff headers,
+- source registry creation requires a CivicCore suite-session bearer token, and
+  staff-only source reads require either a suite-session bearer token or trusted
+  staff headers,
 - staff can open `/staff/sources` through the trusted staff shell to review
   source readiness, staff-only notes, and stale/failed fix paths,
 - staff can open `/staff/code` through the trusted staff shell to review
@@ -254,6 +256,7 @@ Register an official source:
 ```bash
 curl -X POST http://127.0.0.1:8000/api/v1/civiccode/sources \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $CIVICCORE_SUITE_SESSION_TOKEN" \
   -d '{
     "source_id": "municode_current",
     "name": "Example Municipal Code",
@@ -270,9 +273,11 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/sources \
 ```
 
 The registry accepts `draft`, `active`, `stale`, `superseded`, and `failed`
-source states. `active` official sources require source owner and retrieval
-metadata. `active` non-official sources require an explicit non-official note.
-Stale and failed sources return actionable fix guidance. Set
+source states. Source creation requires a CivicCore suite-session bearer token
+with a CivicCode staff role; legacy `X-CivicCode-Role` / `X-CivicCode-Actor`
+headers alone cannot create sources. `active` official sources require source
+owner and retrieval metadata. `active` non-official sources require an explicit
+non-official note. Stale and failed sources return actionable fix guidance. Set
 `CIVICCODE_SOURCE_REGISTRY_DB_URL` before persistence smoke checks.
 
 Create section structure:
@@ -385,15 +390,17 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
   -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
 ```
 
-Staff endpoints require `X-CivicCode-Role: staff` and `X-CivicCode-Actor` from
-a trusted proxy source. Local mock runs allow loopback (`127.0.0.1/32` and
-`::1/128`) by default. Shared environments must keep CivicCode behind a
-header-stripping reverse proxy, set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only
-to that reverse proxy CIDR list, and strip client-supplied staff headers before
-CivicCode sees the request. Do not trust the Docker bridge CIDR on a published
-API port. Staff Q&A context is explicitly marked `staff_only_do_not_publish`.
-Public lookup, public search, and public Q&A responses must not expose staff
-note text or staff note counts.
+Staff endpoints accept CivicCore suite-session bearer tokens. Legacy
+`X-CivicCode-Role: staff` and `X-CivicCode-Actor` headers are accepted only from
+a trusted proxy source for staff read/workbench flows; source creation requires
+the suite-session bearer contract. Local mock runs allow loopback
+(`127.0.0.1/32` and `::1/128`) by default. Shared environments must keep
+CivicCode behind a header-stripping reverse proxy, set
+`CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse proxy CIDR list, and
+strip client-supplied staff headers before CivicCode sees the request. Do not
+trust the Docker bridge CIDR on a published API port. Staff Q&A context is
+explicitly marked `staff_only_do_not_publish`. Public lookup, public search, and
+public Q&A responses must not expose staff note text or staff note counts.
 
 Draft and approve a plain-language summary:
 
@@ -439,7 +446,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/civicclerk/ordinance-e
     "status": "adopted",
     "affected_sections": ["6.12.040"],
     "source_document_url": "https://example.gov/minutes/2026-041.pdf",
-    "source_document_hash": "sha256:abc123",
+    "source_document_hash": "sha256:REPLACE_WITH_HASH_OF_SOURCE_DOCUMENT",
     "ordinance_text": "An ordinance amending Section 6.12.040."
   }'
 ```

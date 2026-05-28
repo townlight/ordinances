@@ -126,6 +126,10 @@ from civiccode.source_registry import (
     source_to_public_dict,
     source_to_staff_dict,
 )
+from civiccode.suite_session_auth import (
+    suite_session_required_error,
+    validate_staff_bearer_token,
+)
 from civiccore import __version__ as CIVICCORE_VERSION
 
 app = FastAPI(
@@ -539,8 +543,17 @@ def _raise_public_discovery_error(exc: PublicDiscoveryError) -> None:
 def _require_staff(
     x_civiccode_role: str | None,
     x_civiccode_actor: str | None,
+    *,
+    require_suite_session: bool = False,
 ) -> str:
     request = _current_request.get()
+    suite_principal = validate_staff_bearer_token(
+        request.headers.get("authorization") if request is not None else None
+    )
+    if suite_principal is not None:
+        return suite_principal.subject
+    if require_suite_session:
+        raise suite_session_required_error()
     config = _staff_trusted_header_config() if request is not None else None
     if request is not None and (
         config.principal_header_name != "X-CivicCode-Actor"
@@ -997,8 +1010,10 @@ async def get_staff_operational_state(
     x_civiccode_actor: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Return current operational readiness state for staff operators."""
-    _require_staff(x_civiccode_role, x_civiccode_actor)
-    return _operational_readiness_payload()
+    actor = _require_staff(x_civiccode_role, x_civiccode_actor)
+    payload = _operational_readiness_payload()
+    payload["staff_session"] = {"subject": actor}
+    return payload
 
 
 @app.get("/api/v1/civiccode/sources/catalog")
@@ -1022,7 +1037,7 @@ async def create_source(
     x_civiccode_actor: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Register a municipal code source without importing its contents yet."""
-    _require_staff(x_civiccode_role, x_civiccode_actor)
+    _require_staff(x_civiccode_role, x_civiccode_actor, require_suite_session=True)
     data = request.model_dump()
     if data["checksum"] is None and data.get("file_reference"):
         data["checksum"] = compute_reference_checksum(data["file_reference"])
