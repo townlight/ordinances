@@ -27,7 +27,7 @@ TEST_SUITE_SESSION_SIGNER = "suite-session-test-fixture"
 
 
 def _suite_session_env_name() -> str:
-    return "CIVICCORE_SUITE_SESSION_" + "".join(chr(c) for c in (83, 69, 67, 82, 69, 84))
+    return "CIVICCORE_SUITE_SESSION_SECRET"
 
 
 def build_suite_staff_headers(
