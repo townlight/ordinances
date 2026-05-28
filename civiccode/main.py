@@ -145,8 +145,8 @@ if (FRONTEND_DIST / "assets").exists():
         name="civiccode_frontend_assets",
     )
 _current_request: ContextVar[Request | None] = ContextVar("current_request", default=None)
-CIVICCODE_INTAKE_AUTH_ENV_VAR = "CIVICCODE_INTAKE_" + "".join(chr(code) for code in (83, 69, 67, 82, 69, 84))
-CIVICCODE_INTAKE_AUTH_HEADER = "X-CivicCode-Intake-" + "".join(chr(code) for code in (83, 101, 99, 114, 101, 116))
+CIVICCODE_INTAKE_AUTH_ENV_VAR = "CIVICCODE_INTAKE_SECRET"
+CIVICCODE_INTAKE_AUTH_HEADER = "X-CivicCode-Intake-Secret"
 
 SOURCE_STORE = SourceRegistryStore()
 _source_registry_repository: SourceRegistryRepository | None = None
