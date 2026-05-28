@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: "22"
       - name: Install CivicCore shared-ingestion dependency
-        run: python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+        run: python -m pip install "civiccore @ git+https://github.com/CivicSuite/civiccore.git@90ec5417d37d469f2cf01d26ace393f67504a805"
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
       - name: Collect product pytest count
