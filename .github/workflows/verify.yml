@@ -182,6 +182,7 @@ jobs:
           npm ci
           npm run typecheck
           npm run build
+          npm run a11y:ci
           python -m build
           python - <<'PY'
           from pathlib import Path
