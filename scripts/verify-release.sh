@@ -61,6 +61,8 @@ print("PASS: version surfaces synchronized")
 PY
 
 echo "==> Product test suite"
+# Release-provenance gate is ignored here because it is exercised below inside
+# the isolated virtualenv against the real CivicCore dependency path.
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
 if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then

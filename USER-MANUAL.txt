@@ -355,7 +355,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/civicclerk/ordinance-e
     "status": "adopted",
     "affected_sections": ["6.12.040"],
     "source_document_url": "https://example.gov/minutes/2026-041.pdf",
-    "source_document_hash": "sha256:abc123",
+    "source_document_hash": "sha256:REPLACE_WITH_HASH_OF_SOURCE_DOCUMENT",
     "ordinance_text": "An ordinance amending Section 6.12.040."
   }'
 ```

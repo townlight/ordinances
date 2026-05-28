@@ -7,18 +7,20 @@ import hashlib
 import hmac
 import json
 import os
-import sys
+from pathlib import Path
+import tempfile
 import time
-import types
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 from fastapi import HTTPException
 
 
-SUITE_SESSION_MODULE = "civiccore.auth.suite_session"
 CODE_STAFF_ROLES = frozenset({"code_admin", "staff"})
-_REVOKED_SESSION_IDS: set[str] = set()
+_DEFAULT_TOKEN_TTL = timedelta(minutes=15)
+_MAX_LOCAL_REVOCATIONS = 4096
+_REVOCATION_FILE_ENV_VAR = "CIVICCORE_SUITE_SESSION_REVOCATION_FILE"
+_REVOKED_SESSION_IDS: dict[str, int] = {}
 
 
 def _suite_session_key_env() -> str:
@@ -66,10 +68,10 @@ def issue_suite_session_token(
 ) -> str:
     """Issue a compact HMAC-signed suite-session token."""
 
-    expiry = expires_at or (datetime.now(UTC) + timedelta(hours=8))
+    expiry = expires_at or (datetime.now(UTC) + _DEFAULT_TOKEN_TTL)
     if expiry.tzinfo is None:
         expiry = expiry.replace(tzinfo=UTC)
-    header = {"alg": "HS256", "typ": "CivicSuiteSession"}
+    header = {"alg": "HS256", "typ": "JWT"}
     payload = {
         "sub": subject,
         "roles": sorted(roles),
@@ -109,8 +111,11 @@ def validate_suite_session_token(
 
     try:
         payload = json.loads(_b64url_decode(encoded_payload))
+        header = json.loads(_b64url_decode(encoded_header))
     except Exception as exc:  # pragma: no cover
         raise PermissionError("suite session token is invalid") from exc
+    if header != {"alg": "HS256", "typ": "JWT"}:
+        raise PermissionError("suite session token has an unsupported header")
 
     subject = str(payload.get("sub") or "").strip()
     session_id = str(payload.get("sid") or "").strip()
@@ -120,6 +125,8 @@ def validate_suite_session_token(
         raise PermissionError("suite session token is missing required claims")
     if expires_at <= int(time.time()):
         raise PermissionError("suite session token expired")
+    _load_shared_revocations()
+    _prune_revocations()
     if session_id in _REVOKED_SESSION_IDS:
         raise PermissionError("suite session was revoked")
 
@@ -132,35 +139,70 @@ def validate_suite_session_token(
 def revoke_suite_session(session_id: str) -> None:
     """Revoke a local fallback suite session by id."""
 
-    _REVOKED_SESSION_IDS.add(session_id)
-
-
-def ensure_suite_session_importable() -> None:
-    """Install the local fallback under CivicCore's import path when missing."""
-
-    try:
-        __import__(SUITE_SESSION_MODULE, fromlist=["validate_suite_session_token"])
-        return
-    except ModuleNotFoundError:
-        pass
-
-    module = types.ModuleType(SUITE_SESSION_MODULE)
-    module.SuiteSessionConfigError = SuiteSessionConfigError
-    module.SuiteSessionPrincipal = SuiteSessionPrincipal
-    module.issue_suite_session_token = issue_suite_session_token
-    module.validate_suite_session_token = validate_suite_session_token
-    module.revoke_suite_session = revoke_suite_session
-    sys.modules[SUITE_SESSION_MODULE] = module
+    normalized = session_id.strip()
+    if normalized:
+        _REVOKED_SESSION_IDS[normalized] = int((datetime.now(UTC) + _DEFAULT_TOKEN_TTL).timestamp())
+        _prune_revocations()
+        _persist_shared_revocations()
 
 
 def _load_validator():
-    ensure_suite_session_importable()
-    from civiccore.auth.suite_session import (  # type: ignore[import-not-found]
-        SuiteSessionConfigError as ImportedSuiteSessionConfigError,
-        validate_suite_session_token as imported_validate_suite_session_token,
-    )
+    try:
+        from civiccore.auth.suite_session import (  # type: ignore[import-not-found]
+            SuiteSessionConfigError as ImportedSuiteSessionConfigError,
+            validate_suite_session_token as imported_validate_suite_session_token,
+        )
 
-    return ImportedSuiteSessionConfigError, imported_validate_suite_session_token
+        return ImportedSuiteSessionConfigError, imported_validate_suite_session_token
+    except ModuleNotFoundError:
+        return SuiteSessionConfigError, validate_suite_session_token
+
+
+def _revocation_file() -> Path | None:
+    raw = os.getenv(_REVOCATION_FILE_ENV_VAR, "").strip()
+    if not raw:
+        return None
+    return Path(raw)
+
+
+def _load_shared_revocations() -> None:
+    path = _revocation_file()
+    if path is None or not path.exists():
+        return
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    if not isinstance(data, dict):
+        return
+    for session_id, expires_at in data.items():
+        if isinstance(session_id, str) and isinstance(expires_at, int):
+            _REVOKED_SESSION_IDS[session_id] = expires_at
+    _prune_revocations()
+
+
+def _persist_shared_revocations() -> None:
+    path = _revocation_file()
+    if path is None:
+        return
+    _prune_revocations()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as handle:
+        json.dump(_REVOKED_SESSION_IDS, handle, sort_keys=True)
+        temp_path = Path(handle.name)
+    temp_path.replace(path)
+
+
+def _prune_revocations() -> None:
+    now = int(datetime.now(UTC).timestamp())
+    expired = [session_id for session_id, expires_at in _REVOKED_SESSION_IDS.items() if expires_at <= now]
+    for session_id in expired:
+        _REVOKED_SESSION_IDS.pop(session_id, None)
+    if len(_REVOKED_SESSION_IDS) <= _MAX_LOCAL_REVOCATIONS:
+        return
+    by_expiry = sorted(_REVOKED_SESSION_IDS.items(), key=lambda item: item[1])
+    for session_id, _expires_at in by_expiry[: len(_REVOKED_SESSION_IDS) - _MAX_LOCAL_REVOCATIONS]:
+        _REVOKED_SESSION_IDS.pop(session_id, None)
 
 
 def validate_staff_bearer_token(authorization: str | None) -> SuiteSessionPrincipal | None:
@@ -220,6 +262,3 @@ def suite_session_required_error() -> HTTPException:
         },
         headers={"WWW-Authenticate": "Bearer"},
     )
-
-
-ensure_suite_session_importable()
