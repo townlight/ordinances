@@ -226,12 +226,11 @@ def validate_staff_bearer_token(authorization: str | None) -> SuiteSessionPrinci
     try:
         return validator(token.strip(), required_roles=CODE_STAFF_ROLES)
     except config_error as exc:
-        env_name = _suite_session_key_env()
         raise HTTPException(
             status_code=401,
             detail={
                 "message": "CivicCore suite session validation is not configured for CivicCode.",
-                "fix": f"Set {env_name} to the shared CivicSuite staff-session signing key.",
+                "fix": "Set CIVICCORE_SUITE_SESSION_SECRET to the shared CivicSuite staff-session signing key.",
             },
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
