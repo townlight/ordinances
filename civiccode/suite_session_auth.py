@@ -19,12 +19,9 @@ from fastapi import HTTPException
 CODE_STAFF_ROLES = frozenset({"code_admin", "staff"})
 _DEFAULT_TOKEN_TTL = timedelta(minutes=15)
 _MAX_LOCAL_REVOCATIONS = 4096
+_SUITE_SESSION_KEY_ENV_VAR = "CIVICCORE_SUITE_SESSION_SECRET"
 _REVOCATION_FILE_ENV_VAR = "CIVICCORE_SUITE_SESSION_REVOCATION_FILE"
 _REVOKED_SESSION_IDS: dict[str, int] = {}
-
-
-def _suite_session_key_env() -> str:
-    return "CIVICCORE_SUITE_SESSION_" + "".join(chr(c) for c in (83, 69, 67, 82, 69, 84))
 
 
 class SuiteSessionConfigError(RuntimeError):
@@ -49,14 +46,13 @@ def _b64url_decode(raw: str) -> bytes:
     return base64.urlsafe_b64decode((raw + padding).encode("ascii"))
 
 
-def _signing_key() -> bytes:
-    env_name = _suite_session_key_env()
-    value = os.getenv(env_name, "").strip()
+def _signing_key() -> str:
+    value = os.getenv(_SUITE_SESSION_KEY_ENV_VAR, "").strip()
     if not value:
         raise SuiteSessionConfigError(
-            f"{env_name} must be set before issuing or validating suite session tokens."
+            f"{_SUITE_SESSION_KEY_ENV_VAR} must be set before issuing or validating suite session tokens."
         )
-    return value.encode("utf-8")
+    return value
 
 
 def issue_suite_session_token(
@@ -84,7 +80,7 @@ def issue_suite_session_token(
             _b64url_encode(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")),
         ]
     )
-    signature = hmac.new(_signing_key(), signing_input.encode("ascii"), hashlib.sha256).digest()
+    signature = hmac.new(_signing_key().encode("utf-8"), signing_input.encode("ascii"), hashlib.sha256).digest()
     return f"{signing_input}.{_b64url_encode(signature)}"
 
 
@@ -101,7 +97,11 @@ def validate_suite_session_token(
         raise PermissionError("suite session token is invalid") from exc
 
     signing_input = f"{encoded_header}.{encoded_payload}"
-    expected_signature = hmac.new(_signing_key(), signing_input.encode("ascii"), hashlib.sha256).digest()
+    expected_signature = hmac.new(
+        _signing_key().encode("utf-8"),
+        signing_input.encode("ascii"),
+        hashlib.sha256,
+    ).digest()
     try:
         actual_signature = _b64url_decode(encoded_signature)
     except Exception as exc:  # pragma: no cover
