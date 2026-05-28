@@ -182,6 +182,7 @@ jobs:
           npm ci
           npm run typecheck
           npm run build
+          npx playwright install chromium
           npm run a11y:ci
           python -m build
           python - <<'PY'
