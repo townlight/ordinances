@@ -31,7 +31,7 @@ def load_local_llm_config() -> LocalLLMConfig | None:
     return LocalLLMConfig(
         provider="ollama",
         base_url=(base_url or "http://127.0.0.1:11434").rstrip("/"),
-        model=os.environ.get("CIVICCODE_OLLAMA_MODEL", "llama3.1:8b").strip() or "llama3.1:8b",
+        model=os.environ.get("CIVICCODE_OLLAMA_MODEL", "gemma4:e4b").strip() or "gemma4:e4b",
         timeout_seconds=float(os.environ.get("CIVICCODE_OLLAMA_TIMEOUT_SECONDS", "20")),
     )
 
