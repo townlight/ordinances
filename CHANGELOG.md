@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Aligns the default local Ollama answer model with the city-core installer
+  pull set by using `gemma4:e4b` when `CIVICCODE_OLLAMA_MODEL` is unset.
 - Hardened the existing CivicClerk ordinance-event intake route with an
   optional shared-intake authorization header for city-core service-to-service
   handoff calls, without broadening trusted staff-header access for the rest of

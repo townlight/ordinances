@@ -12,6 +12,8 @@ import pytest
 from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
+from civiccode.ai_answer import load_local_llm_config
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -191,6 +193,17 @@ async def test_question_answer_uses_local_ollama_when_configured(
     assert payload["ai_review_required"] is True
     assert payload["ai_authority"] == "non_authoritative_staff_review_required"
     assert "Source:" in payload["answer"]
+
+
+def test_local_ollama_default_model_matches_city_core_pull(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
+    monkeypatch.delenv("CIVICCODE_OLLAMA_MODEL", raising=False)
+    monkeypatch.delenv("CIVICCODE_OLLAMA_URL", raising=False)
+
+    config = load_local_llm_config()
+
+    assert config is not None
+    assert config.model == "gemma4:e4b"
 
 
 def _ollama_generate_available() -> bool:
