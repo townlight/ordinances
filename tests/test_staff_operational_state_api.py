@@ -4,13 +4,15 @@ import importlib
 import socket
 
 import pytest
+from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
 from civiccode.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
 from civiccode.operational_state import OperationalStateRepository
 
 
-STAFF_HEADERS = {
+STAFF_HEADERS = build_suite_staff_headers()
+LEGACY_STAFF_HEADERS = {
     "X-CivicCode-Role": "staff",
     "X-CivicCode-Actor": "operator@example.gov",
 }
@@ -160,7 +162,7 @@ async def test_staff_headers_must_come_from_trusted_proxy(app_module) -> None:
     ) as remote_client:
         response = await remote_client.get(
             "/api/v1/civiccode/staff/operational-state",
-            headers=STAFF_HEADERS,
+            headers=LEGACY_STAFF_HEADERS,
         )
 
     assert response.status_code == 403

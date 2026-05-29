@@ -12,10 +12,9 @@ from civiccode.real_municipal_fixtures import (
 )
 
 
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "release-gate@example.gov",
-}
+from conftest import build_suite_staff_headers
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.mark.asyncio

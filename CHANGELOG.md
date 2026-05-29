@@ -6,6 +6,9 @@
   optional shared-intake authorization header for city-core service-to-service
   handoff calls, without broadening trusted staff-header access for the rest of
   the staff API.
+- Accepts the same configured CivicClerk handoff secret as a suite bearer token
+  so the city-core launcher can wire CivicClerk to CivicCode without re-enabling
+  spoofable staff headers.
 - Documented the shipped CivicClerk live-emitter counterpart in ADR-0004.
 
 ## [1.0.8] - 2026-05-23

@@ -4,14 +4,13 @@ import importlib
 from pathlib import Path
 
 import pytest
+from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
 
 ROOT = Path(__file__).resolve().parents[1]
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
-}
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.fixture()
@@ -185,6 +184,25 @@ async def test_matching_intake_auth_allows_service_to_service_without_trusted_pr
 
     assert accepted.status_code == 201
     assert accepted.json()["external_event_id"] == "service_external"
+
+
+@pytest.mark.asyncio
+async def test_matching_suite_bearer_allows_civicclerk_handoff(
+    client: AsyncClient,
+    app_module,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    await seed_handoff_fixture(client)
+    monkeypatch.setenv(app_module.CIVICCODE_INTAKE_AUTH_ENV_VAR, "shared-test-value")
+
+    accepted = await client.post(
+        "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+        headers={"Authorization": "Bearer shared-test-value"},
+        json=handoff_payload(event_id="bearer_event", external_event_id="bearer_external"),
+    )
+
+    assert accepted.status_code == 201
+    assert accepted.json()["external_event_id"] == "bearer_external"
 
 
 @pytest.mark.asyncio

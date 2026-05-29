@@ -12,6 +12,7 @@ from datetime import date
 from pathlib import Path
 
 import pytest
+from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine, text
 
@@ -20,10 +21,8 @@ from civiccode.section_lifecycle import SectionLifecycleRepository
 
 
 ROOT = Path(__file__).resolve().parents[1]
-STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
-}
+
+STAFF_HEADERS = build_suite_staff_headers()
 
 
 @pytest.fixture()

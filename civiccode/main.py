@@ -126,6 +126,10 @@ from civiccode.source_registry import (
     source_to_public_dict,
     source_to_staff_dict,
 )
+from civiccode.suite_session_auth import (
+    suite_session_required_error,
+    validate_staff_bearer_token,
+)
 from civiccore import __version__ as CIVICCORE_VERSION
 
 app = FastAPI(
@@ -141,8 +145,8 @@ if (FRONTEND_DIST / "assets").exists():
         name="civiccode_frontend_assets",
     )
 _current_request: ContextVar[Request | None] = ContextVar("current_request", default=None)
-CIVICCODE_INTAKE_AUTH_ENV_VAR = "CIVICCODE_INTAKE_" + "".join(chr(code) for code in (83, 69, 67, 82, 69, 84))
-CIVICCODE_INTAKE_AUTH_HEADER = "X-CivicCode-Intake-" + "".join(chr(code) for code in (83, 101, 99, 114, 101, 116))
+CIVICCODE_INTAKE_AUTH_ENV_VAR = "CIVICCODE_INTAKE_SECRET"
+CIVICCODE_INTAKE_AUTH_HEADER = "X-CivicCode-Intake-Secret"
 
 SOURCE_STORE = SourceRegistryStore()
 _source_registry_repository: SourceRegistryRepository | None = None
@@ -539,8 +543,17 @@ def _raise_public_discovery_error(exc: PublicDiscoveryError) -> None:
 def _require_staff(
     x_civiccode_role: str | None,
     x_civiccode_actor: str | None,
+    *,
+    require_suite_session: bool = False,
 ) -> str:
     request = _current_request.get()
+    suite_principal = validate_staff_bearer_token(
+        request.headers.get("authorization") if request is not None else None
+    )
+    if suite_principal is not None:
+        return suite_principal.subject
+    if require_suite_session:
+        raise suite_session_required_error()
     config = _staff_trusted_header_config() if request is not None else None
     if request is not None and (
         config.principal_header_name != "X-CivicCode-Actor"
@@ -614,16 +627,32 @@ def _staff_trusted_header_config() -> TrustedHeaderAuthConfig:
     )
 
 
-def _require_civicclerk_intake_auth(header_value: str | None) -> bool:
+def _extract_bearer_token(authorization_value: str | None) -> str:
+    prefix = "bearer "
+    value = (authorization_value or "").strip()
+    if not value.lower().startswith(prefix):
+        return ""
+    return value[len(prefix) :].strip()
+
+
+def _require_civicclerk_intake_auth(
+    header_value: str | None,
+    authorization_value: str | None = None,
+) -> bool:
     expected = (os.getenv(CIVICCODE_INTAKE_AUTH_ENV_VAR) or "").strip()
     if not expected:
         return False
-    if (header_value or "").strip() != expected:
+    header_matches = (header_value or "").strip() == expected
+    bearer_matches = _extract_bearer_token(authorization_value) == expected
+    if not header_matches and not bearer_matches:
         raise HTTPException(
             status_code=403,
             detail={
                 "message": "CivicClerk intake authorization failed.",
-                "fix": f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values.",
+                "fix": (
+                    f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values, "
+                    "then send that value as either the CivicCode intake header or a suite bearer token."
+                ),
             },
         )
     return True
@@ -997,8 +1026,10 @@ async def get_staff_operational_state(
     x_civiccode_actor: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Return current operational readiness state for staff operators."""
-    _require_staff(x_civiccode_role, x_civiccode_actor)
-    return _operational_readiness_payload()
+    actor = _require_staff(x_civiccode_role, x_civiccode_actor)
+    payload = _operational_readiness_payload()
+    payload["staff_session"] = {"subject": actor}
+    return payload
 
 
 @app.get("/api/v1/civiccode/sources/catalog")
@@ -1022,7 +1053,7 @@ async def create_source(
     x_civiccode_actor: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Register a municipal code source without importing its contents yet."""
-    _require_staff(x_civiccode_role, x_civiccode_actor)
+    _require_staff(x_civiccode_role, x_civiccode_actor, require_suite_session=True)
     data = request.model_dump()
     if data["checksum"] is None and data.get("file_reference"):
         data["checksum"] = compute_reference_checksum(data["file_reference"])
@@ -1701,9 +1732,10 @@ async def create_civicclerk_ordinance_event(
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
+    authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Receive CivicClerk ordinance/adoption events without codifying them."""
-    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
         if service_authorized
@@ -1727,9 +1759,10 @@ async def resolve_civicclerk_ordinance_event(
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
+    authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
     """Mark a CivicClerk handoff codified after staff creates the adopted code version."""
-    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth)
+    service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
         if service_authorized

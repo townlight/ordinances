@@ -6,7 +6,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 
 
-STAFF_HEADERS = {
+LEGACY_STAFF_HEADERS = {
     "X-CivicCode-Role": "staff",
     "X-CivicCode-Actor": "release-gate@example.gov",
 }
@@ -37,11 +37,15 @@ async def client(app_module):
         yield async_client
 
 
-async def seed_section(client: AsyncClient) -> None:
+async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
+    staff_headers = suite_staff_headers(
+        subject="release-gate@example.gov",
+        session_id="release-gate-seed",
+    )
     assert (
         await client.post(
             "/api/v1/civiccode/sources",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={
                 "source_id": "municode_active",
                 "name": "Example Municipal Code",
@@ -60,14 +64,14 @@ async def seed_section(client: AsyncClient) -> None:
     assert (
         await client.post(
             "/api/v1/civiccode/titles",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
             "/api/v1/civiccode/chapters",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={
                 "chapter_id": "chapter_6_12",
                 "title_id": "title_6",
@@ -79,7 +83,7 @@ async def seed_section(client: AsyncClient) -> None:
     assert (
         await client.post(
             "/api/v1/civiccode/sections",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={
                 "section_id": "sec_chickens",
                 "chapter_id": "chapter_6_12",
@@ -91,7 +95,7 @@ async def seed_section(client: AsyncClient) -> None:
     assert (
         await client.post(
             "/api/v1/civiccode/sections/sec_chickens/versions",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={
                 "version_id": "v_chickens_current",
                 "section_id": "sec_chickens",
@@ -117,8 +121,9 @@ async def test_bad_question_body_fails_closed_with_validation_error(client: Asyn
 @pytest.mark.asyncio
 async def test_missing_section_returns_actionable_refusal_not_fabricated_answer(
     client: AsyncClient,
+    suite_staff_headers,
 ) -> None:
-    await seed_section(client)
+    await seed_section(client, suite_staff_headers)
 
     response = await client.post(
         "/api/v1/civiccode/questions/answer",
@@ -139,12 +144,17 @@ async def test_missing_section_returns_actionable_refusal_not_fabricated_answer(
 @pytest.mark.asyncio
 async def test_stale_source_refuses_answer_until_staff_refreshes_source(
     client: AsyncClient,
+    suite_staff_headers,
 ) -> None:
-    await seed_section(client)
+    await seed_section(client, suite_staff_headers)
+    staff_headers = suite_staff_headers(
+        subject="release-gate@example.gov",
+        session_id="release-gate-transition",
+    )
     assert (
         await client.post(
             "/api/v1/civiccode/sources/municode_active/transitions",
-            headers=STAFF_HEADERS,
+            headers=staff_headers,
             json={
                 "to_status": "stale",
                 "actor": "release-gate@example.gov",
@@ -200,7 +210,7 @@ async def test_spoofed_staff_headers_from_untrusted_remote_are_rejected(app_modu
     ) as remote_client:
         response = await remote_client.get(
             "/api/v1/civiccode/staff/audit-events",
-            headers=STAFF_HEADERS,
+            headers=LEGACY_STAFF_HEADERS,
         )
 
     assert response.status_code == 403
@@ -221,7 +231,7 @@ async def test_shipped_compose_trust_rejects_docker_bridge_staff_header_spoof(
     ) as remote_client:
         response = await remote_client.get(
             "/api/v1/civiccode/staff/audit-events",
-            headers=STAFF_HEADERS,
+            headers=LEGACY_STAFF_HEADERS,
         )
 
     assert response.status_code == 403
@@ -234,8 +244,9 @@ async def test_shipped_compose_trust_rejects_docker_bridge_staff_header_spoof(
 async def test_unavailable_ollama_returns_cited_deterministic_fallback_with_fix_path(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
+    suite_staff_headers,
 ) -> None:
-    await seed_section(client)
+    await seed_section(client, suite_staff_headers)
     monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
     monkeypatch.setenv("CIVICCODE_OLLAMA_URL", "http://127.0.0.1:9")
     monkeypatch.setenv("CIVICCODE_OLLAMA_TIMEOUT_SECONDS", "0.25")
