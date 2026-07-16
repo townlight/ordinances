@@ -138,7 +138,7 @@ async def test_health_endpoint_is_actionable_for_it_staff() -> None:
         "status": "ok",
         "service": "civiccode",
         "version": "1.0.8",
-        "civiccore": "1.2.0",
+        "civiccore": "1.2.1",
     }
 
 
