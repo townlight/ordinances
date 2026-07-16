@@ -213,7 +213,7 @@ postures remain historical evidence only.
   `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
 - document CivicAccess as planned infrastructure, not a shipped runtime
   dependency,
-- consume the CivicCore shared-ingestion pipeline from the published v1.2.0 release wheel,
+- consume the CivicCore shared-ingestion pipeline from the published v1.2.1 release wheel,
 - reuse the shared CivicCore source-list health projection for codifier sync
   list responses, and
 - keep docs, browser QA, adversarial mock validation, and CI gates green for
@@ -264,12 +264,12 @@ Install the CivicCore shared-ingestion dependency, then install
 CivicCode in editable mode:
 
 ```bash
-python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
 
-The CivicCore v1.2.0 release wheel is the shared-ingestion dependency for this release train.
+The CivicCore v1.2.1 release wheel is the shared-ingestion dependency for this release train.
 
 Docker demo path:
 

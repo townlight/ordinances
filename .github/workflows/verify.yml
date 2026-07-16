@@ -97,7 +97,7 @@ jobs:
           python -m pytest tests/test_release_provenance_gate.py --collect-only -q 2>&1 | tee pytest-provenance-collect.log
       - name: Run release-provenance tooling tests against CivicCore shared-ingestion dependency
         run: |
-          python -m pip install --force-reinstall "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+          python -m pip install --force-reinstall "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
           set -o pipefail
           python -m pytest tests/test_release_provenance_gate.py 2>&1 | tee pytest-provenance-run.log
       - name: Verify release-provenance collected == passed or reported skips

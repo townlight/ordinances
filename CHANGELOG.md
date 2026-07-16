@@ -12,6 +12,10 @@
   so the city-core launcher can wire CivicClerk to CivicCode without re-enabling
   spoofable staff headers.
 - Documented the shipped CivicClerk live-emitter counterpart in ADR-0004.
+- Aligns the pinned CivicCore shared-ingestion dependency from the v1.2.0
+  release wheel to the published v1.2.1 release wheel (sha256
+  8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59)
+  across pyproject.toml, the verify workflow, tests, and documentation.
 
 ## [1.0.8] - 2026-05-23
 

@@ -44,8 +44,8 @@ def test_pyproject_consumes_published_civiccore_shared_ingestion_release() -> No
 
     assert (
         "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
-        "v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256="
-        "a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+        "v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256="
+        "8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
     ) in dependencies
     assert not any("civiccore>=" in dep or "civiccore~=" in dep for dep in dependencies)
 
@@ -148,8 +148,8 @@ def test_ci_runs_pytest_docs_and_placeholder_gates() -> None:
 
     civiccore_shared_ingestion_dependency = (
         "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
-        "v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256="
-        "a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+        "v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256="
+        "8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
     )
     assert civiccore_shared_ingestion_dependency in text
     assert "civiccore-1.1.0-py3-none-any.whl" not in text
