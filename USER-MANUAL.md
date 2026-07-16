@@ -162,7 +162,7 @@ is at v1.0.8 after independent release-gate re-audit #5 cleared PR #61 at
 implementation must follow the CivicSuite pattern:
 
 - standalone module repo under `CivicSuite/`,
-- CivicCore shared-ingestion dependency at the published v1.2.0 release wheel,
+- CivicCore shared-ingestion dependency at the published v1.2.1 release wheel,
 - local LLM only through `civiccore.llm`,
 - no cloud dependency,
 - no imports from unreleased CivicCore placeholder packages.
@@ -175,7 +175,7 @@ version records, and answer a cited question through a local Ollama model.
 Install and run:
 
 ```bash
-python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.0/civiccore-1.2.0-py3-none-any.whl#sha256=a94ce958e36fb03c8d961e4db4672ce5bcfa25765c57d75886e999cf15703ec7"
+python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
 python -m pip install -e ".[dev]"
 python -m uvicorn civiccode.main:app --reload
 ```
