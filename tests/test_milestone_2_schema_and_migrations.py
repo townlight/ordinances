@@ -455,7 +455,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
                 ).scalars()
             )
 
-        assert civiccore_revision == "civiccore_0002_llm"
+        assert civiccore_revision == "civiccore_0003_local_task_queue"
         assert civiccode_revision == "civiccode_0012_drop_local_search"
         assert civiccode_tables == set(CANONICAL_TABLES) | {
             "source_registry_records",
