@@ -122,7 +122,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: CivicSuite/civiccore
-          ref: v1.2.0
+          ref: v1.2.1
           path: .tmp-civiccore
 
       - name: Verify adversarial release provenance fixtures

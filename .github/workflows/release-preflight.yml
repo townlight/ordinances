@@ -61,7 +61,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: CivicSuite/civiccore
-          ref: v1.2.0
+          ref: v1.2.1
           path: .tmp-civiccore
       - name: Verify adversarial release provenance fixtures
         run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-civiccore/tests/fixtures/release_provenance
