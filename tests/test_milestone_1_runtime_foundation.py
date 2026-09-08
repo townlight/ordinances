@@ -43,7 +43,7 @@ def test_pyproject_consumes_published_civiccore_shared_ingestion_release() -> No
     dependencies = data["project"]["dependencies"]
 
     assert (
-        "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
+        "civiccore @ https://github.com/townlight/core/releases/download/"
         "v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256="
         "8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
     ) in dependencies
@@ -147,7 +147,7 @@ def test_ci_runs_pytest_docs_and_placeholder_gates() -> None:
     text = workflow.read_text(encoding="utf-8")
 
     civiccore_shared_ingestion_dependency = (
-        "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/"
+        "civiccore @ https://github.com/townlight/core/releases/download/"
         "v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256="
         "8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
     )

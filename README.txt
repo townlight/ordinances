@@ -126,7 +126,7 @@ Documentation: CC BY 4.0 unless otherwise stated; see LICENSE-DOCS.
 Run locally
 -----------
 
-1. python -m pip install "civiccore @ https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
+1. python -m pip install "civiccore @ https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
 2. python -m pip install -e ".[dev]"
 3. python -m uvicorn civiccode.main:app --reload
 4. curl http://127.0.0.1:8000/health

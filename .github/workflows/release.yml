@@ -59,7 +59,7 @@ jobs:
         run: |
           TAG="${{ inputs.release_tag }}"
           VERSION="${TAG#v}"
-          WHEEL_URL="https://github.com/CivicSuite/civiccode/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
+          WHEEL_URL="https://github.com/townlight/ordinances/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
           echo "Cleanroom wheel URL: ${WHEEL_URL}"
           python -m venv .cleanroom-venv
           . .cleanroom-venv/bin/activate
@@ -116,12 +116,12 @@ jobs:
           python-version: "3.13"
 
       - name: Install CivicCore release-provenance helper
-        run: python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
+        run: python -m pip install https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
 
       - name: Checkout canonical CivicCore provenance fixtures
         uses: actions/checkout@v4
         with:
-          repository: CivicSuite/civiccore
+          repository: townlight/core
           ref: v1.2.1
           path: .tmp-civiccore
 
@@ -151,7 +151,7 @@ jobs:
           node-version: "22"
 
       - name: Install CivicCore release wheel
-        run: python -m pip install https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59
+        run: python -m pip install https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59
 
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
@@ -171,7 +171,7 @@ jobs:
         env:
           CIVICCODE_SKIP_ISOLATED_PROVENANCE: "1"
         run: |
-          python -m pip install --force-reinstall "https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
+          python -m pip install --force-reinstall "https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
           python -m pytest -q tests/test_release_provenance_gate.py
 
       - name: Run docs, placeholder, and Ruff gates
@@ -225,7 +225,7 @@ jobs:
           echo "target_tree=$target_tree" >> "$GITHUB_OUTPUT"
 
       - name: Install CivicCore release-provenance helper
-        run: python -m pip install --force-reinstall https://github.com/CivicSuite/civiccore/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
+        run: python -m pip install --force-reinstall https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
 
       - name: Build release attestation
         run: |
