@@ -615,6 +615,6 @@ required or shipped in this repo.
 
 ## License
 
-Code: Apache License 2.0; see `LICENSE-CODE`.
+Code: AGPL-3.0-only, with the TownLight Public Institution Exception for qualifying deployments. See [LICENSE](LICENSE) and [LICENSE-EXCEPTION.md](LICENSE-EXCEPTION.md).
 
 Documentation: CC BY 4.0 unless otherwise stated; see `LICENSE-DOCS`.
