@@ -17,10 +17,10 @@ const scenarios = [
   { name: "public-search-results-desktop", path: "/civiccode/search?q=roosters", width: 1440, height: 1000, status: 200, text: ["Search results for roosters", "Citation-ready results"] },
   { name: "public-answer-cited-desktop", path: "/civiccode/answer?q=What%20does%20section%2013.40.020%20say%3F&section_number=13.40.020", width: 1440, height: 1000, status: 200, text: ["Cited code answer", "Citation", "not a legal determination"] },
   { name: "public-answer-cited-mobile", path: "/civiccode/answer?q=What%20does%20section%2013.40.020%20say%3F&section_number=13.40.020", width: 390, height: 900, status: 200, text: ["Cited code answer", "Open authoritative section text"] },
-  { name: "public-answer-refusal-mobile", path: "/civiccode/search?q=Should%20I%20sue%20my%20neighbor%20over%20roosters%3F", width: 390, height: 900, status: 200, text: ["CivicCode cannot provide legal advice", "contact the City Attorney"] },
+  { name: "public-answer-refusal-mobile", path: "/civiccode/search?q=Should%20I%20sue%20my%20neighbor%20over%20roosters%3F", width: 390, height: 900, status: 200, text: ["Townlight Code cannot provide legal advice", "contact the City Attorney"] },
   { name: "public-section-detail-desktop", path: "/civiccode/sections/13.40.020", width: 1440, height: 1000, status: 200, text: ["Authoritative code text", "Records-ready export", "Need an official interpretation"] },
   { name: "public-section-detail-mobile", path: "/civiccode/sections/13.40.020", width: 390, height: 900, status: 200, text: ["Authoritative code text", "Citation", "Related materials"] },
-  { name: "public-section-export-mobile", path: "/civiccode/sections/13.40.020/export", width: 390, height: 900, status: 200, skipText: "Skip to export content", text: ["CivicCode records-ready export", "Source provenance", "Legal boundary"] },
+  { name: "public-section-export-mobile", path: "/civiccode/sections/13.40.020/export", width: 390, height: 900, status: 200, skipText: "Skip to export content", text: ["Townlight Code records-ready export", "Source provenance", "Legal boundary"] },
   {
     name: "react-app-api-search-answer-desktop",
     path: "/civiccode/app",

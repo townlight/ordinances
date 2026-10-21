@@ -1,6 +1,8 @@
-# Contributing to CivicCode
+<a id="contributing-to-civiccode"></a>
 
-CivicCode is currently in scaffold and Milestone 0 planning. Contributions
+# Contributing to Townlight Code
+
+Townlight Code is currently in scaffold and Milestone 0 planning. Contributions
 should improve documentation, clarify ADR questions, or strengthen verification
 gates. Runtime code starts only after Milestone 0 is reviewed.
 
@@ -17,8 +19,8 @@ the same PR.
 
 ## Scope rules
 
-- Do not promote planned CivicCode behavior as shipped.
+- Do not promote planned Townlight Code behavior as shipped.
 - Do not add runtime application code before Milestone 1 is opened.
-- Do not import from unreleased CivicCore placeholder packages.
+- Do not import from unreleased Townlight Core placeholder packages.
 - Do not change suite-wide compatibility docs from this repo; open a PR in
-  `CivicSuite/civicsuite` instead.
+  `townlight/townlight` instead.

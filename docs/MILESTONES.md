@@ -1,6 +1,8 @@
-# CivicCode Milestones
+<a id="civiccode-milestones"></a>
 
-This plan is scaffolded from the CivicSuite unified spec, the CivicCode
+# Townlight Code Milestones
+
+This plan is scaffolded from the Townlight unified spec, the Townlight Code
 roadmap, and suite ADRs. Runtime code starts only after Milestone 0 is reviewed.
 
 For PR-sized execution details, see
@@ -34,7 +36,7 @@ Expected tests/gates: unit/API tests for health/root, docs gate, placeholder gat
 Acceptance criteria:
 
 - Schema follows ADR-0002 shared Base rule.
-- Migrations run after CivicCore migrations.
+- Migrations run after Townlight Core migrations.
 - Tables are namespaced under `civiccode`.
 - Real Postgres migration smoke test passes.
 
@@ -100,11 +102,13 @@ Acceptance criteria:
 
 Expected tests/gates: ACL matrix, leakage tests, audit-log tests.
 
-## Milestone 9 - CivicClerk Handoff Intake
+<a id="milestone-9---civicclerk-handoff-intake"></a>
+
+## Milestone 9 - Townlight Meetings Handoff Intake
 
 Acceptance criteria:
 
-- CivicCode can receive ordinance/adoption events using the accepted contract.
+- Townlight Code can receive ordinance/adoption events using the accepted contract.
 - Pending ordinance language is distinguished from adopted law.
 - Failed/stale handoffs are visible and actionable.
 
@@ -137,7 +141,7 @@ Expected tests/gates: connector tests, import fixture tests, air-gap checks.
 
 Acceptance criteria:
 
-- Public pages and exports meet CivicAccess-ready accessibility expectations.
+- Public pages and exports meet Townlight Access-ready accessibility expectations.
 - Exported code/section packages preserve citation and source provenance.
 - Browser QA covers desktop/mobile, focus, contrast, and copy states.
 
@@ -150,7 +154,7 @@ Acceptance criteria:
 - All version surfaces synchronized.
 - README, manual, landing page, changelog, and compatibility docs are current.
 - Release artifacts build and publish.
-- CivicSuite compatibility matrix PR is merged after release.
+- Townlight compatibility matrix PR is merged after release.
 
 Expected tests/gates: release verification, docs verification, browser QA,
 audit-lite review.

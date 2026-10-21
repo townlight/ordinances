@@ -1,4 +1,4 @@
-"""FastAPI runtime foundation for CivicCode."""
+"""FastAPI runtime foundation for Townlight Code."""
 
 from __future__ import annotations
 
@@ -133,9 +133,9 @@ from civiccode.suite_session_auth import (
 from civiccore import __version__ as CIVICCORE_VERSION
 
 app = FastAPI(
-    title="CivicCode",
+    title='Townlight Code',
     version=__version__,
-    summary="Runtime foundation for CivicCode municipal code access workflows.",
+    summary="Runtime foundation for Townlight Code municipal code access workflows.",
 )
 FRONTEND_DIST = Path(__file__).resolve().parent / "frontend_dist"
 if (FRONTEND_DIST / "assets").exists():
@@ -242,7 +242,7 @@ HANDOFF_MEMORY_STORE = OrdinanceHandoffStore()
 
 
 class OrdinanceHandoffRouter:
-    """Route CivicClerk handoff calls to memory or the configured durable repository."""
+    """Route Townlight Meetings handoff calls to memory or the configured durable repository."""
 
     def __init__(self, memory_store: OrdinanceHandoffStore) -> None:
         self._memory_store = memory_store
@@ -433,7 +433,7 @@ class PlainLanguageSummaryCreate(BaseModel):
 
 
 class CivicClerkOrdinanceEventCreate(BaseModel):
-    """Request body for CivicClerk ordinance/adoption handoff intake."""
+    """Request body for Townlight Meetings ordinance/adoption handoff intake."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -477,7 +477,7 @@ class ImportBundleCreate(BaseModel):
 
 
 class SharedPdfImportCreate(BaseModel):
-    """Request body for CivicCore shared PDF ingestion into CivicCode."""
+    """Request body for Townlight Core shared PDF ingestion into Townlight Code."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -564,7 +564,7 @@ def _require_staff(
         raise HTTPException(
             status_code=403,
             detail={
-                "message": "Staff role required for this CivicCode endpoint.",
+                "message": "Staff role required for this Townlight Code endpoint.",
                 "fix": "Send X-CivicCode-Role: staff from the trusted staff shell or service account.",
             },
         )
@@ -573,7 +573,7 @@ def _require_staff(
         raise HTTPException(
             status_code=403,
             detail={
-                "message": "Staff actor required for this CivicCode endpoint.",
+                "message": "Staff actor required for this Townlight Code endpoint.",
                 "fix": "Send X-CivicCode-Actor with the staff email or service account.",
             },
         )
@@ -590,14 +590,14 @@ def _require_staff_from_trusted_headers(
 ) -> str:
     enforce_trusted_proxy_source(
         request.client.host if request.client else None,
-        service_name="CivicCode",
+        service_name='Townlight Code',
         feature_name="staff endpoint access",
         config=config,
         trusted_proxy_env_var="CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS",
     )
     principal = authorize_trusted_header_roles(
         request.headers,
-        service_name="CivicCode",
+        service_name='Townlight Code',
         feature_name="staff endpoint access",
         principal_header_name=config.principal_header_name,
         roles_header_name=config.roles_header_name,
@@ -648,10 +648,10 @@ def _require_civicclerk_intake_auth(
         raise HTTPException(
             status_code=403,
             detail={
-                "message": "CivicClerk intake authorization failed.",
+                "message": "Townlight Meetings intake authorization failed.",
                 "fix": (
-                    f"Configure CivicClerk and CivicCode with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values, "
-                    "then send that value as either the CivicCode intake header or a suite bearer token."
+                    f"Configure Townlight Meetings and Townlight Code with matching {CIVICCODE_INTAKE_AUTH_ENV_VAR} values, "
+                    "then send that value as either the Townlight Code intake header or a suite bearer token."
                 ),
             },
         )
@@ -710,7 +710,7 @@ def _staff_code_payload() -> dict[str, Any]:
     if draft_summaries:
         blockers.append("Draft plain-language summaries need staff approval before residents can see them.")
     if handoff_warnings:
-        blockers.append("Pending CivicClerk handoffs require codification review before staff treats text as fully current.")
+        blockers.append("Pending Townlight Meetings handoffs require codification review before staff treats text as fully current.")
     return {
         "source_status": source_status,
         "counts": {
@@ -732,7 +732,7 @@ def _staff_code_next_action(
     if current_version is None:
         return "Fix: add an adopted current version from an active official source before this section powers resident lookup."
     if warnings:
-        return "Fix: review the CivicClerk handoff and update the codified text or mark the event resolved before relying on this section."
+        return "Fix: review the Townlight Meetings handoff and update the codified text or mark the event resolved before relying on this section."
     if not summaries:
         return "Fix: draft and approve a non-authoritative plain-language summary if residents need a plain explanation."
     if any(summary["status"] == "draft" for summary in summaries):
@@ -789,7 +789,7 @@ async def root() -> dict[str, str]:
         "name": "CivicCode",
         "status": "docker demo codifier runtime",
         "message": (
-            "CivicCode runtime, canonical schema, official source registry API, and "
+            "Townlight Code runtime, canonical schema, official source registry API, and "
             "section/version lifecycle APIs are online. Search and stable section permalink "
             "APIs are online. Deterministic citations and refusal objects are online. "
             "Citation-grounded Q&A harness is online for adopted sections. Staff "
@@ -797,11 +797,11 @@ async def root() -> dict[str, str]:
             "plain-language summaries are online and labeled non-authoritative. "
             "Staff-approved popular questions and related-material navigation "
             "aids are online with citations and no legal determinations. "
-            "CivicClerk ordinance handoff intake, durable handoff records, audit "
+            "Townlight Meetings ordinance handoff intake, durable handoff records, audit "
             "events, and affected-section warnings are online. Resident-facing "
             "public lookup pages are online at /civiccode. "
-            "The downstream section-resolution service is online for CivicZone, "
-            "CivicLegal, CivicAccess, and CivicComms. The resident cited-answer "
+            "The downstream section-resolution service is online for Townlight Zoning, "
+            "Townlight Legal, Townlight Access, and Townlight Communications. The resident cited-answer "
             "page is online at /civiccode/answer. "
             "Local file-drop and fixture import jobs are online with provenance, "
             "retry, and no required outbound dependency. Records-ready section "
@@ -820,12 +820,12 @@ async def root() -> dict[str, str]:
         "api_base": "/api/v1/civiccode",
         "future_public_path": "/civiccode",
         "next_step": (
-            "CivicCode v1.0.8 persists section/version lifecycle records, "
+            "Townlight Code v1.0.8 persists section/version lifecycle records, "
             "popular-question discovery aids, staff notes, plain-language "
-            "summaries, CivicClerk handoff records, handoff audit events, and "
+            "summaries, Townlight Meetings handoff records, handoff audit events, and "
             "local import job ledgers, codifier sync source state, and "
             "operational retry, replay, and cursor state "
-            "in the configured database; next work follows the CivicSuite roadmap."
+            "in the configured database; next work follows the Townlight roadmap."
         ),
     }
 
@@ -843,12 +843,12 @@ async def public_lookup_home() -> str:
 @app.get("/civiccode/app")
 @app.get("/civiccode/app/")
 async def civiccode_frontend_app() -> Response:
-    """Serve the React/Vite CivicCode frontend when built."""
+    """Serve the React/Vite Townlight Code frontend when built."""
     index_path = FRONTEND_DIST / "index.html"
     if not index_path.exists():
         return render_error_page(
             "Frontend build required",
-            "The CivicCode React app has not been built in this package.",
+            "The Townlight Code React app has not been built in this package.",
             "Run npm install and npm run build before packaging or deploy the package artifact that includes civiccode/frontend_dist.",
         )
     return FileResponse(index_path)
@@ -1253,13 +1253,13 @@ async def lookup_section(section_number: str, as_of: date | None = None) -> dict
 
 @app.post("/api/v1/civiccode/sections/resolve")
 async def resolve_section(request: SectionResolveRequest) -> dict[str, Any]:
-    """Resolve adopted code context for downstream CivicSuite module clients."""
+    """Resolve adopted code context for downstream Townlight module clients."""
     allowed_consumers = {"CivicZone", "CivicLegal", "CivicAccess", "CivicComms"}
     if request.consumer_module not in allowed_consumers:
         return {
             "status": "refused",
             "reason": "unsupported_consumer_module",
-            "message": f"CivicCode does not expose a section-resolution contract for {request.consumer_module}.",
+            "message": f"Townlight Code does not expose a section-resolution contract for {request.consumer_module}.",
             "fix": f"Use one of: {', '.join(sorted(allowed_consumers))}.",
             "consumer_module": request.consumer_module,
             "code_answer_behavior": "not_available",
@@ -1296,7 +1296,7 @@ async def resolve_section(request: SectionResolveRequest) -> dict[str, Any]:
                 "status": "refused",
                 "reason": "ambiguous_resolution" if matches else "no_resolution",
                 "message": f"{len(matches)} adopted code sections matched the resolution query.",
-                "fix": "Send an exact section_number so CivicCode can resolve one authoritative section.",
+                "fix": "Send an exact section_number so Townlight Code can resolve one authoritative section.",
                 "consumer_module": request.consumer_module,
                 "code_answer_behavior": "not_available",
             }
@@ -1412,7 +1412,7 @@ async def create_popular_question(
         raise HTTPException(
             status_code=422,
             detail={
-                "message": "Popular questions cannot ask CivicCode for a legal determination.",
+                "message": "Popular questions cannot ask Townlight Code for a legal determination.",
                 "fix": (
                     "Rewrite the question as a navigation prompt, such as "
                     "'Where do I read the backyard chicken permit rule?'"
@@ -1562,7 +1562,7 @@ async def create_shared_pdf_import_job(
     x_civiccode_role: str | None = Header(default=None),
     x_civiccode_actor: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    """Ingest a municipal code PDF through CivicCore, then structure it for CivicCode."""
+    """Ingest a municipal code PDF through Townlight Core, then structure it for Townlight Code."""
     actor = _require_staff(x_civiccode_role, x_civiccode_actor)
     db_url = os.environ.get("CIVICCODE_SOURCE_REGISTRY_DB_URL") or os.environ.get("DATABASE_URL")
     if db_url is None:
@@ -1570,7 +1570,7 @@ async def create_shared_pdf_import_job(
             status_code=409,
             detail={
                 "message": "Shared PDF ingestion requires a durable PostgreSQL runtime.",
-                "fix": "Set CIVICCODE_SOURCE_REGISTRY_DB_URL or DATABASE_URL to the CivicCode PostgreSQL DSN.",
+                "fix": "Set CIVICCODE_SOURCE_REGISTRY_DB_URL or DATABASE_URL to the Townlight Code PostgreSQL DSN.",
             },
         )
     try:
@@ -1734,7 +1734,7 @@ async def create_civicclerk_ordinance_event(
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
     authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    """Receive CivicClerk ordinance/adoption events without codifying them."""
+    """Receive Townlight Meetings ordinance/adoption events without codifying them."""
     service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
@@ -1761,7 +1761,7 @@ async def resolve_civicclerk_ordinance_event(
     x_civiccode_intake_auth: str | None = Header(default=None, alias=CIVICCODE_INTAKE_AUTH_HEADER),
     authorization: str | None = Header(default=None),
 ) -> dict[str, Any]:
-    """Mark a CivicClerk handoff codified after staff creates the adopted code version."""
+    """Mark a Townlight Meetings handoff codified after staff creates the adopted code version."""
     service_authorized = _require_civicclerk_intake_auth(x_civiccode_intake_auth, authorization)
     actor = (
         (x_civiccode_actor or "civicclerk-handoff@citycore.local").strip()
@@ -1774,7 +1774,7 @@ async def resolve_civicclerk_ordinance_event(
         event = next((item for item in HANDOFF_STORE.list_events() if item.event_id == event_id), None)
         if event is None:
             raise OrdinanceHandoffError(
-                f"CivicClerk ordinance event '{event_id}' was not found.",
+                f"Townlight Meetings ordinance event '{event_id}' was not found.",
                 "Read the handoff list and resolve an existing event.",
                 status_code=404,
             )

@@ -1,6 +1,6 @@
 ﻿# Release Signing and Provenance
 
-CivicCode releases do not rely on a secret signing key on one maintainer's
+Townlight Code releases do not rely on a secret signing key on one maintainer's
 workstation. The release trust artifact is a versioned
 `release-attestation.json` plus `release-attestation.json.bundle`, signed by
 Sigstore/cosign from the GitHub Actions release workflow's OIDC identity.
@@ -16,7 +16,7 @@ page can show a "Verified" badge for the target commit even when the tag object
 is lightweight or unsigned, so the strengthened gate verifies the Sigstore
 attestation instead of trusting the release-page badge.
 
-The acceptable CivicCode release shape is:
+The acceptable Townlight Code release shape is:
 
 1. Push a `v*` tag only after the release branch has merged through GitHub.
 2. Run the release workflow in `.github/workflows/release.yml`.
@@ -52,10 +52,10 @@ auditor-facing justification.
 
 ## Attestation Contract
 
-CivicCode consumes the canonical CivicCore release-provenance helper and
+Townlight Code consumes the canonical Townlight Core release-provenance helper and
 schema-v1 attestation contract. Product runtime tests run against the published,
 Sigstore-attested `civiccore v1.0.0` dependency before the provenance tooling
-phase installs the CivicCore `v1.0` tag for the shared fixture set.
+phase installs the Townlight Core `v1.0` tag for the shared fixture set.
 
 The attestation schema is versioned and canonicalized before signing. A valid
 attestation must name:
@@ -72,7 +72,7 @@ the local artifact bytes. A mismatch fails closed.
 
 ## Adversarial Fixture Suite
 
-The canonical fixture suite lives in CivicCore and is mirrored here for local
+The canonical fixture suite lives in Townlight Core and is mirrored here for local
 tooling tests. The gate must reject every failure fixture with a specific
 auditor-facing error and accept the known-good fixture.
 

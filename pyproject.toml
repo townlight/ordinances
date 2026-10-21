@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "civiccode"
 version = "1.0.8"
-description = "CivicCode municipal code and ordinance access module."
+description = "Townlight Code municipal code and ordinance access module."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "AGPL-3.0-only" }

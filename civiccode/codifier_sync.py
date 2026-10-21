@@ -1,4 +1,4 @@
-"""Codifier live-sync readiness and local-run foundation for CivicCode."""
+"""Codifier live-sync readiness and local-run foundation for Townlight Code."""
 
 from __future__ import annotations
 
@@ -78,7 +78,7 @@ class CodifierDeltaPlan:
 
 @dataclass(slots=True)
 class CodifierSyncSource:
-    """Configured codifier sync source backed by a registered CivicCode source."""
+    """Configured codifier sync source backed by a registered Townlight Code source."""
 
     source_id: str
     connector: str
@@ -168,7 +168,7 @@ class CodifierSyncStore:
                 "source_url": source.source_url,
                 "allowlisted_hosts": list(allowlisted_hosts),
                 "validated_at": validated_at.isoformat(),
-                "message": "Source URL host passed CivicCore SSRF-safe validation.",
+                "message": "Source URL host passed Townlight Core SSRF-safe validation.",
             },
             state=SyncCircuitState(connector=source.source_type, source_name=source.name),
         )

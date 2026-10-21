@@ -21,7 +21,7 @@ from civiccode.source_registry import SourceRegistryRepository, source_to_public
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Prove full Longmont PDF ingestion through CivicCore into CivicCode."
+        description="Prove full Longmont PDF ingestion through Townlight Core into Townlight Code."
     )
     parser.add_argument(
         "--pdf",
@@ -55,7 +55,7 @@ def main() -> int:
     parser.add_argument(
         "--force-reingest",
         action="store_true",
-        help="Delete the existing Longmont CivicCore document for this source/hash before ingesting.",
+        help="Delete the existing Longmont Townlight Core document for this source/hash before ingesting.",
     )
     args = parser.parse_args()
     if not args.db_url:

@@ -1,4 +1,4 @@
-"""Official source registry rules for CivicCode Milestone 3."""
+"""Official source registry rules for Townlight Code Milestone 3."""
 
 from __future__ import annotations
 

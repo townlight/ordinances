@@ -68,7 +68,7 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$(cd -- "$script_dir/.." && pwd)"
 restore_suffix="$(printf '%s' "$run_id" | sed -E 's/[^a-zA-Z0-9_]+/_/g')"
 
-echo "CivicCode Docker/PostgreSQL backup/restore rehearsal profile"
+echo "Townlight Code Docker/PostgreSQL backup/restore rehearsal profile"
 echo "Rehearsal root: $rehearsal_root"
 echo "Run id: $run_id"
 if [[ -n "$compose_project_name" ]]; then

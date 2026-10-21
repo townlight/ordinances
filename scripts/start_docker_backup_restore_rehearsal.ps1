@@ -27,7 +27,7 @@ if ($KeepRestoreDatabase) {
     $ArgsList += "--keep-restore-database"
 }
 
-Write-Host "CivicCode Docker/PostgreSQL backup/restore rehearsal profile"
+Write-Host "Townlight Code Docker/PostgreSQL backup/restore rehearsal profile"
 Write-Host "Rehearsal root: $RehearsalRoot"
 Write-Host "Run id: $RunId"
 if ($ComposeProjectName) {

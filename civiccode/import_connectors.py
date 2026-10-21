@@ -1,4 +1,4 @@
-"""Local source-import and connector hardening for CivicCode Milestone 12."""
+"""Local source-import and connector hardening for Townlight Code Milestone 12."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Server-rendered public lookup pages for CivicCode residents."""
+"""Server-rendered public lookup pages for Townlight Code residents."""
 
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ def render_home_page(popular_questions: list[dict[str, Any]] | None = None) -> s
         "Read the municipal code",
         f"""
         <section class="hero" aria-labelledby="lookup-title">
-          <p class="eyebrow">CivicCode public lookup</p>
+          <p class="eyebrow">Townlight Code public lookup</p>
           <h1 id="lookup-title">Read code with citations, not guesses.</h1>
           <p class="lede">Search adopted municipal code text, open a section, and see
           citation-ready source details. No live LLM calls run in this milestone.</p>
@@ -79,7 +79,7 @@ def render_home_page(popular_questions: list[dict[str, Any]] | None = None) -> s
           </article>
           <article>
             <h2>What this does not do</h2>
-            <p>CivicCode does not provide legal advice. If the code answer
+            <p>Townlight Code does not provide legal advice. If the code answer
             affects rights, penalties, deadlines, or enforcement, contact the
             City Clerk or City Attorney.</p>
           </article>
@@ -130,7 +130,7 @@ def render_answer_page(query: str, payload: dict[str, Any]) -> str:
             {_answer_form(query, "")}
             <section class="state-card warning" role="alert">
               <p class="eyebrow">{escape(payload.get("refusal_type", "answer refusal"))}</p>
-              <h1>CivicCode cannot answer that question.</h1>
+              <h1>Townlight Code cannot answer that question.</h1>
               <p>{escape(payload.get("reason", "No cited adopted code section could ground the answer."))}</p>
               <p>{escape(payload.get("fix", "Ask with an exact adopted section number."))}</p>
               <p class="code-chip">code_answer_behavior: not_available</p>
@@ -183,7 +183,7 @@ def render_section_page(
         heading,
         f"""
         <nav class="breadcrumb" aria-label="Breadcrumb">
-          <a href="/civiccode">CivicCode</a>
+          <a href="/civiccode">Townlight Code</a>
           <span aria-hidden="true">/</span>
           <a href="/civiccode/search?{urlencode({'q': section['section_number']})}">Search</a>
         </nav>
@@ -238,9 +238,9 @@ def render_refusal_page(query: str) -> str:
         {_search_form(query)}
         <section class="state-card warning" role="alert">
           <p class="eyebrow">Legal-advice refusal</p>
-          <h1>CivicCode cannot provide legal advice.</h1>
+          <h1>Townlight Code cannot provide legal advice.</h1>
           <p>Ask for the code section or contact the City Attorney for legal
-          advice. CivicCode can show adopted code text and citations, but it
+          advice. Townlight Code can show adopted code text and citations, but it
           cannot tell you what legal action to take.</p>
           <p class="code-chip">code_answer_behavior: not_available</p>
         </section>
@@ -255,7 +255,7 @@ def _page(title: str, body: str) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" href="data:," />
-  <title>{escape(title)} - CivicCode</title>
+  <title>{escape(title)} - Townlight Code</title>
   <style>
     :root {{
       --ink: #1b261f;
@@ -392,14 +392,14 @@ def _page(title: str, body: str) -> str:
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <header>
-    <a class="brand" href="/civiccode">CivicCode</a>
+    <a class="brand" href="/civiccode">Townlight Code</a>
     <span>Resident code lookup - public beta foundation</span>
   </header>
   <main id="content">
     {body}
   </main>
   <footer>
-    CivicCode shows adopted code text and citations. It does not provide legal
+    Townlight Code shows adopted code text and citations. It does not provide legal
     advice or replace the official municipal record.
   </footer>
 </body>

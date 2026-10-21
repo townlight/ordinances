@@ -49,7 +49,7 @@ def main() -> int:
     parser.add_argument(
         "--run-id",
         default=datetime.now(UTC).strftime("%Y%m%d%H%M%S"),
-        help="Unique suffix for the two CivicCore data sources created by this proof.",
+        help="Unique suffix for the two Townlight Core data sources created by this proof.",
     )
     args = parser.parse_args()
     if not args.db_url:

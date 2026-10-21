@@ -1,52 +1,54 @@
-# CivicCode Implementation Plan
+<a id="civiccode-implementation-plan"></a>
+
+# Townlight Code Implementation Plan
 
 Status: Active execution plan  
 Date: 2026-04-27  
-Applies to: CivicCode v0.1.0 implementation after Milestone 0
+Applies to: Townlight Code v0.1.0 implementation after Milestone 0
 
-This document breaks CivicCode into manageable implementation chunks. Each
+This document breaks Townlight Code into manageable implementation chunks. Each
 chunk is meant to be one PR unless an audit forces a smaller split. The plan
-keeps CivicCode legally cautious: exact citations first, legal advice never,
+keeps Townlight Code legally cautious: exact citations first, legal advice never,
 and no planned behavior promoted as shipped.
 
 ## Unified Spec Traceability
 
-This plan is keyed directly to `CivicSuite/civicsuite/docs/CivicSuiteUnifiedSpec.md`
+This plan is keyed directly to `townlight/townlight/docs/CivicSuiteUnifiedSpec.md`
 and cross-checked against the original catalog extract at
 `docx-canonical-extracts/CivicSuiteAI_Module_Catalog_v1 (1).txt`.
 
 - Section 4.4: documentation, QA, version, browser-QA, and shipped/planned
   truth are release gates.
-- Section 5.1: runtime modules follow the CivicRecords AI backend pattern:
+- Section 5.1: runtime modules follow the Townlight Records backend pattern:
   FastAPI, PostgreSQL 17 with pgvector where needed, Redis 7.2, Celery/Celery
-  Beat for background work, Alembic migrations, pinned CivicCore dependency,
+  Beat for background work, Alembic migrations, pinned Townlight Core dependency,
   per-module schema/namespace, and future hash-chained audit logging.
 - Section 5.2: frontend work must include React staff/public pages where
   appropriate, no color-only status indicators, visible focus states,
   keyboard-complete workflows, and actionable empty/error states.
 - Section 5.3: policy-bearing prompts live in module-specific YAML, use
-  CivicCore LLM/provider/template infrastructure, enforce citations, and ship
+  Townlight Core LLM/provider/template infrastructure, enforce citations, and ship
   with an eval harness.
 - Section 5.4: search is permission-aware, public search never leaks
   staff-only content, and advice-like answers distinguish information from
   determination.
-- Section 11: CivicCode owns authoritative municipal code storage, cited Q&A,
-  plain-language explanations, CivicClerk ordinance handoff, amendment/version
+- Section 11: Townlight Code owns authoritative municipal code storage, cited Q&A,
+  plain-language explanations, Townlight Meetings ordinance handoff, amendment/version
   history, and section resolution for CivicZone/CivicLegal/CivicAccess/CivicComms.
-- Section 12: CivicAccess is the future accessibility/plain-language layer;
-  CivicCode must not bake in designs that prevent that integration.
-- Section 13: CivicCode owns its public "Read code" surface but must remain
+- Section 12: Townlight Access is the future accessibility/plain-language layer;
+  Townlight Code must not bake in designs that prevent that integration.
+- Section 13: Townlight Code owns its public "Read code" surface but must remain
   compatible with a future shared resident portal shell.
-- Section 19: CivicCode is the next lane before CivicZone runtime, and CivicZone
-  starts only after CivicCode has a versioned source-of-code contract or an ADR
+- Section 19: Townlight Code is the next lane before Townlight Zoning runtime, and Townlight Zoning
+  starts only after Townlight Code has a versioned source-of-code contract or an ADR
   accepts a temporary substitute.
 
 ## Catalog v1 Traceability
 
 The catalog extract is older than the current umbrella specification in two
-ways: it says MIT licensing and "26 modules across 6 tiers." CivicSuite's
+ways: it says MIT licensing and "26 modules across 6 tiers." Townlight's
 current governing decisions supersede those with AGPL-3.0-only licensing and 26
-modules across 7 tiers. The CivicCode product requirements from the catalog are
+modules across 7 tiers. The Townlight Code product requirements from the catalog are
 still preserved here:
 
 - Import municipal code from codifier exports or official source material,
@@ -60,13 +62,13 @@ still preserved here:
   interpretations while keeping staff-only material out of public answers.
 - Provide section permalinks, version history, amendment tracking, and
   effective-date lookup.
-- Track adopted ordinances from CivicClerk, mark affected code stale or pending
+- Track adopted ordinances from Townlight Meetings, mark affected code stale or pending
   codification, and detect likely conflicts when proposed or adopted language
   touches existing sections.
 - Publish popular questions and related sections without implying legal advice.
 - Generate plain-language summaries that are approved by staff before public
-  display and remain ready for CivicAccess multilingual/accessibility workflows.
-- Preserve the catalog's "not a codifier replacement" boundary: CivicCode helps
+  display and remain ready for Townlight Access multilingual/accessibility workflows.
+- Preserve the catalog's "not a codifier replacement" boundary: Townlight Code helps
   residents and staff find and understand official code, but it does not replace
   the official codifier contract or make legal determinations.
 
@@ -94,7 +96,7 @@ Required gates for every PR:
 | Chunk | PR Theme | Main Outcome | Frontend? | Release Risk |
 |---|---|---|---|---|
 | 1 | Runtime foundation | Installable package + FastAPI shell | No | Low |
-| 2 | Database foundation | CivicCode schema + Alembic | No | High |
+| 2 | Database foundation | Townlight Code schema + Alembic | No | High |
 | 3 | Source registry | Official source metadata API | Optional | Medium |
 | 4 | Section/version model | Titles, chapters, sections, versions | Durable v0.1.13 | High |
 | 5 | Search + permalinks | Search and stable section URLs | Yes | Medium |
@@ -103,26 +105,26 @@ Required gates for every PR:
 | 8 | Popular questions + related sections | Safe resident discovery helpers | Shipped v0.1.12 | Medium |
 | 9 | Plain-language summaries | Staff-approved non-authoritative summaries | Yes | High |
 | 10 | Staff workbench | Staff Q&A, notes, cross-references, interpretation history | Yes | High |
-| 11 | CivicClerk handoff + conflict detection | Ordinance/adoption event intake and likely-code-conflict warnings | No | High |
+| 11 | Townlight Meetings handoff + conflict detection | Ordinance/adoption event intake and likely-code-conflict warnings | No | High |
 | 12 | Resident portal/public lookup | Resident-facing "Read code" surface | Yes | High |
 | 13 | Import and async hardening | Codifier/import fixtures, Redis/Celery recovery paths | Optional | High |
-| 14 | Accessibility/export hardening | CivicAccess-ready publishing/export posture | Yes | High |
+| 14 | Accessibility/export hardening | Townlight Access-ready publishing/export posture | Yes | High |
 | 15 | Release | v0.1.0 packaging, docs, compatibility PR | Yes | High |
 
 ## Chunk 1 - Runtime Foundation
 
-Goal: make CivicCode installable and runnable without shipping code-answer
+Goal: make Townlight Code installable and runnable without shipping code-answer
 behavior.
 
 Work:
 
-- Add `pyproject.toml` with package metadata and the published CivicCore release-wheel dependency.
+- Add `pyproject.toml` with package metadata and the published Townlight Core release-wheel dependency.
 - Add `civiccode/__init__.py` with `__version__ = "0.1.0.dev0"`.
 - Add `civiccode/main.py` FastAPI app with `/` and `/health`.
 - Add app settings surface for local-only runtime defaults.
 - Establish route naming for the future module API under `/api/v1/civiccode`
   and document that frontend pages will mount under `/civiccode` in the shared
-  CivicSuite shell when UI ships.
+  Townlight shell when UI ships.
 - Add tests for package import, version, root payload, health payload, and
   no accidental shipped-feature claims.
 - Update README/manual/landing page from "scaffold only" to "runtime
@@ -143,16 +145,16 @@ Acceptance tests:
 
 ## Chunk 2 - Database Foundation
 
-Goal: establish CivicCode's database namespace without duplicating CivicCore.
+Goal: establish Townlight Code's database namespace without duplicating Townlight Core.
 
 Work:
 
 - Add Alembic config under `civiccode/migrations`.
-- Run CivicCore migrations before CivicCode migrations.
+- Run Townlight Core migrations before Townlight Code migrations.
 - Add first migration for the schema/table foundation.
 - Add real Postgres/pgvector migration smoke test.
 - Add idempotency/re-run test.
-- Add migration docs that explain the one-way dependency on CivicCore.
+- Add migration docs that explain the one-way dependency on Townlight Core.
 
 Initial table set:
 
@@ -170,13 +172,13 @@ Initial table set:
 Audit risks:
 
 - Accidental local SQLAlchemy `Base`.
-- CivicCore migration runner called inside active Alembic context.
+- Townlight Core migration runner called inside active Alembic context.
 - Schema-blind idempotency guards.
 
 Acceptance tests:
 
-- Real Postgres upgrade creates CivicCore version table, CivicCode version
-  table, and all CivicCode tables.
+- Real Postgres upgrade creates Townlight Core version table, Townlight Code version
+  table, and all Townlight Code tables.
 - Running upgrade twice is safe.
 - No local declarative `Base` exists.
 
@@ -222,7 +224,7 @@ Work:
 - Add deterministic lookup by section number and date.
 - Add admin regulation, resolution, and policy linkage fields so search can
   surface related non-code materials without labeling them as code.
-- Add amendment/version history fields so CivicCode can answer what changed and
+- Add amendment/version history fields so Townlight Code can answer what changed and
   when.
 - Refuse when date context is ambiguous or missing.
 
@@ -298,7 +300,7 @@ Work:
 - Use `civiccore.llm` provider abstraction.
 - Add module-specific YAML prompt templates for code Q&A; do not hardcode
   policy-bearing prompts in Python.
-- Use the CivicCore template resolver for defaults/overrides.
+- Use the Townlight Core template resolver for defaults/overrides.
 - Add no-live-provider-call tests.
 - Add prompt eval fixtures for routine questions.
 - Add refusal tests for missing, stale, ambiguous, and legal-advice questions.
@@ -322,7 +324,7 @@ Acceptance tests:
 Goal: provide safe discovery aids without pretending popular questions are legal
 advice.
 
-Status: shipped in CivicCode v0.1.12 as staff-approved popular questions and
+Status: shipped in Townlight Code v0.1.12 as staff-approved popular questions and
 explicit related-material navigation aids. Popular questions persist through
 `CIVICCODE_SOURCE_REGISTRY_DB_URL` on the Docker/PostgreSQL product path while
 the lightweight local path keeps its in-memory store. These surfaces link only
@@ -363,7 +365,7 @@ Work:
 - Add staff approval endpoint.
 - Add public display of approved summaries only.
 - Add visible "non-authoritative explanation" label.
-- Keep summary output CivicAccess-ready for future plain-language/multilingual
+- Keep summary output Townlight Access-ready for future plain-language/multilingual
   workflows.
 
 Browser states if UI changes:
@@ -394,7 +396,7 @@ Work:
 - Add visibility tests before implementation.
 - Add retention/audit behavior once ADR is accepted.
 - Add public endpoint leakage tests.
-- Add role/RBAC seam without importing unreleased CivicCore auth/RBAC
+- Add role/RBAC seam without importing unreleased Townlight Core auth/RBAC
   placeholders.
 
 Acceptance tests:
@@ -405,9 +407,11 @@ Acceptance tests:
 - Every note create/update/delete writes audit entry.
 - Search and Q&A never use staff-only notes for public answers.
 
-## Chunk 11 - CivicClerk Handoff And Conflict Detection
+<a id="chunk-11---civicclerk-handoff-and-conflict-detection"></a>
 
-Goal: receive ordinance/adoption events from CivicClerk and flag likely code
+## Chunk 11 - Townlight Meetings Handoff And Conflict Detection
+
+Goal: receive ordinance/adoption events from Townlight Meetings and flag likely code
 conflicts.
 
 Work:
@@ -416,14 +420,14 @@ Work:
 - Accept adopted ordinance/resolution event payloads.
 - Mark affected sections/source as stale or pending recodification.
 - Distinguish adopted law from pending codifier update.
-- Preserve CivicClerk event provenance so the code history can point back to the
+- Preserve Townlight Meetings event provenance so the code history can point back to the
   public meeting/action record.
 - Detect likely conflicts when proposed or adopted ordinance language touches
   existing sections, repeal/amend phrases, or overlapping effective dates.
 
 Acceptance tests:
 
-- Valid CivicClerk event accepted.
+- Valid Townlight Meetings event accepted.
 - Invalid event rejected with fix path.
 - Pending ordinance language never appears as codified law.
 - Stale-code warning appears in affected lookups.
@@ -433,7 +437,7 @@ Acceptance tests:
 
 ## Chunk 12 - Resident Portal/Public Code Lookup UI
 
-Goal: provide CivicCode's resident-facing "Read code" surface while remaining
+Goal: provide Townlight Code's resident-facing "Read code" surface while remaining
 compatible with the future shared resident portal shell.
 
 Work:
@@ -493,7 +497,7 @@ Acceptance tests:
 
 ## Chunk 14 - Accessibility And Export Hardening
 
-Goal: align CivicCode public outputs with CivicAccess expectations before
+Goal: align Townlight Code public outputs with Townlight Access expectations before
 release.
 
 Work:
@@ -502,20 +506,20 @@ Work:
   provenance.
 - Add accessible HTML/public-output checks.
 - Add tagged-heading expectations for generated docs/exports where applicable.
-- Add CivicAccess integration notes without depending on an unshipped
-  CivicAccess runtime.
+- Add Townlight Access integration notes without depending on an unshipped
+  Townlight Access runtime.
 
 Acceptance tests:
 
 - Public lookup pages pass keyboard/focus/contrast checks.
 - Export includes source, version, citation, and retrieval metadata.
 - No generated public output lacks headings/labels needed for accessibility.
-- Docs state that CivicAccess is planned infrastructure, not a shipped
+- Docs state that Townlight Access is planned infrastructure, not a shipped
   dependency.
 
 ## Chunk 15 - v0.1.0 Release
 
-Goal: publish CivicCode's first runtime release only after the product is
+Goal: publish Townlight Code's first runtime release only after the product is
 honest, documented, tested, and browser-verified.
 
 Work:
@@ -524,7 +528,7 @@ Work:
 - Regenerate docs/manual artifacts.
 - Run full release verification.
 - Tag and publish release.
-- Update `CivicSuite/civicsuite` compatibility matrix after release.
+- Update `townlight/townlight` compatibility matrix after release.
 
 Acceptance tests:
 
@@ -543,7 +547,7 @@ These ADRs block the listed chunks:
 - ADR-0001 official source precedence blocks Chunk 4 and later.
 - ADR-0002 codifier import strategy blocks Chunk 13.
 - ADR-0003 section versioning blocks Chunk 4.
-- ADR-0004 CivicClerk handoff blocks Chunk 11.
+- ADR-0004 Townlight Meetings handoff blocks Chunk 11.
 - ADR-0005 disclaimer/refusal policy blocks Chunk 7 and Chunk 12.
 - ADR-0006 staff interpretation notes blocks Chunk 10.
 
@@ -552,7 +556,7 @@ coding that chunk.
 
 ## Release Boundary
 
-CivicCode v0.1.0 is not complete until:
+Townlight Code v0.1.0 is not complete until:
 
 - source registry exists,
 - section/version model exists,
@@ -564,4 +568,4 @@ CivicCode v0.1.0 is not complete until:
 - docs/manual/landing pages match shipped truth,
 - compatibility matrix is updated after release.
 
-Anything less is a pre-release foundation, not CivicCode v0.1.0.
+Anything less is a pre-release foundation, not Townlight Code v0.1.0.

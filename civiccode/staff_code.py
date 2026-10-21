@@ -45,10 +45,10 @@ def render_staff_code_workspace(payload: dict[str, Any], *, actor: str) -> str:
         "Staff code lifecycle workspace",
         f"""
         <section class="hero" aria-labelledby="workspace-title">
-          <p class="eyebrow">CivicCode staff workspace</p>
+          <p class="eyebrow">Townlight Code staff workspace</p>
           <h1 id="workspace-title">Code lifecycle command center</h1>
           <p class="lede">This workspace shows whether code text is safe to
-          publish, whether summaries are approved, and whether CivicClerk
+          publish, whether summaries are approved, and whether Townlight Meetings
           ordinance handoffs require codification review before residents rely
           on the page.</p>
           <p class="actor-chip">Signed in as {escape(actor)}</p>
@@ -166,7 +166,7 @@ def _page(title: str, body: str) -> str:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{escape(title)} - CivicCode</title>
+  <title>{escape(title)} - Townlight Code</title>
   <style>
     :root {{
       --ink: #17231d;
@@ -321,7 +321,7 @@ def _page(title: str, body: str) -> str:
 <body>
   <a class="skip-link" href="#content">Skip to staff code workspace</a>
   <header>
-    <a class="brand" href="/staff/code">CivicCode</a>
+    <a class="brand" href="/staff/code">Townlight Code</a>
     <span>Staff code lifecycle</span>
   </header>
   <main id="content">

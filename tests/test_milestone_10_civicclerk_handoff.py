@@ -363,7 +363,7 @@ async def test_affected_lookup_includes_stale_code_warning(client: AsyncClient) 
     )
 
     warning = lookup.json()["handoff_warnings"][0]
-    assert warning["message"].startswith("CivicClerk ordinance 2026-041 may affect")
+    assert warning["message"].startswith("Townlight Meetings ordinance 2026-041 may affect")
     assert warning["fix"].startswith("Ask municipal staff")
     assert warning["source"] == "CivicClerk"
     assert "external_event_id" not in warning
@@ -445,7 +445,7 @@ def test_docs_record_civicclerk_handoff_without_claiming_codification() -> None:
     landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
-        assert "civicclerk handoff" in document_text
+        assert "civicclerk handoff" in document_text or "townlight meetings handoff" in document_text
         assert "pending codification" in document_text
         assert "automatic ordinance codification is available" not in document_text
         assert "automatic ordinance codification ships" not in document_text

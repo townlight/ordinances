@@ -57,7 +57,7 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
     staff = await client.get("/staff/code", headers=STAFF_HEADERS)
     assert staff.status_code == 200
     assert "Backyard Livestock" in staff.text
-    assert "Pending CivicClerk handoffs require codification review" in staff.text
+    assert "Pending Townlight Meetings handoffs require codification review" in staff.text
 
 
 def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
