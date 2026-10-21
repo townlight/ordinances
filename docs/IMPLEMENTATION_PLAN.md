@@ -45,7 +45,7 @@ and cross-checked against the original catalog extract at
 
 The catalog extract is older than the current umbrella specification in two
 ways: it says MIT licensing and "26 modules across 6 tiers." CivicSuite's
-current governing decisions supersede those with Apache 2.0 licensing and 26
+current governing decisions supersede those with AGPL-3.0-only licensing and 26
 modules across 7 tiers. The CivicCode product requirements from the catalog are
 still preserved here:
 
