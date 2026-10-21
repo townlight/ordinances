@@ -57,7 +57,7 @@ class RehearsalConfig:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Rehearse Docker Compose PostgreSQL backup and restore for CivicCode."
+        description="Rehearse Docker Compose PostgreSQL backup and restore for Townlight Code."
     )
     parser.add_argument("--rehearsal-root", default=str(DEFAULT_REHEARSAL_ROOT))
     parser.add_argument("--run-id", default=f"run-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}")
@@ -107,7 +107,7 @@ def main() -> int:
 
 def print_plan(config: RehearsalConfig) -> None:
     compose = _compose_base(config)
-    print("CivicCode Docker/PostgreSQL backup/restore rehearsal")
+    print("Townlight Code Docker/PostgreSQL backup/restore rehearsal")
     print(f"Run id: {config.run_id}")
     print(f"Rehearsal root: {_display_path(config.run_root)}")
     print(f"PostgreSQL service: {config.postgres_service}")

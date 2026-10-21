@@ -1,4 +1,4 @@
-"""Real municipal-code fixtures for CivicCode release evidence.
+"""Real municipal-code fixtures for Townlight Code release evidence.
 
 The local bundle is intentionally bounded, but it is no longer synthetic: it
 contains multiple Portland City Code sections transcribed from official

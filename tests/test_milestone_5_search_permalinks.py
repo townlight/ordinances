@@ -226,7 +226,7 @@ async def test_sqlite_runtime_does_not_claim_semantic_search_without_shared_pgve
     assert payload["semantic_search"]["embedding_provider"] == "ollama:nomic-embed-text"
     assert payload["semantic_search"]["pgvector_runtime"] == "not_available_without_civiccore_pgvector"
     assert payload["results"] == []
-    assert payload["empty_state"]["message"] == "No public CivicCode results matched that search."
+    assert payload["empty_state"]["message"] == "No public Townlight Code results matched that search."
 
 
 @pytest.mark.skipif(
@@ -395,7 +395,7 @@ def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
         low_relevance = store.search("astronomy telescope nebula")
 
         assert low_relevance["results"] == []
-        assert low_relevance["empty_state"]["message"] == "No public CivicCode results matched that search."
+        assert low_relevance["empty_state"]["message"] == "No public Townlight Code results matched that search."
     finally:
         subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)
 
@@ -429,7 +429,7 @@ async def test_search_no_results_is_actionable(client: AsyncClient) -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["results"] == []
-    assert payload["empty_state"]["message"] == "No public CivicCode results matched that search."
+    assert payload["empty_state"]["message"] == "No public Townlight Code results matched that search."
     assert "Try an exact section number" in payload["empty_state"]["fix"]
 
 

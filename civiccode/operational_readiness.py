@@ -1,4 +1,4 @@
-"""Staff-facing operational readiness read model for CivicCode."""
+"""Staff-facing operational readiness read model for Townlight Code."""
 
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ def _lane_fixes(
         fixes.append(f"Run one {lane} operation so operators can see the latest outcome.")
     if lane == "handoff" and records and not replay_records:
         fixes.append(
-            "Create a corrected CivicClerk handoff event with a new external_event_id "
+            "Create a corrected Townlight Meetings handoff event with a new external_event_id "
             "so operators can see the latest outcome."
         )
     if lane == "sync" and records and not delta_cursors:
@@ -99,7 +99,7 @@ def _lane_fixes(
 def _missing_lane_fix(lane: str) -> str:
     fixes = {
         "handoff": (
-            "Create a CivicClerk handoff event or failed-handoff fixture before relying on handoff "
+            "Create a Townlight Meetings handoff event or failed-handoff fixture before relying on handoff "
             "retry/replay readiness."
         ),
         "import": (
@@ -148,7 +148,7 @@ def _overall_fixes(
 ) -> list[str]:
     if not records:
         return [
-            "Run at least one local import, codifier sync, or CivicClerk handoff operation so staff can inspect operational readiness."
+            "Run at least one local import, codifier sync, or Townlight Meetings handoff operation so staff can inspect operational readiness."
         ]
     fixes = []
     for lane in [*queued_lanes, *missing_lanes]:

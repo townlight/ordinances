@@ -64,11 +64,11 @@ async def test_staff_operational_state_empty_state_is_actionable(client: AsyncCl
     assert payload["data_source"]["external_deployment_required"] is False
     assert payload["data_source"]["network_required"] is False
     assert payload["fixes"] == [
-        "Run at least one local import, codifier sync, or CivicClerk handoff operation so staff can inspect operational readiness."
+        "Run at least one local import, codifier sync, or Townlight Meetings handoff operation so staff can inspect operational readiness."
     ]
     assert payload["lanes"]["import"]["fixes"][0].startswith("Run a local import bundle")
     assert payload["lanes"]["sync"]["fixes"][0].startswith("Configure a codifier sync source")
-    assert payload["lanes"]["handoff"]["fixes"][0].startswith("Create a CivicClerk handoff event")
+    assert payload["lanes"]["handoff"]["fixes"][0].startswith("Create a Townlight Meetings handoff event")
 
 
 @pytest.mark.asyncio

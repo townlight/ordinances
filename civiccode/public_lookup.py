@@ -1,4 +1,4 @@
-"""Server-rendered public lookup pages for CivicCode residents."""
+"""Server-rendered public lookup pages for Townlight Code residents."""
 
 from __future__ import annotations
 

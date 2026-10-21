@@ -1,4 +1,4 @@
-"""Deterministic citation contract for CivicCode Milestone 6."""
+"""Deterministic citation contract for Townlight Code Milestone 6."""
 
 from __future__ import annotations
 

@@ -196,6 +196,6 @@ def test_docs_record_accessibility_export_without_claiming_civicaccess_runtime()
 
     for document_text in [changelog, manual, landing]:
         assert "records-ready export" in document_text
-        assert "civicaccess" in document_text
+        assert "civicaccess" in document_text or "townlight access" in document_text
         assert "civicaccess runtime is shipped" not in document_text
         assert "civicaccess dependency is required" not in document_text

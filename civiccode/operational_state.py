@@ -1,4 +1,4 @@
-"""Durable operational retry, replay, and cursor records for CivicCode."""
+"""Durable operational retry, replay, and cursor records for Townlight Code."""
 
 from __future__ import annotations
 

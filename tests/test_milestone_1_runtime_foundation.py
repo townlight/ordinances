@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def load_pyproject() -> dict:
     pyproject = ROOT / "pyproject.toml"
-    assert pyproject.exists(), "pyproject.toml must exist for CivicCode runtime foundation."
+    assert pyproject.exists(), "pyproject.toml must exist for Townlight Code runtime foundation."
     return tomllib.loads(pyproject.read_text(encoding="utf-8"))
 
 
@@ -35,7 +35,7 @@ def test_pyproject_declares_runtime_package_and_release_version() -> None:
 
     assert data["project"]["name"] == "civiccode"
     assert data["project"]["version"] == "1.0.8"
-    assert "CivicCode" in data["project"]["description"]
+    assert "Townlight Code" in data["project"]["description"]
 
 
 def test_pyproject_consumes_published_civiccore_shared_ingestion_release() -> None:
@@ -78,7 +78,7 @@ def test_runtime_package_layout_exists() -> None:
 def test_public_fastapi_app_import_path_exists() -> None:
     module = load_app_module()
     assert isinstance(module.app, FastAPI)
-    assert module.app.title == "CivicCode"
+    assert module.app.title == "Townlight Code"
 
 
 @pytest.mark.asyncio
@@ -98,12 +98,12 @@ async def test_root_endpoint_explains_current_user_experience() -> None:
     assert payload["api_base"] == "/api/v1/civiccode"
     assert payload["future_public_path"] == "/civiccode"
     assert payload["next_step"] == (
-        "CivicCode v1.0.8 persists section/version lifecycle records, "
+        "Townlight Code v1.0.8 persists section/version lifecycle records, "
         "popular-question discovery aids, staff notes, plain-language "
-        "summaries, CivicClerk handoff records, handoff audit events, and "
+        "summaries, Townlight Meetings handoff records, handoff audit events, and "
         "local import job ledgers, codifier sync source state, and "
         "operational retry, replay, and cursor state "
-        "in the configured database; next work follows the CivicSuite roadmap."
+        "in the configured database; next work follows the Townlight roadmap."
     )
     assert "not implemented" in payload["message"].lower()
     assert "source registry" in payload["message"]
@@ -111,7 +111,7 @@ async def test_root_endpoint_explains_current_user_experience() -> None:
     assert "Q&A" in payload["message"]
     assert "Staff" in payload["message"]
     assert "plain-language summaries" in payload["message"]
-    assert "CivicClerk" in payload["message"]
+    assert "Townlight Meetings" in payload["message"]
     assert "handoff" in payload["message"]
     assert "live llm" in payload["message"].lower()
     assert "public lookup" in payload["message"].lower()

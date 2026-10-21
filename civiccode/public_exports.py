@@ -1,4 +1,4 @@
-"""Records-ready public export helpers for CivicCode Milestone 13."""
+"""Records-ready public export helpers for Townlight Code Milestone 13."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def build_records_ready_export(
     citation_payload: dict[str, Any],
     source: dict[str, Any],
 ) -> dict[str, Any]:
-    """Build a CivicAccess-ready export shape without depending on CivicAccess runtime."""
+    """Build a Townlight Access-ready export shape without depending on Townlight Access runtime."""
     section = lookup["section"]
     version = lookup["version"]
     citation = citation_payload["citation"]

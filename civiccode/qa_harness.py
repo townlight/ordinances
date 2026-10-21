@@ -1,4 +1,4 @@
-"""Citation-grounded Q&A helpers for CivicCode."""
+"""Citation-grounded Q&A helpers for Townlight Code."""
 
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ def extract_section_number(question: str) -> str | None:
 
 def legal_determination_refusal() -> dict[str, Any]:
     return refusal(
-        "CivicCode cannot decide whether a specific person, property, or fact pattern complies with the code.",
+        "Townlight Code cannot decide whether a specific person, property, or fact pattern complies with the code.",
         "Ask staff for a determination. You can still ask what an adopted section says or provide an exact section number.",
         "legal_determination",
     )
@@ -71,7 +71,7 @@ def no_citation_refusal(question: str) -> dict[str, Any]:
 def ambiguous_citation_refusal(question: str, count: int) -> dict[str, Any]:
     return refusal(
         f"{count} adopted code sections matched question: {question!r}.",
-        "Ask with an exact section number so CivicCode can cite one authoritative section.",
+        "Ask with an exact section number so Townlight Code can cite one authoritative section.",
         "ambiguous_citation",
     )
 

@@ -53,7 +53,7 @@ REQUIRED_SAMPLE_SECTIONS = (
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Quantify and sample CivicCode Longmont section-body fidelity against source PDF text."
+        description="Quantify and sample Townlight Code Longmont section-body fidelity against source PDF text."
     )
     parser.add_argument(
         "--pdf",
