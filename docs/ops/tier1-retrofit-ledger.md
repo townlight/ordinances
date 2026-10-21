@@ -1,9 +1,11 @@
-# CivicCode Tier 1 Retrofit Ledger
+<a id="civiccode-tier-1-retrofit-ledger"></a>
+
+# Townlight Code Tier 1 Retrofit Ledger
 
 Status: CO-4 ledger, live-release scan current as of 2026-05-05.
 
-This ledger records the CO-4 decisions for the CivicCode releases named in the
-CivicSuite finish directive. It does not rewrite history and does not alter
+This ledger records the CO-4 decisions for the Townlight Code releases named in the
+Townlight finish directive. It does not rewrite history and does not alter
 public release notes, tags, or assets. The correction action taken here is a
 repo-controlled ledger plus documentation truth update.
 
@@ -16,8 +18,8 @@ Structured source of truth:
 - Neither release has Sigstore `release-attestation.json` or
   `release-attestation.json.bundle` public release assets.
 - Neither release may be promoted as an attested provenance baseline.
-- The active CivicCore platform dependency now points to the first attested
-  CivicCore v1 baseline, `v1.0.0`.
+- The active Townlight Core platform dependency now points to the first attested
+  Townlight Core v1 baseline, `v1.0.0`.
 
 ## Entries
 

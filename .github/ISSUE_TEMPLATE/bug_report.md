@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a CivicCode scaffold/docs problem
+about: Report a Townlight Code scaffold/docs problem
 title: "[Bug]: "
 labels: bug
 ---

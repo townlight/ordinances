@@ -133,7 +133,7 @@ from civiccode.suite_session_auth import (
 from civiccore import __version__ as CIVICCORE_VERSION
 
 app = FastAPI(
-    title="CivicCode",
+    title='Townlight Code',
     version=__version__,
     summary="Runtime foundation for CivicCode municipal code access workflows.",
 )

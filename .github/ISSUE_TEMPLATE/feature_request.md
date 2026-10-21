@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Propose CivicCode scope or UX
+about: Propose Townlight Code scope or UX
 title: "[Feature]: "
 labels: enhancement
 ---

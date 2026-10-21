@@ -225,7 +225,7 @@ async def test_public_section_detail_separates_code_summary_and_warning(
     assert "Plain-language summary" in html
     assert "not a legal determination" in html
     assert "pending codification" in html
-    assert "CivicClerk ordinance 2026-041" in html
+    assert "Townlight Meetings ordinance 2026-041" in html
     assert "Title 6 (Animals)" in html
     assert "Contact the City Clerk" in html
 
@@ -254,7 +254,7 @@ async def test_public_legal_advice_query_gets_refusal_with_route_to_staff(
 
     assert response.status_code == 200
     html = response.text
-    assert "CivicCode cannot provide legal advice" in html
+    assert "Townlight Code cannot provide legal advice" in html
     assert "Ask for the code section or contact the City Attorney" in html
     assert "not_available" in html
 
@@ -272,7 +272,7 @@ async def test_public_property_specific_determination_query_gets_refusal(
 
     assert response.status_code == 200
     html = response.text
-    assert "CivicCode cannot provide legal advice" in html
+    assert "Townlight Code cannot provide legal advice" in html
     assert "Search results for" not in html
     assert "not_available" in html
 

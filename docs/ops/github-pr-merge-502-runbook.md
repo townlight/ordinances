@@ -1,6 +1,6 @@
 # GitHub PR Merge 502 Runbook
 
-CivicCode normally merges release PRs through GitHub after CI passes. If GitHub
+Townlight Code normally merges release PRs through GitHub after CI passes. If GitHub
 returns `502 Bad Gateway` or stale `merge already in progress` responses during
 PR merge or close, do not keep retrying blindly.
 

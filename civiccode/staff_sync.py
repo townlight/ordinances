@@ -50,11 +50,11 @@ def render_staff_sync_workspace(
         "Staff codifier sync health",
         f"""
         <section class="hero" aria-labelledby="workspace-title">
-          <p class="eyebrow">CivicCode staff workspace</p>
+          <p class="eyebrow">Townlight Code staff workspace</p>
           <h1 id="workspace-title">Codifier sync health</h1>
           <p class="lede">This page shows staff whether codifier sync readiness
           is configured, whether the circuit breaker is healthy, and which local
-          payload run last refreshed CivicCode. It does not call an external
+          payload run last refreshed Townlight Code. It does not call an external
           vendor or automatically codify ordinances.</p>
           <p class="actor-chip">Signed in as {escape(actor)}</p>
         </section>
@@ -167,7 +167,7 @@ def _page(title: str, body: str) -> str:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{escape(title)} - CivicCode</title>
+  <title>{escape(title)} - Townlight Code</title>
   <style>
     :root {{
       --ink: #17231d;
@@ -326,7 +326,7 @@ def _page(title: str, body: str) -> str:
 <body>
   <a class="skip-link" href="#content">Skip to staff sync health</a>
   <header>
-    <a class="brand" href="/staff/sync">CivicCode</a>
+    <a class="brand" href="/staff/sync">Townlight Code</a>
     <span>Staff codifier sync</span>
   </header>
   <main id="content">

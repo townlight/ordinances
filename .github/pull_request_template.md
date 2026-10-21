@@ -16,4 +16,4 @@
 
 ## Shipped/planned truth
 
-- [ ] This PR does not promote planned CivicCode behavior as shipped.
+- [ ] This PR does not promote planned Townlight Code behavior as shipped.
