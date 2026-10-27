@@ -1,3 +1,95 @@
+# Townlight Code — User manual
+
+Current operating guide · reviewed 2026-10-26 · Code 1.0.8 in accepted connected desktops.
+
+[Product page](https://townlight.github.io/products/code/) · [Overall manual](https://github.com/townlight/townlight/blob/main/USER-MANUAL.md) · [Requirements assessment](https://github.com/townlight/townlight/blob/main/docs/assessment/feature-and-integration-review.md)
+
+## Purpose and audience
+
+Code keeps authoritative code text, section identity, version/date context and the distinction between pending and adopted law. Cited explanations are informational and are not legal advice.
+
+Primary operators: **Clerks, code custodians and legal reviewers**. [Release and acceptance notes](https://github.com/townlight/townlight/releases/tag/townlight-records-meetings-code-zoning-planning-permitting-inspections-v1.7.0-beta.1).
+
+## Before starting
+
+Use the explicit product composition in the installed Townlight desktop. Sign in with the required local staff account, confirm System Health readiness and take a backup before maintenance. If a workspace is absent, inspect the profile and release identity before importing data. Optional AI is not needed for the accepted deterministic workflow. The procedures below use real saved sources; sample/demo web pages are not substitutes.
+
+## Complete the workflow
+
+### 1. Load an authoritative source
+
+Use Code’s import control with a complete supported source bundle. Preview jurisdiction, section identifiers, source date, original file/hash and code text before confirming. A fictional demonstration must remain labelled fictional; an imported file is not automatically adopted law.
+
+### 2. Find a section
+
+Search the intended topic and open the exact cited section. Inspect effective/version context and authoritative text. Keep an explanation separate from the legal text and preserve its citation when using it in staff work.
+
+### 3. Review an adoption handoff
+
+Open actual adopted meeting evidence. Compare the ordinance, adoption date and affected sections. Pending proposals remain pending; adoption and codification are distinct operations.
+
+### 4. Record codification deliberately
+
+Authorized code staff reconcile the imported/adopted text and record the separate code change. Preserve prior versions and the relationship to meeting evidence. A source synchronization or imported candidate is not an automatic legal approval.
+
+### 5. Share a source
+
+Select permitted public section/version evidence for Records, Zoning, Permitting or Inspections. The downstream workflow retains the exact citation and hash. If permissions or the source change, reselect current evidence rather than silently accepting a cached version.
+
+### 6. Review changes and exports
+
+Read the version/adoption history and inspect the exact exported source. Keep any separately edited explanatory document as a derivative with its own hash; do not replace the bytes represented by an existing source hash.
+
+## How this product connects
+
+Meetings supplies adoption evidence; Code supplies cited authority to Zoning, Permitting, Inspections and Records. Planning’s installed selected links are Meetings/Zoning, not a claimed direct Code integration.
+
+## Boundaries and known gaps
+
+Local import, codifier sync orchestration and operational readiness code exist. That does not establish a live contract with every commercial codifier, continuous production fetching or an approved legal codification decision.
+
+## Shared operating rules
+
+Use the installed native desktop for the accepted workflow. Standalone package web pages, sample endpoints and developer API examples are different surfaces. A local Resident/Public view is not an internet deployment. Confirm the selected composition before looking for a workspace.
+
+1. Keep named staff accounts and least privilege. Administrators manage setup; ordinary staff use their authorized workspace. Do not put credentials, unredacted evidence or resident data into public issues.
+2. Preserve originals and their hashes. Import preview and confirmation are distinct actions. Treat fictional fixtures as fictional; they are not municipal authority.
+3. Save before navigating away, closing or signing out. Unsaved drafts are not a durable record. On a conflict, reopen and reconcile; on an unknown result, inspect the saved record before repeating a write.
+4. Review the exact revision and audience. A private packet and a public copy are different artifacts. Public text is explicitly edited/reviewed; changing a filename does not sanitize private content.
+5. Keep source permission, version and hash checks. If a provider is stopped or a source becomes restricted, retain the draft, restore authorized access and deliberately reselect evidence. Never bypass the check or substitute a sample.
+6. Approval, attachment, export and publication are separate actions. No cross-product attachment is an automatic records response, official permit, legal determination or enforcement decision.
+
+## Installation, maintenance and recovery
+
+Choose a release from the overall manual; do not infer a supported upgrade from a higher version number. Verify its published checksum, publisher signature and acceptance notes before installing. The default download remains the signed 1.4 beta, and Records-only remains its default selection. Planning 1.5.1 has a fresh-install boundary; Permitting and Inspections use separately identified products.
+
+Complete Setup and normal runtime activation for the selected composition. Optional local AI can be deferred. Use System Health to distinguish stopped, starting, ready and failed dependencies. Wait for readiness before opening a dependent workspace. Use documented Retry controls after recovery; do not repeat business writes to refresh a stale screen.
+
+Back up through the canonical desktop controls before migration or maintenance. Keep the coherent data, document and profile backup and its receipt in protected storage. A source export is not a full backup. Stop dependent services before PostgreSQL maintenance. Restore through the supported controls rather than editing SQL or restoring historical JSON into the active runtime. Uninstall can retain data; backup before uninstalling and inspect the chosen removal options. Never assume uninstall means data deletion.
+
+For an error, retain the message, time, selected profile, installed version and operation; inspect System Health and relevant logs. Use a redacted support bundle. Do not delete the profile, run an arbitrary downgrade or repair prerequisites as a first response. If an installer requests a restart, save work and obtain the operator’s explicit restart decision before proceeding.
+
+## Evidence and scope
+
+This manual reuses the accepted installed, required-CI and signed-delivery evidence. It does not turn source inspection into a new installed test. Recovery evidence is reused only within its recorded candidate/profile boundaries; no universal upgrade, hardware, accessibility or production deployment certification is implied. The [overall manual](https://github.com/townlight/townlight/blob/main/USER-MANUAL.md) gives release identities and shared operations. The [feature and integration assessment](https://github.com/townlight/townlight/blob/main/docs/assessment/feature-and-integration-review.md) separates implementation, explicit deferral, missing capability and unverified acceptance.
+
+
+## Maintainer and API reference
+
+The following source contracts support these instructions. The historical reference below retains older API/setup details for their original version; it does not override this operating guide or the release acceptance.
+
+- [civiccode/main.py](https://github.com/townlight/ordinances/tree/main/civiccode/main.py)
+- [civiccode/import_connectors.py](https://github.com/townlight/ordinances/tree/main/civiccode/import_connectors.py)
+- [civiccode/codifier_sync.py](https://github.com/townlight/ordinances/tree/main/civiccode/codifier_sync.py)
+- [civiccode/operational_readiness.py](https://github.com/townlight/ordinances/tree/main/civiccode/operational_readiness.py)
+
+
+---
+
+## Historical package/API reference
+
+The material below is retained from the previous manual for historical and developer reference. Version, unreleased, sample, planned and installation claims below describe that earlier document, not current desktop release status. Use the current guide above for operation. Existing detailed API reference remains useful only for the matching package/version.
+
 <a id="civiccode-user-manual"></a>
 
 # Townlight Code User Manual
