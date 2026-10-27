@@ -1,3 +1,28 @@
+# Townlight Code
+
+**Authoritative text with an adoption trail.**
+
+Code keeps authoritative code text, section identity, version/date context and the distinction between pending and adopted law. Cited explanations are informational and are not legal advice.
+
+## Use this product
+
+- [Current user manual](USER-MANUAL.md): installed workflow, roles, sources, review, export, recovery and limits.
+- [Product landing page](https://townlight.github.io/products/code/).
+- [Overall eight-product manual](https://github.com/townlight/townlight/blob/main/USER-MANUAL.md) and [feature/integration assessment](https://github.com/townlight/townlight/blob/main/docs/assessment/feature-and-integration-review.md).
+- [Signed composition and acceptance](https://github.com/townlight/townlight/releases/tag/townlight-records-meetings-code-zoning-planning-permitting-inspections-v1.7.0-beta.1): Code 1.0.8 in accepted connected desktops.
+
+Meetings supplies adoption evidence; Code supplies cited authority to Zoning, Permitting, Inspections and Records. Planning’s installed selected links are Meetings/Zoning, not a claimed direct Code integration.
+
+## Release scope
+
+Local import, codifier sync orchestration and operational readiness code exist. That does not establish a live contract with every commercial codifier, continuous production fetching or an approved legal codification decision.
+
+Documentation reviewed 2026-10-26. Installed acceptance, source/API implementation and future requirements are different evidence. Code is AGPL-3.0-only with the repository’s public institution exception where applicable; documentation is CC BY 4.0. See the repository license files.
+
+## Historical repository reference
+
+The earlier README below is retained for package history and contributor commands. Older maturity/version statements describe that historical reference and are superseded by the current operating guide and linked release evidence.
+
 <a id="civiccode"></a>
 
 # Townlight Code
