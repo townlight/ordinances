@@ -1,4 +1,4 @@
-"""Townlight Meetings ordinance/adoption handoff intake for Townlight Code."""
+"""CivicClerk ordinance/adoption handoff intake for CivicCode."""
 
 from __future__ import annotations
 
@@ -75,7 +75,7 @@ class HandoffAuditEvent:
 
 
 class OrdinanceHandoffStore:
-    """In-memory Townlight Meetings handoff store for Milestone 10 API behavior."""
+    """In-memory CivicClerk handoff store for Milestone 10 API behavior."""
 
     def __init__(self, *, operational_store: OperationalStateStore | None = None) -> None:
         self._events: dict[str, OrdinanceEvent] = {}
@@ -86,13 +86,13 @@ class OrdinanceHandoffStore:
         status = data.get("status", "pending")
         if status not in HANDOFF_STATUSES:
             raise OrdinanceHandoffError(
-                f"Unknown Townlight Meetings handoff status '{status}'.",
+                f"Unknown CivicClerk handoff status '{status}'.",
                 f"Use one of: {', '.join(sorted(HANDOFF_STATUSES))}.",
             )
         affected_sections = list(data.get("affected_sections", []))
         if not affected_sections:
             raise OrdinanceHandoffError(
-                "Townlight Meetings handoff must identify at least one affected section.",
+                "CivicClerk handoff must identify at least one affected section.",
                 "Populate affected_sections with the section numbers touched by the ordinance.",
             )
         for required in [
@@ -106,12 +106,12 @@ class OrdinanceHandoffStore:
         ]:
             if not data.get(required):
                 raise OrdinanceHandoffError(
-                    f"Townlight Meetings handoff is missing {required}.",
-                    f"Include {required} from Townlight Meetings before sending the handoff.",
+                    f"CivicClerk handoff is missing {required}.",
+                    f"Include {required} from CivicClerk before sending the handoff.",
                 )
         if status == "failed" and not data.get("failure_reason"):
             raise OrdinanceHandoffError(
-                "Failed Townlight Meetings handoffs require a failure_reason.",
+                "Failed CivicClerk handoffs require a failure_reason.",
                 "Explain what failed so staff can repair and resend the handoff.",
             )
 
@@ -133,7 +133,7 @@ class OrdinanceHandoffStore:
         )
         if event.event_id in self._events:
             raise OrdinanceHandoffError(
-                f"Townlight Meetings ordinance event '{event.event_id}' already exists.",
+                f"CivicClerk ordinance event '{event.event_id}' already exists.",
                 "Use a unique event_id or read the existing handoff.",
                 status_code=409,
             )
@@ -142,9 +142,9 @@ class OrdinanceHandoffStore:
             if _events_match_for_replay(existing_event, event):
                 return existing_event
             raise OrdinanceHandoffError(
-                f"Townlight Meetings event '{event.external_event_id}' has already been accepted with different payload data.",
+                f"CivicClerk event '{event.external_event_id}' has already been accepted with different payload data.",
                 (
-                    "Read the existing handoff before replaying. If Townlight Meetings corrected the event, "
+                    "Read the existing handoff before replaying. If CivicClerk corrected the event, "
                     "send a new external_event_id or reconcile the stored handoff with clerk staff."
                 ),
                 status_code=409,
@@ -156,8 +156,8 @@ class OrdinanceHandoffStore:
                 lane="handoff",
                 subject_id=event.event_id,
                 actor=actor,
-                reason=event.failure_reason or "Townlight Meetings handoff failed.",
-                failure={"message": event.failure_reason or "Townlight Meetings handoff failed."},
+                reason=event.failure_reason or "CivicClerk handoff failed.",
+                failure={"message": event.failure_reason or "CivicClerk handoff failed."},
             )
         self._operational_store.record_replay(
             lane="handoff",
@@ -190,11 +190,11 @@ class OrdinanceHandoffStore:
                     "ordinance_number": event.ordinance_number,
                     "handoff_state": event.handoff_state,
                     "message": (
-                        f"Townlight Meetings ordinance {event.ordinance_number} may affect "
+                        f"CivicClerk ordinance {event.ordinance_number} may affect "
                         f"section {section_number}."
                     ),
                     "fix": (
-                        f"Review Townlight Meetings event {event.external_event_id} before treating "
+                        f"Review CivicClerk event {event.external_event_id} before treating "
                         "the codified text as fully current."
                     ),
                     "failure_reason": event.failure_reason,
@@ -232,13 +232,13 @@ class OrdinanceHandoffStore:
         event = self._events.get(event_id)
         if event is None:
             raise OrdinanceHandoffError(
-                f"Townlight Meetings ordinance event '{event_id}' was not found.",
+                f"CivicClerk ordinance event '{event_id}' was not found.",
                 "Read the handoff list and resolve an existing event.",
                 status_code=404,
             )
         if event.status == "failed":
             raise OrdinanceHandoffError(
-                "Failed Townlight Meetings handoffs cannot be marked codified.",
+                "Failed CivicClerk handoffs cannot be marked codified.",
                 "Repair and resend the failed handoff before resolving codification.",
                 status_code=409,
             )
@@ -323,7 +323,7 @@ ordinance_handoff_audit_event_records = sa.Table(
 
 
 class OrdinanceHandoffRepository(OrdinanceHandoffStore):
-    """Database-backed Townlight Meetings handoff store for Docker/PostgreSQL paths."""
+    """Database-backed CivicClerk handoff store for Docker/PostgreSQL paths."""
 
     def __init__(
         self,

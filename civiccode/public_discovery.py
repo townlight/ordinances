@@ -1,4 +1,4 @@
-"""Public discovery aids for Townlight Code resident lookup surfaces."""
+"""Public discovery aids for CivicCode resident lookup surfaces."""
 
 from __future__ import annotations
 

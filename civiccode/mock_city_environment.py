@@ -1,4 +1,4 @@
-"""Reusable mock-city codifier contracts for Townlight Code.
+"""Reusable mock-city codifier contracts for CivicCode.
 
 These contracts model the external municipal-code source interfaces a city is
 likely to use without making vendor calls or embedding secrets.
@@ -247,7 +247,7 @@ def mock_city_import_payload(contract: MockCityCodifierContract) -> dict[str, An
 def run_mock_city_code_contract_suite(
     *, base_url: str = "https://mock-city.example.gov"
 ) -> tuple[MockCityCodeCheck, ...]:
-    """Validate codifier contracts through Townlight Code's local import path."""
+    """Validate codifier contracts through CivicCode's local import path."""
     checks: list[MockCityCodeCheck] = []
     for contract in mock_city_codifier_contracts():
         source_store = SourceRegistryStore()
@@ -292,7 +292,7 @@ def run_mock_city_code_contract_suite(
                     f"{contract.publisher} mock source imports one active official code section "
                     "without outbound vendor calls."
                 ),
-                fix="Reuse this contract for Townlight Code and add module-specific assertions only.",
+                fix="Reuse this contract for CivicCode and add module-specific assertions only.",
                 source_id=source_id,
                 import_job_id=job.job_id,
                 delta_request_url=_render_base_url(base_url, contract),
@@ -303,7 +303,7 @@ def run_mock_city_code_contract_suite(
 
 
 def mock_city_code_report(*, base_url: str = "https://mock-city.example.gov") -> dict[str, Any]:
-    """Return the reusable Townlight Code mock-city report."""
+    """Return the reusable CivicCode mock-city report."""
     checks = run_mock_city_code_contract_suite(base_url=base_url)
     idp_checks = run_mock_city_idp_contract_suite()
     backup_checks = run_mock_city_backup_retention_suite()

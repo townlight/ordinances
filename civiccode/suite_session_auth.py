@@ -1,4 +1,4 @@
-"""Townlight Core suite-session adapter for Townlight Code staff endpoints."""
+"""CivicCore suite-session adapter for CivicCode staff endpoints."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ class SuiteSessionConfigError(RuntimeError):
 
 @dataclass(frozen=True)
 class SuiteSessionPrincipal:
-    """Validated Townlight Core suite-session identity."""
+    """Validated CivicCore suite-session identity."""
 
     subject: str
     roles: frozenset[str]
@@ -89,7 +89,7 @@ def validate_suite_session_token(
     *,
     required_roles: frozenset[str],
 ) -> SuiteSessionPrincipal:
-    """Validate a Townlight Core suite-session token and return its staff principal."""
+    """Validate a CivicCore suite-session token and return its staff principal."""
 
     try:
         encoded_header, encoded_payload, encoded_signature = token.split(".", 2)
@@ -216,8 +216,8 @@ def validate_staff_bearer_token(authorization: str | None) -> SuiteSessionPrinci
         raise HTTPException(
             status_code=401,
             detail={
-                "message": "Townlight Code staff endpoints require a Townlight Core suite session bearer token.",
-                "fix": "Send Authorization: Bearer <suite-session-token> from the Townlight staff shell.",
+                "message": "CivicCode staff endpoints require a CivicCore suite session bearer token.",
+                "fix": "Send Authorization: Bearer <suite-session-token> from the CivicSuite staff shell.",
             },
             headers={"WWW-Authenticate": "Bearer"},
         )
@@ -229,8 +229,8 @@ def validate_staff_bearer_token(authorization: str | None) -> SuiteSessionPrinci
         raise HTTPException(
             status_code=401,
             detail={
-                "message": "Townlight Core suite session validation is not configured for Townlight Code.",
-                "fix": "Set CIVICCORE_SUITE_SESSION_SECRET to the shared Townlight staff-session signing key.",
+                "message": "CivicCore suite session validation is not configured for CivicCode.",
+                "fix": "Set CIVICCORE_SUITE_SESSION_SECRET to the shared CivicSuite staff-session signing key.",
             },
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
@@ -238,9 +238,9 @@ def validate_staff_bearer_token(authorization: str | None) -> SuiteSessionPrinci
         raise HTTPException(
             status_code=403,
             detail={
-                "message": "Townlight Core suite session was rejected for this Townlight Code staff endpoint.",
+                "message": "CivicCore suite session was rejected for this CivicCode staff endpoint.",
                 "fix": (
-                    "Sign in again through the Townlight staff shell with the code_admin role, "
+                    "Sign in again through the CivicSuite staff shell with the code_admin role, "
                     "then retry with a fresh suite session bearer token."
                 ),
             },
@@ -253,9 +253,9 @@ def suite_session_required_error() -> HTTPException:
     return HTTPException(
         status_code=401,
         detail={
-            "message": "Townlight Code source creation requires a Townlight Core suite session.",
+            "message": "CivicCode source creation requires a CivicCore suite session.",
             "fix": (
-                "Send Authorization: Bearer <suite-session-token> from the Townlight staff shell; "
+                "Send Authorization: Bearer <suite-session-token> from the CivicSuite staff shell; "
                 "legacy X-CivicCode-Role/X-CivicCode-Actor headers alone cannot create sources."
             ),
         },

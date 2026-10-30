@@ -1,4 +1,4 @@
-"""Local-LLM answer generation for Townlight Code."""
+"""Local-LLM answer generation for CivicCode."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def load_local_llm_config() -> LocalLLMConfig | None:
 def build_llm_prompt(*, question: str, citation: dict[str, Any]) -> str:
     """Build a source-bounded prompt that forbids legal determinations."""
     return (
-        "You are Townlight Code, a municipal code assistant. Answer only from the cited "
+        "You are CivicCode, a municipal code assistant. Answer only from the cited "
         "municipal code text below. Do not decide whether a person, property, or "
         "fact pattern complies with the law. Do not add uncited rules. Keep the "
         "answer concise, cite the exact section, and state that staff review is "
@@ -86,7 +86,7 @@ def generate_local_llm_answer(
     except (OSError, URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise CivicCodeAIError(
             "Local LLM call failed. Confirm Ollama is running locally, the model is "
-            "pulled, and the Townlight Code container can reach CIVICCODE_OLLAMA_URL."
+            "pulled, and the CivicCode container can reach CIVICCODE_OLLAMA_URL."
         ) from exc
 
     answer = str(payload.get("response", "")).strip()

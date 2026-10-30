@@ -1,4 +1,4 @@
-"""Townlight Code canonical schema metadata.
+"""CivicCode canonical schema metadata.
 
 Milestone 2 defines table metadata only. Source registration, imports, search,
 Q&A, summaries, and public lookup behavior land in later milestones.

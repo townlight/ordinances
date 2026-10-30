@@ -1,4 +1,4 @@
-"""Townlight Code domain ranking helpers backed by Townlight Core embeddings."""
+"""CivicCode domain ranking helpers backed by CivicCore embeddings."""
 
 from __future__ import annotations
 
@@ -52,11 +52,11 @@ def embedding_config_from_env() -> EmbeddingConfig | None:
 
 
 def embed_texts(texts: list[str], config: EmbeddingConfig | None = None) -> list[list[float]]:
-    """Embed text through Townlight Core's shared Ollama embedding provider."""
+    """Embed text through CivicCore's shared Ollama embedding provider."""
     resolved = config or embedding_config_from_env()
     if resolved is None:
         raise SemanticSearchError(
-            "Townlight Code embedding search is not configured. Set CIVICCODE_EMBEDDING_MODE=ollama "
+            "CivicCode embedding search is not configured. Set CIVICCODE_EMBEDDING_MODE=ollama "
             "and CIVICCODE_OLLAMA_EMBEDDING_MODEL to an embedding-capable local model."
         )
     try:
@@ -66,13 +66,13 @@ def embed_texts(texts: list[str], config: EmbeddingConfig | None = None) -> list
             base_url=resolved.base_url,
         )
     except Exception as exc:  # pragma: no cover - exact provider errors vary by Ollama runtime
-        raise SemanticSearchError(f"Townlight Core embedding request failed: {exc}") from exc
+        raise SemanticSearchError(f"CivicCore embedding request failed: {exc}") from exc
     if len(embeddings) != len(texts):
-        raise SemanticSearchError("Townlight Core embedding response did not include one embedding per input.")
+        raise SemanticSearchError("CivicCore embedding response did not include one embedding per input.")
     normalized: list[list[float]] = []
     for embedding in embeddings:
         if not isinstance(embedding, list) or not all(isinstance(value, int | float) for value in embedding):
-            raise SemanticSearchError("Townlight Core embedding response contained a malformed vector.")
+            raise SemanticSearchError("CivicCore embedding response contained a malformed vector.")
         vector = [float(value) for value in embedding]
         if len(vector) != VECTOR_DIMENSIONS:
             raise SemanticSearchError(

@@ -1,663 +1,214 @@
-# Townlight Code
-
-**Authoritative text with an adoption trail.**
-
-Code keeps authoritative code text, section identity, version/date context and the distinction between pending and adopted law. Cited explanations are informational and are not legal advice.
-
-## Use this product
-
-- [Current user manual](USER-MANUAL.md): installed workflow, roles, sources, review, export, recovery and limits.
-- [Product landing page](https://townlight.github.io/products/code/).
-- [Overall eight-product manual](https://github.com/townlight/townlight/blob/main/USER-MANUAL.md) and [feature/integration assessment](https://github.com/townlight/townlight/blob/main/docs/assessment/feature-and-integration-review.md).
-- [Signed composition and acceptance](https://github.com/townlight/townlight/releases/tag/townlight-records-meetings-code-zoning-planning-permitting-inspections-v1.7.0-beta.1): Code 1.0.8 in accepted connected desktops.
-
-Meetings supplies adoption evidence; Code supplies cited authority to Zoning, Permitting, Inspections and Records. Planning’s installed selected links are Meetings/Zoning, not a claimed direct Code integration.
-
-## Release scope
-
-Local import, codifier sync orchestration and operational readiness code exist. That does not establish a live contract with every commercial codifier, continuous production fetching or an approved legal codification decision.
-
-Documentation reviewed 2026-10-26. Installed acceptance, source/API implementation and future requirements are different evidence. Code is AGPL-3.0-only with the repository’s public institution exception where applicable; documentation is CC BY 4.0. See the repository license files.
-
-## Historical repository reference
-
-The earlier README below is retained for package history and contributor commands. Older maturity/version statements describe that historical reference and are superseded by the current operating guide and linked release evidence.
-
-<a id="civiccode"></a>
+> **Townlight Beta 1 release:** [signed Windows installer, exact owned source, documentation and acceptance](https://github.com/townlight/townlight/releases/tag/townlight-beta-1). [Online manual](https://townlight.github.io/manuals/code.html). This retained manual edition describes the accepted candidate before publication; distribution has changed, component versions and signed bytes have not.
 
 # Townlight Code
 
-## Published connected desktop: 1.4.0-beta.1
+**Townlight Beta 1** · Existing component versions retained · AGPL-3.0-only
 
-This module participates in the signed Townlight Records + Meetings + Code +
-Zoning desktop beta published October 21, 2026. Select zoning-beta for all four
-products; Records-only remains default and city-core excludes Zoning.
-[Download and release limits](https://github.com/townlight/townlight/releases/tag/townlight-records-meetings-code-zoning-v1.4.0-beta.1) ·
-[Current operator manual](https://github.com/townlight/townlight/blob/main/USER-MANUAL.md) ·
-[Signed acceptance](https://github.com/townlight/townlight/blob/main/docs/installer/townlight-zoning-beta1-signed-acceptance.md).
+Code imports and preserves municipal code sources, supplies exact citations and version history, and connects proposed legislation to Meetings. Authorized staff separately record adoption evidence and codification.
 
-This is a connected desktop release, not a new standalone package version.
-Package/import/API names remain compatibility identifiers. Historical development
-checkpoints below retain their original scope; they are superseded for current
-desktop publication status. No signed installer or historical evidence is changed.
+## Start here
 
-**Municipal code and ordinance access for the Townlight product family.**
+Staff should use the operating manual. Administrators should read first-run, configuration and recovery before changing a deployment. Developers should read the exact API/schema reference and matching source companion. This edition accompanies Townlight Beta 1; use the release link above for the signed candidate and exact source/documentation archives.
 
-Townlight Code is the next Townlight planning lane. It will help residents,
-staff, clerks, planners, and attorneys ask what the municipal code says about
-a topic and receive cited, date-aware answers tied to authoritative code
-sections.
+- [Operating manual](docs/beta-1/manuals/code.html) · [Printable PDF](docs/beta-1/pdf/Townlight-Code-Manual-Beta-1.pdf) · [Editable Word manual](docs/beta-1/docx/Townlight-Code-Manual-Beta-1.docx)
+- [API and data dictionary](docs/beta-1/api/code.html) · [OpenAPI JSON](docs/beta-1/api/code-openapi.json)
+- [Product and suite directory](docs/beta-1/index.html) · [Terms and full license](docs/beta-1/terms.html)
 
-## Current status
+## Exact version and candidate
 
-As of 2026-05-04, Townlight Code has a **durable code, discovery, staff guidance, Townlight Meetings handoff, local import-job, codifier sync-state, and operational retry/replay/cursor runtime**
-layered on the mock-city codifier contract suite, staff code lifecycle
-workspace, records-ready export and accessibility hardening foundation,
-local import foundation, public code
-lookup surface, Townlight Meetings handoff,
-plain-language summaries, staff workbench, citation-grounded Q&A, citation
-contract, search and permalink, section/version, source registry, runtime
-foundation, and canonical schema foundations: an
-installable Python package, a FastAPI app shell, `/` and `/health` endpoints,
-a Townlight Core shared-ingestion dependency, canonical SQLAlchemy table
-metadata, Alembic migrations under the `civiccode` schema, source registry APIs,
-optional database-backed source registry persistence, staff-header-protected
-source registry mutations and staff source reads, staff source registry
-workspace pages, optional database-backed popular-question persistence,
-optional database-backed title/chapter/section/version lifecycle persistence,
-optional database-backed staff interpretation-note, plain-language summary,
-Townlight Meetings handoff, import-job, codifier sync-state, and operational retry/replay/cursor persistence,
-staff code lifecycle workspace pages,
-section/version APIs, public-safe text search, stable section permalinks,
-deterministic citation/refusal objects, deterministic citation-grounded answers,
-staff-approved public popular questions, explicit related-material navigation
-aids,
-staff-only interpretation-note APIs with audit events and staff Q&A context,
-staff-approved plain-language summaries labeled as non-authoritative, and
-Townlight Meetings ordinance/adoption handoff intake with durable pending codification
-warnings and handoff audit events, durable staff import job ledgers with
-provenance and actionable failure records, durable codifier sync source
-configuration, run cursors, circuit state, delta-plan history, and durable
-operational retry queue, replay, and delta-cursor records,
-and a Docker Compose product path that starts PostgreSQL 17 with pgvector, runs
-migrations, serves the FastAPI app, can seed a Portland Title 13 demo with
-`CIVICCODE_DEMO_SEED=1`, and can rehearse a Docker/PostgreSQL backup-restore
-with `pg_dump`, `pg_restore`, restored-table verification, and a checksum
-manifest.
-Residents can open `/civiccode`, search by section number or plain-language
-phrase, read adopted code text, see deterministic citations, view approved
-plain-language summaries, follow staff-approved popular questions and related
-materials as navigation aids, and see pending-codification warnings when
-Townlight Meetings handoffs may affect a section.
+| Identity | Value |
+| --- | --- |
+| Public documentation identity | Townlight Beta 1 |
+| Installer version | 1.6.0.1 |
+| Product component | civiccode 1.0.8 |
+| Native desktop source version | 1.6.0-1 |
+| Candidate MSI SHA256 | `98bcdef11ebdf5c767f620c904ff49f85115fde3b5c23f62703b111e645aaf86` |
+| Corresponding-source SHA256 | `84a23e1297e42d17b16cfc9e51b2dd78bc46414c0de8ad7ebd2466c1a409d06b` |
+| Current owned software license | AGPL-3.0-only |
+| Supported acceptance profile | Windows x64 fresh install; inspections-preview; separate Station configuration |
 
-This is deliberately not a legal-advice product. The active completion work now includes
-local Ollama support for source-bounded answers when configured with
-`CIVICCODE_AI_MODE=ollama`; AI output is cited, non-authoritative, and marked
-staff-review-required. Deterministic citation extraction remains the fallback
-when local Ollama is not configured.
-The staff-controlled codifier sync foundation can validate schedules and
-source hosts, persist host-validation results, plan delta requests, run
-already-fetched local payloads through the import path, and show Townlight Core
-circuit-breaker health plus the shared source-list health projection. It does not bundle
-vendor credentials, make legal determinations, call live LLMs unless a city
-operator explicitly configures local Ollama, replace the official codifier, or
-automatically codify ordinances. There is no Townlight Access
-runtime dependency in this repo yet.
-Staff interpretation notes are staff-only and must not be published to public
-endpoints. Townlight Meetings handoff events warn about pending codification but do not
-replace adopted code text.
 
-The current Townlight Code label is v1.0.8 after the independent release-gate audit
-cleared PR #61 at `bfaffc01` with 0 Blocker, 0 Critical, and 0 Major findings.
-Townlight Code has a real backend, database migrations, substantial municipal-code
-workflow logic, local AI integration, React frontend work, real Ollama
-embedding retrieval with PostgreSQL pgvector runtime proof, installed-stack and
-suite module-selection evidence, source-attributed Portland Title 13 municipal
-data fixture proof, and full Longmont PDF ingestion through Townlight Core shared
-ingestion. The older v0.1.17, v0.1.18, v0.5.0, and mistaken 2026-05-21 v1.0.0
-postures remain historical evidence only.
+“Townlight Beta 1” identifies this coordinated beta delivery. It does not renumber the installer, native binary, Python packages or historical receipts. Component versions may differ. This documentation is a later companion to unchanged signed bytes, not a rebuilt installer. Historical release pages and manuals describe their own versions and are not the download instructions for this private candidate.
 
-- install and import the package,
-- expose health/root endpoints for IT smoke checks,
-- run Townlight Core migrations before Townlight Code migrations,
-- create the canonical Townlight Code schema tables,
-- register official and explicitly non-official source records,
-- persist source registry records with `CIVICCODE_SOURCE_REGISTRY_DB_URL`,
-- require Townlight Core suite-session bearer auth before source registry creation,
-  and require either suite-session bearer auth or trusted staff headers before
-  staff-only source reads,
-- open `/staff/sources` through the trusted staff shell to review source
-  readiness, stale/failed blockers, and staff-only notes,
-- open `/staff/code` through the trusted staff shell to review section readiness,
-  current adopted versions, draft summaries, pending codification warnings, and
-  next safe staff actions,
-- track source provenance, owner, retrieval method, retrieved timestamp, status,
-  and staff notes,
-- keep staff-only source notes out of public endpoints,
-- create titles, chapters, sections, subsections, and immutable section versions,
-- persist title, chapter, section, and section-version lifecycle records with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL` so adopted code structure survives process
-  restarts on the Docker/PostgreSQL path,
-- look up current or historical adopted text by section number and effective
-  date,
-- refuse ambiguous overlapping dates and pending ordinance language with an
-  actionable fix path,
-- search public-visible adopted section text and related public material
-  references, and use configured Ollama embeddings plus PostgreSQL pgvector for
-  semantic retrieval when the operator enables that runtime,
-- publish staff-approved popular questions that link only to cited adopted code,
-- persist staff-approved popular questions with `CIVICCODE_SOURCE_REGISTRY_DB_URL`
-  so the Docker/PostgreSQL product path keeps resident discovery aids after
-  process restarts,
-- reject popular-question prompts that ask for legal determinations and return a
-  concrete rewrite path,
-- show related materials from explicit public cross-references without exposing
-  staff notes,
-- label popular questions and related materials as navigation aids, not legal
-  determinations,
-- expose stable section permalinks that survive text revisions,
-- resolve adopted section context for Townlight Zoning, Townlight Legal, Townlight Access, and
-  Townlight Communications through the `civiccode.section_resolution.v1` contract,
-- build deterministic citation objects for adopted section text,
-- return structured refusals for missing, stale, or contradictory source
-  situations,
-- answer citation-grounded questions only when one adopted section and active
-  source can be cited,
-- refuse legal-determination, uncited, ambiguous, missing, stale, or
-  contradictory situations with a reason and fix path,
-- create staff-only interpretation notes for a code section,
-- persist staff interpretation notes and staff workbench audit events with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL` so staff guidance survives process
-  restarts on the Docker/PostgreSQL path,
-- keep staff interpretation notes out of public lookup, public search, and
-  public Q&A responses,
-- let staff Q&A responses include approved staff note context with a
-  `staff_only_do_not_publish` warning,
-- append staff workbench audit events when notes are created,
-- create draft plain-language summaries tied to adopted section versions,
-- require staff approval before summaries become public,
-- label public summaries as `non_authoritative_explanation`,
-- keep authoritative code text visible beside approved summaries,
-- append audit events when summaries are created and approved,
-- persist draft/approved plain-language summaries and their audit events with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL` so public approved summaries survive
-  process restarts on the Docker/PostgreSQL path,
-- accept Townlight Meetings ordinance/adoption handoff events with meeting and agenda
-  item provenance,
-- persist Townlight Meetings handoff records and handoff audit events with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL` so pending codification warnings survive
-  process restarts on the Docker/PostgreSQL path,
-- distinguish pending codification from adopted codified law,
-- let staff mark a Townlight Meetings handoff codified after creating the current
-  adopted section version,
-- warn affected section lookups when a handoff may make the codified text stale,
-- detect likely conflicts when ordinance text references affected sections,
-- render a resident-facing public code lookup surface under `/civiccode`,
-- serve the React/Vite resident app under `/civiccode/app` with live API search
-  and answer calls,
-- render a resident-facing cited-answer page under `/civiccode/answer` when one
-  adopted section and exact citation ground the response,
-- show accessible search success, empty, refusal, stale-source, and section
-  detail states,
-- import local CSV/file-drop bundles and official HTML extract fixtures through
-  staff-only endpoints,
-- ingest the full Longmont Code of Ordinances PDF through Townlight Core shared
-  ingestion, then structure the resulting chunks into Townlight Code titles,
-  chapters, sections, and adopted versions,
-- prove that import/search/cited-answer path against a source-attributed
-  Portland municipal code fixture without treating that fixture as a full city
-  corpus,
-- record import jobs with success or actionable failure states,
-- persist import job status, counts, provenance, failure details, and completion
-  timestamps with `CIVICCODE_SOURCE_REGISTRY_DB_URL` so staff can inspect
-  import history after process restarts on the Docker/PostgreSQL path,
-- retry failed import jobs with corrected local bundles,
-- produce provenance reports with fixture checksums, source metadata, and a
-  no-outbound-dependency marker,
-- configure staff-controlled codifier sync readiness for active official
-  codifier sources,
-- validate codifier sync schedules, source hosts, and supported connector types
-  before a source can be synced,
-- persist codifier sync source configuration, host-validation result,
-  next-run cursor, last attempted/successful run, last import job,
-  circuit-breaker state, and delta-plan history with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL`,
-- persist operational retry queue, replay, and delta-cursor records for
-  Townlight Meetings handoffs, local imports, and codifier sync runs with
-  `CIVICCODE_SOURCE_REGISTRY_DB_URL`,
-- expose `/api/v1/civiccode/staff/operational-state` for staff operators to
-  inspect current handoff, import, and sync readiness from existing local or
-  durable operational records with actionable missing-data fixes,
-- render `/staff/imports` and `/staff/sync` so staff can review import
-  provenance and codifier sync health without calling external vendors,
-- run already-fetched local codifier payloads through the import path without
-  outbound vendor calls,
-- plan delta request URLs for Municode, American Legal Publishing, Code
-  Publishing Company, and General Code,
-- expose Townlight Core circuit-breaker health, shared source-list health projection,
-  and actionable operator copy for repeated sync failures,
-- export adopted section records with source, version, citation, and retrieval
-  metadata,
-- render an accessible, print-friendly records-ready export page,
-- validate reusable mock-city codifier contracts for Municode, American Legal
-  Publishing, Code Publishing Company, and General Code without outbound vendor
-  calls,
-- reuse Townlight Core municipal IdP and backup-retention mock-city contracts in the
-  Townlight Code mock-city environment report,
-- write a secret-free mock-city environment JSON report with planned delta URLs,
-- run `docker compose up --build` against PostgreSQL 17 with pgvector,
-  migrations, source-registry persistence, and Portland Title 13 demo data
-  enabled by `CIVICCODE_DEMO_SEED=1`,
-- smoke the Docker demo with `scripts/docker-demo-smoke.sh`,
-- rehearse the Docker/PostgreSQL backup and restore path with
-  `scripts/start_docker_backup_restore_rehearsal.ps1` on Windows or
-  `scripts/start_docker_backup_restore_rehearsal.sh` on Bash,
-- document Townlight Access as planned infrastructure, not a shipped runtime
-  dependency,
-- consume the Townlight Core shared-ingestion pipeline from the published v1.2.1 release wheel,
-- reuse the shared Townlight Core source-list health projection for codifier sync
-  list responses, and
-- keep docs, browser QA, adversarial mock validation, and CI gates green for
-  the future public-use release gate.
+## What staff can do
 
-<a id="why-civiccode-before-civiczone"></a>
+- **Import a source:** Inspect the complete bundle JSON for jurisdiction, section identifiers, source/effective dates, original name and hashes before selecting Import. Import submits directly; inspect the saved import and provenance afterward. There is no separate preview/confirmation step.
+- **Find the exact section:** Search the topic and open the cited section. Check the requested as-of date and version. Keep explanatory wording separate from the retained source text.
+- **Inspect provenance:** Read import history, original source and section history. Export the exact cited source when it is needed for a staff workpaper or Records evidence.
+- **Connect a proposal:** Create the existing Code–Meetings connection for the actual proposal and agenda context. Retain the connection identifier and keep pending text distinct from adopted code.
+- **Record adoption:** Record the actual authorized meeting decision with its adoption context. An unrelated motion, packet or draft minutes does not establish that the proposal was adopted.
+- **Codify separately:** Review the adopted text and affected sections, then record the distinct codification closeout. Preserve prior versions and the link to adoption evidence.
+- **Share the right version:** Select permitted source evidence downstream. If visibility or source content changes, resolve the mismatch and select current evidence rather than accepting a stale cached citation.
 
-## Why Townlight Code before Townlight Zoning
+## Operating procedures and examples
 
-Townlight Zoning remains the first major Tier 2 land-use product, but it needs an
-authoritative municipal-code source before it can safely answer zoning
-questions. Townlight Code is that Tier 1 dependency: it owns code sections,
-versions, citations, plain-language summaries, and ordinance-adoption context.
+The operating manual now includes these existing procedures, with synthetic inputs, readback and limits. Follow the actual app boundary identified there; a standalone source capability is not automatically a desktop screen.
 
-## Product promise
+- [Cited questions summaries and local synchronization](docs/beta-1/manuals/code.html#cited-questions-summaries-and-local-synchronization).
+- [Ask against an actual retained section](docs/beta-1/manuals/code.html#ask-against-an-actual-retained-section).
+- [Draft and approve an explanatory summary](docs/beta-1/manuals/code.html#draft-and-approve-an-explanatory-summary).
+- [Operate the existing local codifier contract](docs/beta-1/manuals/code.html#operate-the-existing-local-codifier-contract).
 
-Townlight Code will:
+## Architecture and data
 
-- ingest municipal code sources from a city's official publisher,
-- preserve title/chapter/section/subsection structure,
-- track section versions and effective dates,
-- answer natural-language code questions with exact citations,
-- label plain-language explanations as non-authoritative,
-- route legal-interpretation questions to staff,
-- receive ordinance/adoption events from Townlight Meetings when that contract is
-  defined.
+### Runtime and storage
 
-## Non-goals
+The accepted package targets **Windows x64 fresh installation**. Its native shell uses **Rust 2021, Tauri 2 and Microsoft WebView2**; browser assets are JavaScript built with **Vite 8.1.6**. This describes the native desktop frontend; Station has a separate React operator, specified below or in its product manual. Canonical business workflows use bundled **CPython 3.13.5, FastAPI, Pydantic, SQLAlchemy and Alembic**, with **PostgreSQL 17 / PostGIS** and managed original files. The installed runtime tested here contains FastAPI 0.162.0. Package minimum Python requirements can differ from the bundled executable; the metadata reference preserves both. No stack rewrite is implied by the beta label.
 
-Townlight Code is not:
+The native transport is fixed to loopback `127.0.0.1:15480`; PostgreSQL uses the configured local runtime port (default `15432`). Optional local model service defaults to `127.0.0.1:15434`. Those are deployment defaults, not internet endpoints. The runtime has health, module and readiness endpoints; readiness is stronger than process existence. The task queue is the existing local Core task infrastructure, not an assertion that a separate Redis service is required for this desktop composition.
 
-- a codifier,
-- legal advice,
-- automatic ordinance codification,
-- automatic legal interpretation,
-- Townlight Zoning runtime work,
-- a resident portal shell.
+The default native profile is `%LOCALAPPDATA%\CivicSuite`; the historical directory name remains part of compatibility. Do not rename it to Townlight. A configured `TOWNLIGHT_PROFILE_ROOT` must be absolute. Local configuration and secrets live under that profile; protected managed files and database state must be backed up coherently. Source/runtime identity is distinct from a product’s display label.
 
-## Source of truth
+### Data and consistency
 
-Read these upstream documents first:
+Source registry entries; import jobs and originals; sections and versions; effective-date citations; questions, notes and summaries; Meetings connections; adoption and codification closeout.
 
-1. `townlight/townlight/docs/CivicSuiteUnifiedSpec.md`, section 11.
-2. `townlight/townlight/docs/roadmap/civiccode-next-module-plan.md`.
-3. `townlight/townlight/specs/01_catalog.md`, "Townlight Code - Municipal Code & Ordinance Access."
+Versioned saves use expected prior revision identifiers where defined. Reopen and reconcile on conflict. Exact exports and handoffs use source IDs, current visibility, revision and SHA256. Review belongs to the saved revision and does not transfer silently to edited text. Database changes use the owning product’s migrations; a request or readiness check is not an authorization to mutate schema.
 
-## Development status
+### Capacity and platform statements
 
-Install the Townlight Core shared-ingestion dependency, then install
-Townlight Code in editable mode:
+This beta has synthetic single-profile workflow evidence. It does not have a published benchmark for concurrent staff capacity, minimum RAM/CPU, large-source limits or a field SLA. Do not turn a developer machine’s specification into a supported minimum. Installer size is 2,092,122,112 bytes before installation; allow additional disk for extracted runtime, database, originals, exports, media and backups. Select equipment/storage after sizing those actual workloads.
 
-```bash
-python -m pip install "civiccore @ https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
-python -m pip install -e ".[dev]"
-python -m uvicorn civiccode.main:app --reload
+The exact [runtime payload lock](docs/beta-1/reference/runtime-payload-lock.json) records pinned files, sizes and hashes. The [component metadata](docs/beta-1/reference/component-metadata.json) records shipped dependency declarations. These references are more precise than a manually copied dependency list. Third-party and historical license notices must accompany their matching payloads.
+
+
+| Data contract | Description |
+| --- | --- |
+| Input | A complete supported source bundle, source and effective dates, original file hashes and actual meeting adoption evidence. |
+| Retained records | Source registry entries; import jobs and originals; sections and versions; effective-date citations; questions, notes and summaries; Meetings connections; adoption and codification closeout. |
+| Output | Cited code text and history, exact exports, staff explanations with source references and an explicit adoption/codification trail. |
+| Connections | Receives Meetings decision evidence. Supplies permitted cited material to Records, Zoning, Permitting and Inspections. Planning’s selected installed evidence providers are Meetings and Zoning; no separate direct Code connection is implied. |
+
+
+## Setup and operation
+
+1. Obtain the identified signed private candidate and its corresponding-source companion from the beta coordinator. The landing pages in this documentation are not an installer download service.
+2. On the intended fresh Windows test installation, verify the MSI hash and publisher signature before installing. Preserve unrelated profiles and recovery material. This candidate has fresh-install acceptance; historical in-place upgrades are unverified.
+3. Launch Townlight under the intended named Windows account. Choose the storage folders. Select **Townlight Inspections candidate** (`inspections-preview`) for all eight desktop products. A narrower default selection will not expose all workspaces.
+4. Enter the city profile, time zone and contacts. Create the first named local administrator, sign in and choose protected backup storage. **Continue without local AI** is valid for the deterministic workflows.
+5. Run Health Check and wait for readiness. Open Townlight. In System Health select **Finish Records Migration** to activate the canonical Python/PostgreSQL runtime. Do not fabricate migration receipts or seed accounts.
+6. Create named staff through Settings. Import authorized sources using each product’s source library. All examples in this package are synthetic; they are not municipal authority.
+7. Provision Station separately if it is part of the beta exercise. Selecting the desktop composition does not start or configure Station. Configure vision explicitly only if automatic photo drafting is selected.
+
+## Configuration
+### Native deployment configuration
+
+Use Setup, Settings and System Health for supported staff operation. Administrators provision folders, backup storage, named accounts and the city profile. Select `inspections-preview` for the full eight-workspace desktop. Station remains a separate service boundary. Do not use a standalone product’s demo server as a substitute for the installed workspace.
+
+Technical deployments use `TOWNLIGHT_PRODUCT_PROFILE`, `TOWNLIGHT_PROFILE_ROOT`, `DATABASE_URL`, `CIVICSUITE_RUNTIME_PORT`, `PORTAL_MODE` and the runtime-managed secret files. Treat database URLs and native session proofs as secrets. The installed native domain runtime explicitly refuses non-loopback binding. `PORTAL_MODE=private` is the accepted posture; changing it does not by itself commission an internet portal, authentication provider or reverse proxy.
+
+The isolated documentation exporter sets a fictional profile and unusable synthetic database origin only to read schemas; those values are not deployment configuration. Keep deployment values in the intended process/account scope. An already-running process does not automatically inherit later environment edits.
+
+## API usage
+### Native command example
+
+The following JavaScript belongs in the existing trusted Townlight frontend/development environment with `invoke` imported from `@tauri-apps/api/core`. It is not a command for an arbitrary web page or an instruction for nontechnical staff. IDs must come from records created in an isolated synthetic exercise.
+
+```javascript
+import { invoke } from '@tauri-apps/api/core';
+const result = await invoke('code_domain_request', {request: {operation: 'citation', section_number: '18.20.050', as_of: null}});
+console.log(result);
 ```
 
-The Townlight Core v1.2.1 release wheel is the shared-ingestion dependency for this release train.
+### Trusted local HTTP example
 
-Docker demo path:
-
-```bash
-cp docker.env.example .env
-docker compose up --build
-```
-
-Expected Docker truth today: Compose starts PostgreSQL 17 with pgvector and the
-Townlight Code API bound to `127.0.0.1:${CIVICCODE_PORT:-8000}` for local operator
-evaluation, runs Townlight Core then Townlight Code migrations before serving traffic,
-persists source registry, section lifecycle, popular-question, staff-note,
-plain-language summary, Townlight Meetings handoff, handoff audit, import job, codifier sync, and operational state records through
-`CIVICCODE_SOURCE_REGISTRY_DB_URL`, and
-seeds the Portland Title 13 demo when `CIVICCODE_DEMO_SEED=1`. Open
-`http://127.0.0.1:8000/civiccode` and search for `13.40.020` to review the
-seeded public lookup path. The default Compose password is local-demo only;
-change it in `.env` before any shared environment.
-
-Docker demo smoke:
-
-```bash
-bash scripts/docker-demo-smoke.sh
-```
-
-The smoke test verifies public lookup behavior and confirms that forged
-`X-CivicCode-*` staff headers sent through the published demo port receive HTTP
-403. It does not publish or certify a staff shell.
-
-Docker/PostgreSQL backup-restore rehearsal:
+An administrator/developer can inspect an already-configured isolated runtime from a trusted local process. This PowerShell example reads the signed-in synthetic profile’s existing proof into memory; it does not create a user, seed a session, reveal the proof in output or bypass a permission check. Do not use real city data in development examples. A read response does not prove approval or publication.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/start_docker_backup_restore_rehearsal.ps1
+$profilePath = Join-Path $env:LOCALAPPDATA 'CivicSuite'
+$sessionPath = Join-Path $profilePath 'config\local-session.json'
+$session = Get-Content -LiteralPath $sessionPath -Raw | ConvertFrom-Json
+$headers = @{ 'X-Townlight-Session' = $session.session_hash }
+Invoke-RestMethod -Uri 'http://127.0.0.1:15480/desktop/v1/code/sources' -Headers $headers
+Remove-Variable session, headers
 ```
 
-```bash
-bash scripts/start_docker_backup_restore_rehearsal.sh
-```
+### Complete synthetic source bundle
 
-The rehearsal expects the Compose stack to be running. It writes a
-`.docker-backup-restore-rehearsal/<run-id>/backup/civiccode-postgres.dump`,
-restores it into a temporary `civiccode_restore_*` database, verifies restored
-application tables, writes
-`backup/civiccode-docker-backup-manifest.json` with a SHA-256 checksum, and
-drops the temporary restore database unless `--keep-restore-database` is used.
-Both launchers call `scripts/check_docker_backup_restore_rehearsal.py`, which
-now runs in strict mode by default and can also be run directly with
-`--print-only` to review the plan without touching Docker.
-If it fails, confirm Docker Desktop is running, start the stack with
-`docker compose up -d`, inspect `docker compose logs postgres api`, and rerun
-with a fresh run id.
+The [synthetic Code bundle](docs/beta-1/reference/examples/synthetic-code-bundle.json) is the retained fixture used by the beta staff exercise. It includes the complete supported source envelope rather than a shortened pseudo-payload. Keep its fictional source labels. For Planning, wrap it as `{"bundle": BUNDLE, "expected_previous_revision": null}`; for Permitting use `{"bundle": BUNDLE, "expected_revision": null}`. Code and Zoning take their own complete import envelopes. Replace null with the current expected revision when revising an existing source, as the applicable schema requires. These are import examples, not legal authority or permission to load them into a live city profile.
 
-Smoke checks:
+### A synthetic write with subsequent readback
 
-```bash
-curl http://127.0.0.1:8000/
-curl http://127.0.0.1:8000/health
-```
-
-Expected truth today: the service reports `docker demo codifier runtime`,
-exposes source registry endpoints under `/api/v1/civiccode/sources`, exposes
-section/version and search endpoints under `/api/v1/civiccode/sections` and
-`/api/v1/civiccode/search`, exposes deterministic citation objects under
-`/api/v1/civiccode/citations/build`, exposes citation-grounded answers under
-`/api/v1/civiccode/questions/answer`, exposes staff-only workbench endpoints
-under `/api/v1/civiccode/staff`, exposes approved public summaries under
-`/api/v1/civiccode/sections/{section_id}/summaries`, receives Townlight Meetings
-handoff events at `/api/v1/civiccode/staff/civicclerk/ordinance-events`, exposes
-records-ready exports at `/api/v1/civiccode/sections/{section}/export`,
-exposes codifier sync readiness endpoints under
-`/api/v1/civiccode/staff/sync/codifier-sources`, and marks successful answers
-with `code_answer_behavior=citation_grounded`.
-
-Migration smoke:
-
-```bash
-set DATABASE_URL=postgresql+psycopg2://postgres:postgres@localhost:5432/civiccode
-python -m alembic -c civiccode/migrations/alembic.ini upgrade head
-```
-
-Expected migration truth today: Townlight Core migrations run first, Townlight Code uses
-`alembic_version_civiccode`, ten canonical `civiccode.*` tables are created,
-and runtime persistence tables are available for the optional DB-backed source
-registry, resident discovery, section lifecycle, staff note, plain-language
-summary, Townlight Meetings handoff, local import-job, codifier sync-state, and operational retry/replay/cursor paths.
-
-Source registry smoke:
-
-```bash
-curl http://127.0.0.1:8000/api/v1/civiccode/sources/catalog
-```
-
-Expected source-registry truth today: source types include Municode, American
-Legal, Code Publishing, General Code, official XML/DOCX exports, official file
-drops, and official web scrape/export paths. Source creation requires a
-Townlight Core suite-session bearer token with a Townlight Code staff role; legacy
-`X-CivicCode-Role` / `X-CivicCode-Actor` headers alone cannot create sources.
-Source states are `draft`, `active`, `stale`, `superseded`, and `failed`. Set
-`CIVICCODE_SOURCE_REGISTRY_DB_URL` before source registry persistence smoke
-checks; without it, the runtime uses the in-memory store for local demos.
-
-Section/version smoke:
-
-```bash
-curl "http://127.0.0.1:8000/api/v1/civiccode/sections/lookup?section_number=6.12.040"
-```
-
-Expected section/version truth today: adopted versions can be looked up by
-current flag or effective date, pending ordinance language is not treated as
-adopted law, and overlapping effective dates return actionable 409 responses.
-
-Search smoke:
-
-```bash
-curl "http://127.0.0.1:8000/api/v1/civiccode/search?q=6.12.040"
-curl "http://127.0.0.1:8000/api/v1/civiccode/sections/sec_chickens/permalink"
-```
-
-Expected search truth today: search returns public-safe structured results and
-stable section permalinks. It does not generate answers by itself.
-
-Citation contract smoke:
-
-```bash
-curl "http://127.0.0.1:8000/api/v1/civiccode/citations/build?section_number=6.12.040"
-```
-
-Expected citation truth today: citation responses are deterministic objects with
-section id, version id, source id, effective date, and canonical URL. Refusals
-include a reason and fix path.
-
-Citation-grounded Q&A smoke:
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/questions/answer \
-  -H "Content-Type: application/json" \
-  -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
-```
-
-Expected Q&A truth today: successful answers quote adopted section text, include
-one citation object, set `classification=information_not_determination`, and
-state that the answer is not a legal determination. Without local Ollama
-configuration the response sets `llm_provider=not_configured` and returns the
-deterministic cited extract. With `CIVICCODE_AI_MODE=ollama`,
-`CIVICCODE_OLLAMA_URL`, and `CIVICCODE_OLLAMA_MODEL`, Townlight Code calls the local
-Ollama `/api/generate` endpoint with only the retrieved cited section text and
-marks the answer `ai_review_required=true`. Code-answer behavior remains
-limited to cited adopted text. Legal-advice, uncited, stale, missing,
-ambiguous, or contradictory requests return structured refusals.
-
-Longmont shared-ingestion proof:
+This example demonstrates the existing Meetings HTTP contract in an isolated exercise. It is intentionally fictional. It does not start a service. Its authentication setup is included so it can be run independently under the signed-in synthetic account. If a write times out, inspect current records before repeating it.
 
 ```powershell
-$env:CIVICCODE_SOURCE_REGISTRY_DB_URL='postgresql+psycopg2://civiccode@localhost:33134/civiccode'
-$env:OLLAMA_BASE_URL='http://localhost:11434'
-$env:CIVICCODE_OLLAMA_EMBEDDING_URL='http://localhost:11434'
-$env:CIVICCODE_EMBEDDING_MODE='ollama'
-$env:CIVICCODE_AI_MODE='ollama'
-$env:CIVICCODE_OLLAMA_URL='http://localhost:11434'
-$env:CIVICCODE_OLLAMA_MODEL='gemma4:e4b'
-$env:CIVICCODE_SEMANTIC_SCORE_FLOOR='0.58'
-python scripts\prove-longmont-shared-ingestion.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL --force-reingest
-python scripts\prove-longmont-civiccore-chunk-params.py --db-url $env:CIVICCODE_SOURCE_REGISTRY_DB_URL
+$profilePath = Join-Path $env:LOCALAPPDATA 'CivicSuite'
+$sessionPath = Join-Path $profilePath 'config/local-session.json'
+$session = Get-Content -LiteralPath $sessionPath -Raw | ConvertFrom-Json
+$headers = @{ 'X-Townlight-Session' = $session.session_hash }
+$body = @{
+  title = 'Synthetic documentation exercise'
+  scheduled_start = '2026-11-05T18:00:00-07:00'
+  location = 'Synthetic room'
+  meeting_type = 'regular'
+} | ConvertTo-Json
+$meeting = Invoke-RestMethod -Method Post `
+  -Uri 'http://127.0.0.1:15480/desktop/v1/meetings/meetings' `
+  -Headers $headers -ContentType 'application/json' -Body $body
+Invoke-RestMethod `
+  -Uri ('http://127.0.0.1:15480/desktop/v1/meetings/meetings/' + $meeting.id) `
+  -Headers $headers
+Remove-Variable session, headers
 ```
 
-Expected Longmont proof today: the full Longmont PDF is parsed through
-Townlight Core shared ingestion, persisted as `document_chunks` with 768-dimensional
-Ollama embeddings, structured into Townlight Code titles, chapters, sections, and
-versions, searched through PostgreSQL pgvector, and answered through a cited,
-staff-review-required local Ollama response. See
-`docs/qa/civiccode-longmont-shared-ingestion-proof-2026-05-23.md`.
+This write requires Meetings to be enabled and the signed-in staff role to permit it. It is a cross-suite integration example; for this product’s request models, use the complete technical reference below.
 
-Fresh force-reingest proof for PR #61 completed against the same
-12,394,756-byte PDF with 1,604 pages, 2,931 queryable shared chunks, 2,931
-embedded rows, `chunk_size=500`, `chunk_overlap=50`, and 1,995 structured
-Townlight Code sections. The committed section-fidelity proof reports 0 empty
-bodies, 0 header/footer-polluted bodies, and a side-by-side `4.12.040`
-source/structured sample containing the full public-records paragraph. The
-committed dual-run proof script demonstrates that the
-older Townlight Core evidence listing 1,789 chunks used `chunk_size=900` /
-`chunk_overlap=90`; that count is valid for its parameter set but must not be
-cited as the current Townlight Code PR #61 proof count.
+## MCP status
 
-For staff API imports, `pdf_path` must resolve inside
-`CIVICCODE_SHARED_INGEST_ALLOWED_DIRS`/`CIVICCODE_SHARED_INGEST_ALLOWED_DIR`,
-or the default local `longmont-code-corpus` / module `fixtures` directories.
-Semantic nearest-neighbor results below `CIVICCODE_SEMANTIC_SCORE_FLOOR`
-(`0.58` by default) are filtered out instead of returning low-confidence
-sections for unrelated resident queries.
+No direct product MCP server is exposed by the accepted Townlight desktop or Station boundary. Do not configure an invented `townlight mcp` command or assume an AI client has staff permissions. The integration surfaces for this beta are native IPC, the documented HTTP APIs, source bundle imports, exact exports and the existing Station CLI.
 
-Staff workbench smoke:
+The bundled transcription code includes a **TextFlowKit MCP adapter** as a separate source capability. It offers job-based `transcribe_media`, `get_transcript`, `list_jobs`, `get_job_status` and `export_transcript`, and additional tools declared in that adapter. It uses stdio first and optional Streamable HTTP, with the MCP SDK as an optional extra. It is not automatically launched, authenticated as Townlight staff or accepted as a Townlight product MCP deployment. This documentation does not add such a service.
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/sections/sec_chickens/notes \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: planner@example.gov" \
-  -d '{"note_text":"Planning staff treats coop setbacks as measured from the property line.","status":"approved"}'
+For a transcription client already provisioned separately, an illustrative tool call is:
 
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/questions/answer \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: planner@example.gov" \
-  -d '{"question":"What does section 6.12.040 say about backyard chickens?","section_number":"6.12.040"}'
+```json
+{"name":"get_job_status","arguments":{"job_id":"synthetic-existing-job-id"}}
 ```
 
-Expected staff-workbench truth today: staff endpoints accept Townlight Core
-suite-session bearer tokens. Legacy `X-CivicCode-Role: staff` and
-`X-CivicCode-Actor` headers are accepted only from a trusted proxy source for
-staff read/workbench flows; source creation requires the suite-session bearer
-contract. Local mock runs allow loopback (`127.0.0.1/32` and `::1/128`) by
-default; shared environments must keep the API behind a header-stripping
-reverse proxy, set `CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS` only to that reverse
-proxy CIDR list, and strip client-supplied staff headers before Townlight Code sees
-the request. Do not trust the Docker bridge CIDR on a published API port. Staff
-interpretation notes are returned only to staff endpoints, staff Q&A adds
-`staff_context` with `staff_only_do_not_publish`, and public lookup, search, and
-Q&A never expose staff notes or staff note counts.
+Use a job ID returned by that transcription service. This example does not create a Townlight record or bypass its review/Records handoff. The exact optional adapter tool signatures are supplied in the [MCP source reference](docs/beta-1/reference/mcp.html). Station meeting capture does not become live speech recognition because this optional donor adapter exists.
 
-Plain-language summary smoke:
+## Verification and known limits
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/sections/sec_chickens/summaries \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  -d '{"summary_id":"summary_chickens","section_version_id":"v_current","summary_text":"In plain language: residents may keep up to six chickens if they get a city permit."}'
+| Product | Recorded result | Precisely exercised |
+| --- | --- | --- |
+| Code | PASS | Synthetic official source import, exact citation/history/export; proposal into Meetings, recorded adoption and separately codified version; native connection readback. |
 
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/summaries/summary_chickens/approve \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov"
 
-curl http://127.0.0.1:8000/api/v1/civiccode/sections/sec_chickens/summaries
-```
+These results come from the identified signed candidate’s fresh normal-profile Sandbox exercise: real native IPC/HTTP/PostgreSQL and selected headless controls. All accounts, source bundles and media were synthetic. The guest install/uninstall and recovery passed, and the owned Sandbox stopped. No host installed application or standalone CivicCast was changed. This documentation task reuses those receipts; it does not claim a new software acceptance run.
 
-Expected plain-language truth today: public summaries appear only after staff
-approval, are labeled `non_authoritative_explanation`, warn that
-plain-language summaries are not law, and include authoritative section text so
-the official code remains visible.
+The [workflow matrix](docs/beta-1/reference/workflow-matrix.json) identifies raw receipt filenames. The [evidence index](docs/beta-1/reference/sandbox-evidence-index.json) retains their original hashes; raw receipts remain in the private beta handoff rather than being silently republished with the documentation site.
 
-Townlight Meetings handoff smoke:
+The limits remain: actual city field acceptance and equipment/network commissioning; Station automatic provisioning/SCM commissioning; every UI/role combination; field recognition accuracy; and historical in-place upgrades are not certified. They are not five invented feature requirements. Fresh-install controlled beta handoff remains the accepted scope. This package makes no city-deployment, publication or general-availability claim.
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/civicclerk/ordinance-events \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  -d '{"external_event_id":"cc_event_2026_041","civicclerk_meeting_id":"meeting_2026_04_27","civicclerk_agenda_item_id":"agenda_14","ordinance_number":"2026-041","title":"Ordinance amending backyard chicken permits","status":"adopted","affected_sections":["6.12.040"],"source_document_url":"https://example.gov/minutes/2026-041.pdf","source_document_hash":"sha256:REPLACE_WITH_HASH_OF_SOURCE_DOCUMENT","ordinance_text":"An ordinance amending Section 6.12.040."}'
+An imported document is not automatically adopted law. Local imports and orchestration do not establish a live agreement with every commercial codifier. Human approval and authoritative source applicability remain necessary.
 
-curl "http://127.0.0.1:8000/api/v1/civiccode/sections/lookup?section_number=6.12.040"
-```
+## Development and repository map
 
-Expected Townlight Meetings handoff truth today: the handoff is stored as pending
-codification, persisted with its audit event when
-`CIVICCODE_SOURCE_REGISTRY_DB_URL` is configured, Townlight Meetings meeting/agenda
-provenance is preserved, affected lookups include `handoff_warnings`, likely
-conflicts cite the affected section, and pending ordinance language is not
-adopted law or automatic ordinance codification.
+Use the corresponding source for the candidate rather than assuming the public default branch matches it. The source companion contains `installed-owned-source`, product build inputs, desktop Rust/browser sources, locks and `BUILD.md`. It excludes credentials and third-party binary/model payloads. Use the recorded runtime lock when reproducing packaging.
 
-Public lookup smoke:
+Relevant source contracts:
 
-```bash
-curl "http://127.0.0.1:8000/civiccode"
-curl "http://127.0.0.1:8000/civiccode/search?q=6.12.040"
-curl "http://127.0.0.1:8000/civiccode/sections/6.12.040"
-```
+- `civiccode/source_registry.py`
+- `civicsuite_runtime/code_bridge.py`
+- `civicsuite_runtime/code_meetings.py`
+- `desktop/src-tauri/src/code_client.rs`
 
-Expected public lookup truth today: the page separates authoritative adopted
-code text, non-authoritative plain-language summaries, citations, and pending
-codification warnings. Legal-advice requests receive refusal copy with a staff
-contact route. Live LLM calls remain disabled.
+The desktop package defines `npm run build`, `npm test`, `npm run test:browser` and its Tauri command. Python products retain their own `pyproject.toml`, tests and migrations; use the matching checkout’s declared dependencies and test configuration. Do not run a sample server against a production profile. This documentation build validates documentation only and reuses the separately identified installed acceptance; it does not claim a new complete application CI run.
 
-Local import smoke:
+## Recovery and support
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/imports/local-bundle \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  --data-binary @tests/fixtures/milestone_12/csv_bundle.json
+Save work and use Core’s canonical **Backup Now** before maintenance. That operation stops writers. Preserve the coherent profile/database/document backup and its receipt, then use **Start** to resume. A source export is not a full backup.
 
-curl -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  http://127.0.0.1:8000/api/v1/civiccode/staff/imports/import_csv_animals/provenance
-```
+Use **Restore Latest Backup** through the supported controls. If the result says **Restore needs service start**, use **Start**, then **Check**, and reopen a known record. Do not repeat restore merely because services need to start. The fresh-profile acceptance verified that a fulfilled request survived restore and a post-backup marker did not.
 
-Expected import truth today: local fixtures can populate the in-memory
-title/chapter/section/version tree, re-importing the same bundle is
-idempotent, failed imports remain visible through staff endpoints with a fix
-path, and provenance reports show source metadata and fixture checksums.
-Local imports do not require outbound network calls, Redis/Celery workers, or
-vendor credentials.
+Keep Station’s dedicated database and media evidence together in its own backup. Core’s native-profile backup must not be assumed to include an external Station data directory. Stop writers during a coordinated backup. Preserve failed media attempts and logs.
 
-Codifier sync foundation smoke:
+On failure, record the time, selected composition, component/installer versions and exact message. Check System Health for stopped, starting, ready or failed dependencies. Use the existing Retry control after readiness; do not create duplicate business records to refresh a stale view. Share only a redacted diagnostic bundle. Preserve secrets, original evidence, recovery material and unrelated installations.
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/v1/civiccode/staff/sync/codifier-sources \
-  -H "Content-Type: application/json" \
-  -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  -d '{"source_id":"municode_current","sync_schedule":"*/15 * * * *"}'
+## License and responsible use
 
-curl -H "X-CivicCode-Role: staff" \
-  -H "X-CivicCode-Actor: clerk@example.gov" \
-  http://127.0.0.1:8000/api/v1/civiccode/staff/sync/codifier-sources
-```
+Current owned code is AGPL-3.0-only. Preserve full license, matching corresponding source, dependency notices and historical grants. Terms of use do not remove license rights. Source imports do not confer permission to publish third-party material. Review all automatic drafts and use the separate owning-product decision before official action. CivicCast remains independent.
 
-Expected codifier sync truth today: staff can configure active official
-codifier sources for sync readiness, validate schedules and source hosts,
-persist host-validation results, see next-run and circuit-breaker health, plan
-delta requests with durable history, and run already
-fetched local payloads through the import path. Townlight Code does not ship vendor
-credentials, does not make outbound calls from the foundation smoke, and does
-not automatically codify ordinances.
+## Earlier documentation
 
-Mock-city codifier contract smoke:
-
-```bash
-python scripts/run_mock_city_environment_suite.py --output .tmp-civiccode-mock-city-report.json
-```
-
-Expected mock-city truth today: Townlight Code validates secret-free Municode,
-American Legal Publishing, Code Publishing Company, and General Code source
-contracts through the same local import path used by staff file drops. The
-suite renders planned delta URLs for the codifier sync foundation but makes no
-outbound vendor calls. Municipal IdP and backup-retention checks come from
-shared Townlight Core mock-city contracts so later modules can reuse the same
-environment pattern.
-
-Records-ready export smoke:
-
-```bash
-curl "http://127.0.0.1:8000/api/v1/civiccode/sections/6.12.040/export"
-curl "http://127.0.0.1:8000/civiccode/sections/6.12.040/export"
-```
-
-Expected export truth today: export payloads include the adopted section text,
-section version, deterministic citation, source provenance, retrieval metadata,
-accessibility labels, and legal-boundary copy. The HTML export page includes
-semantic headings, labels, focus styling, and print-friendly output. Townlight Access
-is documented as a future integration target; no Townlight Access dependency is
-required or shipped in this repo.
-
-## License
-
-Code: AGPL-3.0-only, with the TownLight Public Institution Exception for qualifying deployments. See [LICENSE](LICENSE) and [LICENSE-EXCEPTION.md](LICENSE-EXCEPTION.md).
-
-Documentation: CC BY 4.0 unless otherwise stated; see `LICENSE-DOCS`.
+Previous editions are retained under `docs/history/pre-townlight-beta-1/`. They describe their original software and license grants. Use the current Townlight Beta 1 manual for this candidate.

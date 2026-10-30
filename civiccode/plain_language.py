@@ -1,4 +1,4 @@
-"""Staff-approved non-authoritative summaries for Townlight Code."""
+"""Staff-approved non-authoritative summaries for CivicCode."""
 
 from __future__ import annotations
 
