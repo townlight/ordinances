@@ -94,7 +94,7 @@ def test_shared_pdf_path_must_stay_inside_allowlisted_corpus(tmp_path, monkeypat
         _validate_pdf_path(bad_pdf)
 
     assert exc.value.status_code == 403
-    assert "outside the allowed Townlight Code corpus" in exc.value.message
+    assert "outside the allowed CivicCode corpus" in exc.value.message
 
 
 def test_chunk_text_reconstruction_removes_overlap_duplication() -> None:
@@ -149,7 +149,7 @@ def test_normalize_text_strips_running_headers_and_repairs_source_artifacts() ->
         Sec. 4.12.040. Public access to procurement
         documents.
         Procurement documents are public records.
-        § 4.12.050
+        Â§ 4.12.050
         REVENUE AND FINANCE
         electronic
         transmis-

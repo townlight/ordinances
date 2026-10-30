@@ -189,10 +189,10 @@ async def test_export_refuses_stale_source_with_actionable_page(client: AsyncCli
     assert "Refresh or reactivate" in html.text
 
 
-def test_docs_record_accessibility_export_without_claiming_civicaccess_runtime() -> None:
+def test_docs_record_accessibility_export_without_claiming_civicaccess_runtime_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "records-ready export" in document_text

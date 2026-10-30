@@ -1,4 +1,4 @@
-"""Townlight Code municipal-code structuring over Townlight Core shared ingestion."""
+"""CivicCode municipal-code structuring over CivicCore shared ingestion."""
 
 from __future__ import annotations
 
@@ -63,7 +63,7 @@ class SharedIngestionError(ValueError):
 
 @dataclass(frozen=True, slots=True)
 class SharedIngestionImport:
-    """A Townlight Core-ingested document plus a Townlight Code local-bundle payload."""
+    """A CivicCore-ingested document plus a CivicCode local-bundle payload."""
 
     payload: dict[str, Any]
     proof: dict[str, Any]
@@ -76,7 +76,7 @@ async def build_longmont_import_from_shared_ingestion(
     actor: str,
     force_reingest: bool = False,
 ) -> SharedIngestionImport:
-    """Ingest the full Longmont PDF through Townlight Core, then structure sections for Townlight Code."""
+    """Ingest the full Longmont PDF through CivicCore, then structure sections for CivicCode."""
 
     resolved_pdf = _validate_pdf_path(pdf_path)
     if not resolved_pdf.exists():
@@ -125,7 +125,7 @@ async def build_longmont_import_from_shared_ingestion(
             ).scalars().all()
             if document.chunk_count and not chunks:
                 raise SharedIngestionError(
-                    "Townlight Core reported chunks but none were queryable.",
+                    "CivicCore reported chunks but none were queryable.",
                     "Check the shared ingestion database tables and rerun the import.",
                     status_code=500,
                 )
@@ -217,7 +217,7 @@ async def _ensure_civiccore_actor(session, *, actor_uuid: uuid.UUID, actor: str)
                 (id, email, hashed_password, is_active, is_superuser, is_verified, full_name, role)
             VALUES
                 (:id, :email, 'civiccode-shared-ingestion-local-only', true, false, true,
-                 'Townlight Code Shared Ingestion', 'staff')
+                 'CivicCode Shared Ingestion', 'staff')
             ON CONFLICT (id) DO NOTHING
             """
         ),
@@ -240,7 +240,7 @@ def _validate_pdf_path(pdf_path: str | Path) -> Path:
     if not any(resolved_pdf == root or root in resolved_pdf.parents for root in allowed_roots):
         roots = ", ".join(str(root) for root in allowed_roots)
         raise SharedIngestionError(
-            f"PDF '{resolved_pdf}' is outside the allowed Townlight Code corpus directories.",
+            f"PDF '{resolved_pdf}' is outside the allowed CivicCode corpus directories.",
             f"Move the file under one of these directories and retry: {roots}",
             status_code=403,
         )
@@ -276,7 +276,7 @@ def _build_civiccode_payload(
     extracted_sections = _extract_sections(full_text)
     if not extracted_sections:
         raise SharedIngestionError(
-            "No municipal code sections were found in the Townlight Core-ingested text.",
+            "No municipal code sections were found in the CivicCore-ingested text.",
             "Confirm the PDF text layer is readable, then rerun ingestion.",
             status_code=422,
         )

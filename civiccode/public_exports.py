@@ -1,4 +1,4 @@
-"""Records-ready public export helpers for Townlight Code Milestone 13."""
+"""Records-ready public export helpers for CivicCode Milestone 13."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ def build_records_ready_export(
     citation_payload: dict[str, Any],
     source: dict[str, Any],
 ) -> dict[str, Any]:
-    """Build a Townlight Access-ready export shape without depending on Townlight Access runtime."""
+    """Build a CivicAccess-ready export shape without depending on CivicAccess runtime."""
     section = lookup["section"]
     version = lookup["version"]
     citation = citation_payload["citation"]
@@ -86,7 +86,7 @@ def render_records_ready_export_page(export: dict[str, Any]) -> str:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{escape(export['title'])} - Townlight Code export</title>
+  <title>{escape(export['title'])} - CivicCode export</title>
   <style>
     :root {{
       --ink: #152018;
@@ -149,7 +149,7 @@ def render_records_ready_export_page(export: dict[str, Any]) -> str:
 <body>
   <a class="skip-link" href="#content">Skip to export content</a>
   <main id="content">
-    <p>Townlight Code records-ready export</p>
+    <p>CivicCode records-ready export</p>
     <h1>{escape(export['title'])}</h1>
     <section aria-labelledby="code-text-heading">
       <h2 id="code-text-heading">Authoritative code text</h2>

@@ -274,13 +274,13 @@ async def test_codifier_sync_api_uses_configured_source_registry_database(
     assert sources[0].delta_plan_history[0]["import_job_id"] == payload["job_id"]
 
 
-def test_docs_describe_codifier_sync_foundation_without_overclaiming() -> None:
+def test_docs_describe_codifier_sync_foundation_without_overclaiming_historical_edition() -> None:
     documents = [
-        (ROOT / "README.md").read_text(encoding="utf-8"),
-        (ROOT / "README.txt").read_text(encoding="utf-8"),
-        (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8"),
-        (ROOT / "USER-MANUAL.txt").read_text(encoding="utf-8"),
-        (ROOT / "docs" / "index.html").read_text(encoding="utf-8"),
+        (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "README.md").read_text(encoding="utf-8"),
+        (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "README.txt").read_text(encoding="utf-8"),
+        (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8"),
+        (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.txt").read_text(encoding="utf-8"),
+        (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8"),
         (ROOT / "CHANGELOG.md").read_text(encoding="utf-8"),
     ]
     combined = "\n".join(documents).lower()

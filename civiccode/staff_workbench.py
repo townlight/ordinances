@@ -1,4 +1,4 @@
-"""Staff-only interpretation notes and audit events for Townlight Code."""
+"""Staff-only interpretation notes and audit events for CivicCode."""
 
 from __future__ import annotations
 

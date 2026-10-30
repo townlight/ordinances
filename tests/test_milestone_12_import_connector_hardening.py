@@ -240,10 +240,10 @@ async def test_imported_tree_is_scoped_to_the_job_source(client: AsyncClient) ->
     assert version_ids == {"version_6_12_040_current"}
 
 
-def test_docs_record_import_foundation_without_claiming_live_sync() -> None:
+def test_docs_record_import_foundation_without_claiming_live_sync_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "local import" in document_text

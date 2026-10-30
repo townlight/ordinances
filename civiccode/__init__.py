@@ -1,4 +1,4 @@
-"""Townlight Code municipal code and ordinance access module."""
+"""CivicCode municipal code and ordinance access module."""
 
 from __future__ import annotations
 

@@ -429,7 +429,7 @@ async def test_search_no_results_is_actionable(client: AsyncClient) -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["results"] == []
-    assert payload["empty_state"]["message"] == "No public Townlight Code results matched that search."
+    assert payload["empty_state"]["message"] == "No public CivicCode results matched that search."
     assert "Try an exact section number" in payload["empty_state"]["fix"]
 
 
@@ -508,10 +508,10 @@ async def test_empty_search_query_returns_actionable_422(client: AsyncClient) ->
     assert "section number or plain-language phrase" in detail["fix"]
 
 
-def test_docs_and_changelog_record_search_without_claiming_answers_or_public_ui() -> None:
+def test_docs_and_changelog_record_search_without_claiming_answers_or_public_ui_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "search" in document_text

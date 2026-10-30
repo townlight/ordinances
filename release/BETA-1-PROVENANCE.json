@@ -1,0 +1,860 @@
+{
+  "edition": "Townlight Beta 1",
+  "base_commit": "6558e286c7f115ef8191c15b86eab1dcd673128c",
+  "installer_sha256": "98bcdef11ebdf5c767f620c904ff49f85115fde3b5c23f62703b111e645aaf86",
+  "owned_source_sha256": "84a23e1297e42d17b16cfc9e51b2dd78bc46414c0de8ad7ebd2466c1a409d06b",
+  "documentation_sha256": "a928bb1c40fec7ef6f223c7b77bc9fe7837e4cfffcebf35bb3309cc5549284e6",
+  "release": "https://github.com/townlight/townlight/releases/tag/townlight-beta-1",
+  "archive_files": [
+    {
+      "archive": "products/ordinances/LICENSE",
+      "repo": "ordinances",
+      "path": "LICENSE",
+      "sha256": "e0eedba615d5cd1b986afb6c5b3a4b1ae33713e7e9dc74d19daec5e3221f9d2e",
+      "status": "changed",
+      "publication_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "archive": "products/ordinances/LICENSE-CODE",
+      "repo": "ordinances",
+      "path": "LICENSE-CODE",
+      "sha256": "e0eedba615d5cd1b986afb6c5b3a4b1ae33713e7e9dc74d19daec5e3221f9d2e",
+      "status": "changed",
+      "publication_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "archive": "products/ordinances/LICENSE-DOCS",
+      "repo": "ordinances",
+      "path": "LICENSE-DOCS",
+      "sha256": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "status": "same",
+      "publication_sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "archive": "products/ordinances/README.md",
+      "repo": "ordinances",
+      "path": "README.md",
+      "sha256": "58ad80b70dbe10a17269907e92895366b6c6b5036f075fa83c2e10c3d44308c9",
+      "status": "changed",
+      "publication_sha256": "04eb1b7b0b9e50fa60e3479278dff15c060e99e3b353d8bd9b2ec35ba6a60aa4"
+    },
+    {
+      "archive": "products/ordinances/civiccode/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/__init__.py",
+      "sha256": "22abb4eaa2a94737461591a5b6f494bf7c4ad481b476fc3cf020fa090c97bcd8",
+      "status": "changed",
+      "publication_sha256": "22abb4eaa2a94737461591a5b6f494bf7c4ad481b476fc3cf020fa090c97bcd8"
+    },
+    {
+      "archive": "products/ordinances/civiccode/ai_answer.py",
+      "repo": "ordinances",
+      "path": "civiccode/ai_answer.py",
+      "sha256": "0d82f0c105e1b8102e0b640b97de85f95f79695cc6903008d56245ed79e6568d",
+      "status": "changed",
+      "publication_sha256": "0d82f0c105e1b8102e0b640b97de85f95f79695cc6903008d56245ed79e6568d"
+    },
+    {
+      "archive": "products/ordinances/civiccode/citation_contract.py",
+      "repo": "ordinances",
+      "path": "civiccode/citation_contract.py",
+      "sha256": "58e2cc3b8e05987a801a94c174ad34a8a7af18f684d367b08f097ab420ff3e37",
+      "status": "changed",
+      "publication_sha256": "58e2cc3b8e05987a801a94c174ad34a8a7af18f684d367b08f097ab420ff3e37"
+    },
+    {
+      "archive": "products/ordinances/civiccode/codifier_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/codifier_sync.py",
+      "sha256": "9c8b9635a2534eaccd3f80cc0b2a9b5c4751830a9d99796bb125e773778bd57f",
+      "status": "changed",
+      "publication_sha256": "9c8b9635a2534eaccd3f80cc0b2a9b5c4751830a9d99796bb125e773778bd57f"
+    },
+    {
+      "archive": "products/ordinances/civiccode/fixtures/portland/code/13.10-purpose-and-definitions.txt",
+      "repo": "ordinances",
+      "path": "civiccode/fixtures/portland/code/13.10-purpose-and-definitions.txt",
+      "sha256": "e86888d89e29382a48f0276aaabb9f6dbfbdb6a8456c17f51b5cc947cbb53d51",
+      "status": "same",
+      "publication_sha256": "e86888d89e29382a48f0276aaabb9f6dbfbdb6a8456c17f51b5cc947cbb53d51"
+    },
+    {
+      "archive": "products/ordinances/civiccode/fixtures/portland/code/13.40-keeping-livestock.txt",
+      "repo": "ordinances",
+      "path": "civiccode/fixtures/portland/code/13.40-keeping-livestock.txt",
+      "sha256": "178245740c874fcc13a7a12f9534692e01e232d771959d198e93d2425e8f2d74",
+      "status": "same",
+      "publication_sha256": "178245740c874fcc13a7a12f9534692e01e232d771959d198e93d2425e8f2d74"
+    },
+    {
+      "archive": "products/ordinances/civiccode/frontend_dist/assets/index-DhfojJY0.css",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/assets/index-DhfojJY0.css",
+      "sha256": "6002a43b0b5fbae50c24bd238b9b90a9a79abb5fb29ac758a8f93bfe755f8f12",
+      "status": "same",
+      "publication_sha256": "6002a43b0b5fbae50c24bd238b9b90a9a79abb5fb29ac758a8f93bfe755f8f12"
+    },
+    {
+      "archive": "products/ordinances/civiccode/frontend_dist/assets/index-aK7NGgo8.js",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/assets/index-aK7NGgo8.js",
+      "sha256": "acbe0cfe1df63678e17b5d236648cf79f3745e89cfd779eeae4046e160dc6104",
+      "status": "same",
+      "publication_sha256": "acbe0cfe1df63678e17b5d236648cf79f3745e89cfd779eeae4046e160dc6104"
+    },
+    {
+      "archive": "products/ordinances/civiccode/frontend_dist/index.html",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/index.html",
+      "sha256": "0b2c96aa13b4732b6c8ab69862eacfdddec93e69ebd4117170c4e14373de0e97",
+      "status": "changed",
+      "publication_sha256": "0b2c96aa13b4732b6c8ab69862eacfdddec93e69ebd4117170c4e14373de0e97"
+    },
+    {
+      "archive": "products/ordinances/civiccode/import_connectors.py",
+      "repo": "ordinances",
+      "path": "civiccode/import_connectors.py",
+      "sha256": "bf4013448af2bd851642baefdbd1abcd212dd7b5b3c0e91d5811414c85e792f0",
+      "status": "changed",
+      "publication_sha256": "bf4013448af2bd851642baefdbd1abcd212dd7b5b3c0e91d5811414c85e792f0"
+    },
+    {
+      "archive": "products/ordinances/civiccode/main.py",
+      "repo": "ordinances",
+      "path": "civiccode/main.py",
+      "sha256": "930e05298b82f10ec0338040770d8af83aa56a9d43016908931ab8f796e63f48",
+      "status": "changed",
+      "publication_sha256": "930e05298b82f10ec0338040770d8af83aa56a9d43016908931ab8f796e63f48"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/__init__.py",
+      "sha256": "4c8b91a2b40fe7951bf11bd74070344c9967b0feb5170a68d490305dc8333b8e",
+      "status": "same",
+      "publication_sha256": "4c8b91a2b40fe7951bf11bd74070344c9967b0feb5170a68d490305dc8333b8e"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/alembic.ini",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/alembic.ini",
+      "sha256": "0c02905cb404c443a4e0efe24be2db3e84141760f5796f216787a54704d18421",
+      "status": "same",
+      "publication_sha256": "0c02905cb404c443a4e0efe24be2db3e84141760f5796f216787a54704d18421"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/env.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/env.py",
+      "sha256": "5526b8ac01c1bc652c77861bb77209503668127d5c9a8d810dda351dff7a158e",
+      "status": "same",
+      "publication_sha256": "5526b8ac01c1bc652c77861bb77209503668127d5c9a8d810dda351dff7a158e"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/guards.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/guards.py",
+      "sha256": "110cca437db7e2507374b9e0d9d32739dbdbaf57c664ac89d8a4c56472c05d7f",
+      "status": "same",
+      "publication_sha256": "110cca437db7e2507374b9e0d9d32739dbdbaf57c664ac89d8a4c56472c05d7f"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/__init__.py",
+      "sha256": "74446fe86c7d899c1e4942b131ef47880cbb716011970d702ac78799902cc7ac",
+      "status": "same",
+      "publication_sha256": "74446fe86c7d899c1e4942b131ef47880cbb716011970d702ac78799902cc7ac"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0001_schema.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0001_schema.py",
+      "sha256": "3361408fb75b2330c3dffa4c343bffa39ec96cb41b25d7c3e980f3efea69a950",
+      "status": "same",
+      "publication_sha256": "3361408fb75b2330c3dffa4c343bffa39ec96cb41b25d7c3e980f3efea69a950"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0002_source_registry_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0002_source_registry_records.py",
+      "sha256": "a237d274d614a260242b2eee1661845fa96476445a8496c1fc2e8ff773fcc85c",
+      "status": "same",
+      "publication_sha256": "a237d274d614a260242b2eee1661845fa96476445a8496c1fc2e8ff773fcc85c"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0003_popular_question_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0003_popular_question_records.py",
+      "sha256": "d973ad1e13a5b84cc4bcc19d9977d9532d09388451c3872549180fa02ecfe609",
+      "status": "same",
+      "publication_sha256": "d973ad1e13a5b84cc4bcc19d9977d9532d09388451c3872549180fa02ecfe609"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0004_section_lifecycle_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0004_section_lifecycle_records.py",
+      "sha256": "e11d0b3c4d08f32c00e513bbf336bf9f3ee2459c929aca0fed7c2158b688299f",
+      "status": "same",
+      "publication_sha256": "e11d0b3c4d08f32c00e513bbf336bf9f3ee2459c929aca0fed7c2158b688299f"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0005_staff_summary_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0005_staff_summary_records.py",
+      "sha256": "04d9a42402dbf503f9988dc07c4fe264390470d798d8e2d51983a1d7b8a5e601",
+      "status": "same",
+      "publication_sha256": "04d9a42402dbf503f9988dc07c4fe264390470d798d8e2d51983a1d7b8a5e601"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0006_ordinance_handoff_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0006_ordinance_handoff_records.py",
+      "sha256": "bd2c85f222a0d4946298bdb580a36af174be378fbb3bdf62641457b87d5499fa",
+      "status": "same",
+      "publication_sha256": "bd2c85f222a0d4946298bdb580a36af174be378fbb3bdf62641457b87d5499fa"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0007_import_job_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0007_import_job_records.py",
+      "sha256": "d965ccf019d4059fe56ffd234955f45193d51d52a38b20fa1ba66e809493cb67",
+      "status": "same",
+      "publication_sha256": "d965ccf019d4059fe56ffd234955f45193d51d52a38b20fa1ba66e809493cb67"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0008_codifier_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0008_codifier_sync.py",
+      "sha256": "10b417a95e25d79ea3cc48fb3feedec0eea878f9580eba0b3c9e0b9413886366",
+      "status": "same",
+      "publication_sha256": "10b417a95e25d79ea3cc48fb3feedec0eea878f9580eba0b3c9e0b9413886366"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0009_operational_state.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0009_operational_state.py",
+      "sha256": "5ff5a28d099a69b55c121fbf6ff9336cb8dee51e385966900510aba5df9a7540",
+      "status": "same",
+      "publication_sha256": "5ff5a28d099a69b55c121fbf6ff9336cb8dee51e385966900510aba5df9a7540"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0010_handoff_resolution.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0010_handoff_resolution.py",
+      "sha256": "ed20579ff39863de49bd01a97a47b77d84b380f54f0aba7473c1aad360b11b4a",
+      "status": "same",
+      "publication_sha256": "ed20579ff39863de49bd01a97a47b77d84b380f54f0aba7473c1aad360b11b4a"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0011_semantic_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0011_semantic_search.py",
+      "sha256": "4bf32028058db6ff90c19e2cf891886fef6d4e958ed7e72165e9a224ebd1b19d",
+      "status": "same",
+      "publication_sha256": "4bf32028058db6ff90c19e2cf891886fef6d4e958ed7e72165e9a224ebd1b19d"
+    },
+    {
+      "archive": "products/ordinances/civiccode/migrations/versions/civiccode_0012_drop_local_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0012_drop_local_search.py",
+      "sha256": "6ac60feecb72efbe78a788066ac58d790f6e6c460f4a71eea6ecf6cf30a6570d",
+      "status": "same",
+      "publication_sha256": "6ac60feecb72efbe78a788066ac58d790f6e6c460f4a71eea6ecf6cf30a6570d"
+    },
+    {
+      "archive": "products/ordinances/civiccode/mock_city_environment.py",
+      "repo": "ordinances",
+      "path": "civiccode/mock_city_environment.py",
+      "sha256": "91c1e1089e2956417fd520725847950c544166f0a93f2a0a63b7c1a9859c1189",
+      "status": "changed",
+      "publication_sha256": "91c1e1089e2956417fd520725847950c544166f0a93f2a0a63b7c1a9859c1189"
+    },
+    {
+      "archive": "products/ordinances/civiccode/models.py",
+      "repo": "ordinances",
+      "path": "civiccode/models.py",
+      "sha256": "15f328be4b05481401d8ccd296110136ef98e98634fe59af1c2aa729340e8e4f",
+      "status": "changed",
+      "publication_sha256": "15f328be4b05481401d8ccd296110136ef98e98634fe59af1c2aa729340e8e4f"
+    },
+    {
+      "archive": "products/ordinances/civiccode/operational_readiness.py",
+      "repo": "ordinances",
+      "path": "civiccode/operational_readiness.py",
+      "sha256": "002130b66583a7645218e271d515ca6b9295f7a8fe19ee9e85e6e52adacc07a9",
+      "status": "changed",
+      "publication_sha256": "002130b66583a7645218e271d515ca6b9295f7a8fe19ee9e85e6e52adacc07a9"
+    },
+    {
+      "archive": "products/ordinances/civiccode/operational_state.py",
+      "repo": "ordinances",
+      "path": "civiccode/operational_state.py",
+      "sha256": "6d73c3201fc449de9bf6678d129184533323960f82ccb0a5c0f6dcb147421b0f",
+      "status": "changed",
+      "publication_sha256": "6d73c3201fc449de9bf6678d129184533323960f82ccb0a5c0f6dcb147421b0f"
+    },
+    {
+      "archive": "products/ordinances/civiccode/ordinance_handoff.py",
+      "repo": "ordinances",
+      "path": "civiccode/ordinance_handoff.py",
+      "sha256": "5e98eefc3e510efaf0d5973927aa3506f8b652d319320f745a831bef0cb5897b",
+      "status": "changed",
+      "publication_sha256": "5e98eefc3e510efaf0d5973927aa3506f8b652d319320f745a831bef0cb5897b"
+    },
+    {
+      "archive": "products/ordinances/civiccode/plain_language.py",
+      "repo": "ordinances",
+      "path": "civiccode/plain_language.py",
+      "sha256": "074b7aae42a3c4ee7ae5e64726a5fbbe151039cb51467f89f47b977e93e9b2bd",
+      "status": "changed",
+      "publication_sha256": "074b7aae42a3c4ee7ae5e64726a5fbbe151039cb51467f89f47b977e93e9b2bd"
+    },
+    {
+      "archive": "products/ordinances/civiccode/public_discovery.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_discovery.py",
+      "sha256": "f87497befbd3f75db94c4db0f36fb04fc1a34af8eba73a425ff49edb8dfc20ae",
+      "status": "changed",
+      "publication_sha256": "f87497befbd3f75db94c4db0f36fb04fc1a34af8eba73a425ff49edb8dfc20ae"
+    },
+    {
+      "archive": "products/ordinances/civiccode/public_exports.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_exports.py",
+      "sha256": "2d413d312f8baf1e790bb4205ad93ac25928f1afefa3aca1898d91092085bcc4",
+      "status": "changed",
+      "publication_sha256": "2d413d312f8baf1e790bb4205ad93ac25928f1afefa3aca1898d91092085bcc4"
+    },
+    {
+      "archive": "products/ordinances/civiccode/public_lookup.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_lookup.py",
+      "sha256": "a3c62b6aaa3de1ef98ac824fd5806e61bd444ae61241e2a19f0f7dff3a3cca79",
+      "status": "changed",
+      "publication_sha256": "a3c62b6aaa3de1ef98ac824fd5806e61bd444ae61241e2a19f0f7dff3a3cca79"
+    },
+    {
+      "archive": "products/ordinances/civiccode/qa_harness.py",
+      "repo": "ordinances",
+      "path": "civiccode/qa_harness.py",
+      "sha256": "bc040cb0c4ff124f13a63e10fbcb26d478a06da5364e7fa18d177b40af269797",
+      "status": "changed",
+      "publication_sha256": "bc040cb0c4ff124f13a63e10fbcb26d478a06da5364e7fa18d177b40af269797"
+    },
+    {
+      "archive": "products/ordinances/civiccode/real_municipal_fixtures.py",
+      "repo": "ordinances",
+      "path": "civiccode/real_municipal_fixtures.py",
+      "sha256": "a88b400d5b5bb8d6a74ec8a29d793c3e51ab94226e0f0b8abbde7030f667280a",
+      "status": "changed",
+      "publication_sha256": "a88b400d5b5bb8d6a74ec8a29d793c3e51ab94226e0f0b8abbde7030f667280a"
+    },
+    {
+      "archive": "products/ordinances/civiccode/section_lifecycle.py",
+      "repo": "ordinances",
+      "path": "civiccode/section_lifecycle.py",
+      "sha256": "34096b4ca4fa8f65628d33761609044f29a03bf0d89a5da09085440e56d149f2",
+      "status": "changed",
+      "publication_sha256": "34096b4ca4fa8f65628d33761609044f29a03bf0d89a5da09085440e56d149f2"
+    },
+    {
+      "archive": "products/ordinances/civiccode/semantic_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/semantic_search.py",
+      "sha256": "85de9cb0b861a7551a701bd4082ec3343728831c8bf20e45d90719db60f8b78c",
+      "status": "changed",
+      "publication_sha256": "85de9cb0b861a7551a701bd4082ec3343728831c8bf20e45d90719db60f8b78c"
+    },
+    {
+      "archive": "products/ordinances/civiccode/shared_ingestion.py",
+      "repo": "ordinances",
+      "path": "civiccode/shared_ingestion.py",
+      "sha256": "caf8ec1c4d1da5a485ec96d0ae04e800e29f02fe1a71809cbebe0718c574f987",
+      "status": "changed",
+      "publication_sha256": "caf8ec1c4d1da5a485ec96d0ae04e800e29f02fe1a71809cbebe0718c574f987"
+    },
+    {
+      "archive": "products/ordinances/civiccode/source_registry.py",
+      "repo": "ordinances",
+      "path": "civiccode/source_registry.py",
+      "sha256": "292e2286802f36458a7468b749f81ff82277cc5f404fbf7b0ac7dd88f5d79651",
+      "status": "changed",
+      "publication_sha256": "292e2286802f36458a7468b749f81ff82277cc5f404fbf7b0ac7dd88f5d79651"
+    },
+    {
+      "archive": "products/ordinances/civiccode/staff_code.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_code.py",
+      "sha256": "90b3d8ac3c6eb0c65831b47d8f6fa63ce3ac3d2350442c0913e15f7a768e317d",
+      "status": "changed",
+      "publication_sha256": "90b3d8ac3c6eb0c65831b47d8f6fa63ce3ac3d2350442c0913e15f7a768e317d"
+    },
+    {
+      "archive": "products/ordinances/civiccode/staff_imports.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_imports.py",
+      "sha256": "f5ccf4e1d8d24bd23b62f922013f0f8eb2a8b633737b0a1134002ea0ea51e8df",
+      "status": "changed",
+      "publication_sha256": "f5ccf4e1d8d24bd23b62f922013f0f8eb2a8b633737b0a1134002ea0ea51e8df"
+    },
+    {
+      "archive": "products/ordinances/civiccode/staff_sources.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_sources.py",
+      "sha256": "b7d00f3e051f131fde7142426b911e4484076987e4711685d18cf85dcee15412",
+      "status": "changed",
+      "publication_sha256": "b7d00f3e051f131fde7142426b911e4484076987e4711685d18cf85dcee15412"
+    },
+    {
+      "archive": "products/ordinances/civiccode/staff_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_sync.py",
+      "sha256": "92361f57357bd12e22dff589a6f2353de3602947ed739b8738d8479e2462791d",
+      "status": "changed",
+      "publication_sha256": "92361f57357bd12e22dff589a6f2353de3602947ed739b8738d8479e2462791d"
+    },
+    {
+      "archive": "products/ordinances/civiccode/staff_workbench.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_workbench.py",
+      "sha256": "13893408816cb0794c266c78d78e30e8182171b92830e757353001afea4f79fd",
+      "status": "changed",
+      "publication_sha256": "13893408816cb0794c266c78d78e30e8182171b92830e757353001afea4f79fd"
+    },
+    {
+      "archive": "products/ordinances/civiccode/suite_session_auth.py",
+      "repo": "ordinances",
+      "path": "civiccode/suite_session_auth.py",
+      "sha256": "b30a449b95838c04098d33373f3b6b030539b7a8ea2a998210333b314f9f4582",
+      "status": "changed",
+      "publication_sha256": "b30a449b95838c04098d33373f3b6b030539b7a8ea2a998210333b314f9f4582"
+    },
+    {
+      "archive": "products/ordinances/docs/licensing/README.md",
+      "repo": "ordinances",
+      "path": "docs/licensing/README.md",
+      "sha256": "b205ca1cec402e046c1a0003d55498ab390c8593a104a9e5719d6db8c794c74b",
+      "status": "new",
+      "publication_sha256": "ec50fba63d17213080fc51e6ae973e1601385eb080f9c00abef3d84f481fe037"
+    },
+    {
+      "archive": "products/ordinances/docs/licensing/history/LICENSE-CODE",
+      "repo": "ordinances",
+      "path": "docs/licensing/history/LICENSE-CODE",
+      "sha256": "00176665ab2fbe71080a02b261745ffc0bcf40c512fbc969ea404f3bb21904d4",
+      "status": "new",
+      "publication_sha256": "00176665ab2fbe71080a02b261745ffc0bcf40c512fbc969ea404f3bb21904d4"
+    },
+    {
+      "archive": "products/ordinances/docs/licensing/history/LICENSE-EXCEPTION.md",
+      "repo": "ordinances",
+      "path": "docs/licensing/history/LICENSE-EXCEPTION.md",
+      "sha256": "8af2a3f7cbc186b31e10fecee3522854d524277c460646ba5544cc8e9acecfef",
+      "status": "new",
+      "publication_sha256": "8af2a3f7cbc186b31e10fecee3522854d524277c460646ba5544cc8e9acecfef"
+    },
+    {
+      "archive": "products/ordinances/pyproject.toml",
+      "repo": "ordinances",
+      "path": "pyproject.toml",
+      "sha256": "41e7432c3f7bf8177a43ba014007284b8cbfb894db6ada64d5abd2fc3f44df71",
+      "status": "changed",
+      "publication_sha256": "ec9b8965b066ca6abdb9734d6a4bd0c648e5f6e6fb4c8893edf769fe6ab9ddf1"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/__init__.py",
+      "sha256": "22abb4eaa2a94737461591a5b6f494bf7c4ad481b476fc3cf020fa090c97bcd8",
+      "status": "changed",
+      "publication_sha256": "22abb4eaa2a94737461591a5b6f494bf7c4ad481b476fc3cf020fa090c97bcd8"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/ai_answer.py",
+      "repo": "ordinances",
+      "path": "civiccode/ai_answer.py",
+      "sha256": "0d82f0c105e1b8102e0b640b97de85f95f79695cc6903008d56245ed79e6568d",
+      "status": "changed",
+      "publication_sha256": "0d82f0c105e1b8102e0b640b97de85f95f79695cc6903008d56245ed79e6568d"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/citation_contract.py",
+      "repo": "ordinances",
+      "path": "civiccode/citation_contract.py",
+      "sha256": "58e2cc3b8e05987a801a94c174ad34a8a7af18f684d367b08f097ab420ff3e37",
+      "status": "changed",
+      "publication_sha256": "58e2cc3b8e05987a801a94c174ad34a8a7af18f684d367b08f097ab420ff3e37"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/codifier_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/codifier_sync.py",
+      "sha256": "9c8b9635a2534eaccd3f80cc0b2a9b5c4751830a9d99796bb125e773778bd57f",
+      "status": "changed",
+      "publication_sha256": "9c8b9635a2534eaccd3f80cc0b2a9b5c4751830a9d99796bb125e773778bd57f"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/fixtures/portland/code/13.10-purpose-and-definitions.txt",
+      "repo": "ordinances",
+      "path": "civiccode/fixtures/portland/code/13.10-purpose-and-definitions.txt",
+      "sha256": "e86888d89e29382a48f0276aaabb9f6dbfbdb6a8456c17f51b5cc947cbb53d51",
+      "status": "same",
+      "publication_sha256": "e86888d89e29382a48f0276aaabb9f6dbfbdb6a8456c17f51b5cc947cbb53d51"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/fixtures/portland/code/13.40-keeping-livestock.txt",
+      "repo": "ordinances",
+      "path": "civiccode/fixtures/portland/code/13.40-keeping-livestock.txt",
+      "sha256": "178245740c874fcc13a7a12f9534692e01e232d771959d198e93d2425e8f2d74",
+      "status": "same",
+      "publication_sha256": "178245740c874fcc13a7a12f9534692e01e232d771959d198e93d2425e8f2d74"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/frontend_dist/assets/index-DhfojJY0.css",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/assets/index-DhfojJY0.css",
+      "sha256": "6002a43b0b5fbae50c24bd238b9b90a9a79abb5fb29ac758a8f93bfe755f8f12",
+      "status": "same",
+      "publication_sha256": "6002a43b0b5fbae50c24bd238b9b90a9a79abb5fb29ac758a8f93bfe755f8f12"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/frontend_dist/assets/index-aK7NGgo8.js",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/assets/index-aK7NGgo8.js",
+      "sha256": "acbe0cfe1df63678e17b5d236648cf79f3745e89cfd779eeae4046e160dc6104",
+      "status": "same",
+      "publication_sha256": "acbe0cfe1df63678e17b5d236648cf79f3745e89cfd779eeae4046e160dc6104"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/frontend_dist/index.html",
+      "repo": "ordinances",
+      "path": "civiccode/frontend_dist/index.html",
+      "sha256": "0b2c96aa13b4732b6c8ab69862eacfdddec93e69ebd4117170c4e14373de0e97",
+      "status": "changed",
+      "publication_sha256": "0b2c96aa13b4732b6c8ab69862eacfdddec93e69ebd4117170c4e14373de0e97"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/import_connectors.py",
+      "repo": "ordinances",
+      "path": "civiccode/import_connectors.py",
+      "sha256": "bf4013448af2bd851642baefdbd1abcd212dd7b5b3c0e91d5811414c85e792f0",
+      "status": "changed",
+      "publication_sha256": "bf4013448af2bd851642baefdbd1abcd212dd7b5b3c0e91d5811414c85e792f0"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/main.py",
+      "repo": "ordinances",
+      "path": "civiccode/main.py",
+      "sha256": "930e05298b82f10ec0338040770d8af83aa56a9d43016908931ab8f796e63f48",
+      "status": "changed",
+      "publication_sha256": "930e05298b82f10ec0338040770d8af83aa56a9d43016908931ab8f796e63f48"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/__init__.py",
+      "sha256": "4c8b91a2b40fe7951bf11bd74070344c9967b0feb5170a68d490305dc8333b8e",
+      "status": "same",
+      "publication_sha256": "4c8b91a2b40fe7951bf11bd74070344c9967b0feb5170a68d490305dc8333b8e"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/alembic.ini",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/alembic.ini",
+      "sha256": "0c02905cb404c443a4e0efe24be2db3e84141760f5796f216787a54704d18421",
+      "status": "same",
+      "publication_sha256": "0c02905cb404c443a4e0efe24be2db3e84141760f5796f216787a54704d18421"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/env.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/env.py",
+      "sha256": "5526b8ac01c1bc652c77861bb77209503668127d5c9a8d810dda351dff7a158e",
+      "status": "same",
+      "publication_sha256": "5526b8ac01c1bc652c77861bb77209503668127d5c9a8d810dda351dff7a158e"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/guards.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/guards.py",
+      "sha256": "110cca437db7e2507374b9e0d9d32739dbdbaf57c664ac89d8a4c56472c05d7f",
+      "status": "same",
+      "publication_sha256": "110cca437db7e2507374b9e0d9d32739dbdbaf57c664ac89d8a4c56472c05d7f"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/__init__.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/__init__.py",
+      "sha256": "74446fe86c7d899c1e4942b131ef47880cbb716011970d702ac78799902cc7ac",
+      "status": "same",
+      "publication_sha256": "74446fe86c7d899c1e4942b131ef47880cbb716011970d702ac78799902cc7ac"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0001_schema.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0001_schema.py",
+      "sha256": "3361408fb75b2330c3dffa4c343bffa39ec96cb41b25d7c3e980f3efea69a950",
+      "status": "same",
+      "publication_sha256": "3361408fb75b2330c3dffa4c343bffa39ec96cb41b25d7c3e980f3efea69a950"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0002_source_registry_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0002_source_registry_records.py",
+      "sha256": "a237d274d614a260242b2eee1661845fa96476445a8496c1fc2e8ff773fcc85c",
+      "status": "same",
+      "publication_sha256": "a237d274d614a260242b2eee1661845fa96476445a8496c1fc2e8ff773fcc85c"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0003_popular_question_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0003_popular_question_records.py",
+      "sha256": "d973ad1e13a5b84cc4bcc19d9977d9532d09388451c3872549180fa02ecfe609",
+      "status": "same",
+      "publication_sha256": "d973ad1e13a5b84cc4bcc19d9977d9532d09388451c3872549180fa02ecfe609"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0004_section_lifecycle_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0004_section_lifecycle_records.py",
+      "sha256": "e11d0b3c4d08f32c00e513bbf336bf9f3ee2459c929aca0fed7c2158b688299f",
+      "status": "same",
+      "publication_sha256": "e11d0b3c4d08f32c00e513bbf336bf9f3ee2459c929aca0fed7c2158b688299f"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0005_staff_summary_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0005_staff_summary_records.py",
+      "sha256": "04d9a42402dbf503f9988dc07c4fe264390470d798d8e2d51983a1d7b8a5e601",
+      "status": "same",
+      "publication_sha256": "04d9a42402dbf503f9988dc07c4fe264390470d798d8e2d51983a1d7b8a5e601"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0006_ordinance_handoff_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0006_ordinance_handoff_records.py",
+      "sha256": "bd2c85f222a0d4946298bdb580a36af174be378fbb3bdf62641457b87d5499fa",
+      "status": "same",
+      "publication_sha256": "bd2c85f222a0d4946298bdb580a36af174be378fbb3bdf62641457b87d5499fa"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0007_import_job_records.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0007_import_job_records.py",
+      "sha256": "d965ccf019d4059fe56ffd234955f45193d51d52a38b20fa1ba66e809493cb67",
+      "status": "same",
+      "publication_sha256": "d965ccf019d4059fe56ffd234955f45193d51d52a38b20fa1ba66e809493cb67"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0008_codifier_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0008_codifier_sync.py",
+      "sha256": "10b417a95e25d79ea3cc48fb3feedec0eea878f9580eba0b3c9e0b9413886366",
+      "status": "same",
+      "publication_sha256": "10b417a95e25d79ea3cc48fb3feedec0eea878f9580eba0b3c9e0b9413886366"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0009_operational_state.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0009_operational_state.py",
+      "sha256": "5ff5a28d099a69b55c121fbf6ff9336cb8dee51e385966900510aba5df9a7540",
+      "status": "same",
+      "publication_sha256": "5ff5a28d099a69b55c121fbf6ff9336cb8dee51e385966900510aba5df9a7540"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0010_handoff_resolution.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0010_handoff_resolution.py",
+      "sha256": "ed20579ff39863de49bd01a97a47b77d84b380f54f0aba7473c1aad360b11b4a",
+      "status": "same",
+      "publication_sha256": "ed20579ff39863de49bd01a97a47b77d84b380f54f0aba7473c1aad360b11b4a"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0011_semantic_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0011_semantic_search.py",
+      "sha256": "4bf32028058db6ff90c19e2cf891886fef6d4e958ed7e72165e9a224ebd1b19d",
+      "status": "same",
+      "publication_sha256": "4bf32028058db6ff90c19e2cf891886fef6d4e958ed7e72165e9a224ebd1b19d"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/migrations/versions/civiccode_0012_drop_local_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/migrations/versions/civiccode_0012_drop_local_search.py",
+      "sha256": "6ac60feecb72efbe78a788066ac58d790f6e6c460f4a71eea6ecf6cf30a6570d",
+      "status": "same",
+      "publication_sha256": "6ac60feecb72efbe78a788066ac58d790f6e6c460f4a71eea6ecf6cf30a6570d"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/mock_city_environment.py",
+      "repo": "ordinances",
+      "path": "civiccode/mock_city_environment.py",
+      "sha256": "91c1e1089e2956417fd520725847950c544166f0a93f2a0a63b7c1a9859c1189",
+      "status": "changed",
+      "publication_sha256": "91c1e1089e2956417fd520725847950c544166f0a93f2a0a63b7c1a9859c1189"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/models.py",
+      "repo": "ordinances",
+      "path": "civiccode/models.py",
+      "sha256": "15f328be4b05481401d8ccd296110136ef98e98634fe59af1c2aa729340e8e4f",
+      "status": "changed",
+      "publication_sha256": "15f328be4b05481401d8ccd296110136ef98e98634fe59af1c2aa729340e8e4f"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/operational_readiness.py",
+      "repo": "ordinances",
+      "path": "civiccode/operational_readiness.py",
+      "sha256": "002130b66583a7645218e271d515ca6b9295f7a8fe19ee9e85e6e52adacc07a9",
+      "status": "changed",
+      "publication_sha256": "002130b66583a7645218e271d515ca6b9295f7a8fe19ee9e85e6e52adacc07a9"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/operational_state.py",
+      "repo": "ordinances",
+      "path": "civiccode/operational_state.py",
+      "sha256": "6d73c3201fc449de9bf6678d129184533323960f82ccb0a5c0f6dcb147421b0f",
+      "status": "changed",
+      "publication_sha256": "6d73c3201fc449de9bf6678d129184533323960f82ccb0a5c0f6dcb147421b0f"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/ordinance_handoff.py",
+      "repo": "ordinances",
+      "path": "civiccode/ordinance_handoff.py",
+      "sha256": "5e98eefc3e510efaf0d5973927aa3506f8b652d319320f745a831bef0cb5897b",
+      "status": "changed",
+      "publication_sha256": "5e98eefc3e510efaf0d5973927aa3506f8b652d319320f745a831bef0cb5897b"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/plain_language.py",
+      "repo": "ordinances",
+      "path": "civiccode/plain_language.py",
+      "sha256": "074b7aae42a3c4ee7ae5e64726a5fbbe151039cb51467f89f47b977e93e9b2bd",
+      "status": "changed",
+      "publication_sha256": "074b7aae42a3c4ee7ae5e64726a5fbbe151039cb51467f89f47b977e93e9b2bd"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/public_discovery.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_discovery.py",
+      "sha256": "f87497befbd3f75db94c4db0f36fb04fc1a34af8eba73a425ff49edb8dfc20ae",
+      "status": "changed",
+      "publication_sha256": "f87497befbd3f75db94c4db0f36fb04fc1a34af8eba73a425ff49edb8dfc20ae"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/public_exports.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_exports.py",
+      "sha256": "2d413d312f8baf1e790bb4205ad93ac25928f1afefa3aca1898d91092085bcc4",
+      "status": "changed",
+      "publication_sha256": "2d413d312f8baf1e790bb4205ad93ac25928f1afefa3aca1898d91092085bcc4"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/public_lookup.py",
+      "repo": "ordinances",
+      "path": "civiccode/public_lookup.py",
+      "sha256": "a3c62b6aaa3de1ef98ac824fd5806e61bd444ae61241e2a19f0f7dff3a3cca79",
+      "status": "changed",
+      "publication_sha256": "a3c62b6aaa3de1ef98ac824fd5806e61bd444ae61241e2a19f0f7dff3a3cca79"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/qa_harness.py",
+      "repo": "ordinances",
+      "path": "civiccode/qa_harness.py",
+      "sha256": "bc040cb0c4ff124f13a63e10fbcb26d478a06da5364e7fa18d177b40af269797",
+      "status": "changed",
+      "publication_sha256": "bc040cb0c4ff124f13a63e10fbcb26d478a06da5364e7fa18d177b40af269797"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/real_municipal_fixtures.py",
+      "repo": "ordinances",
+      "path": "civiccode/real_municipal_fixtures.py",
+      "sha256": "a88b400d5b5bb8d6a74ec8a29d793c3e51ab94226e0f0b8abbde7030f667280a",
+      "status": "changed",
+      "publication_sha256": "a88b400d5b5bb8d6a74ec8a29d793c3e51ab94226e0f0b8abbde7030f667280a"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/section_lifecycle.py",
+      "repo": "ordinances",
+      "path": "civiccode/section_lifecycle.py",
+      "sha256": "34096b4ca4fa8f65628d33761609044f29a03bf0d89a5da09085440e56d149f2",
+      "status": "changed",
+      "publication_sha256": "34096b4ca4fa8f65628d33761609044f29a03bf0d89a5da09085440e56d149f2"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/semantic_search.py",
+      "repo": "ordinances",
+      "path": "civiccode/semantic_search.py",
+      "sha256": "85de9cb0b861a7551a701bd4082ec3343728831c8bf20e45d90719db60f8b78c",
+      "status": "changed",
+      "publication_sha256": "85de9cb0b861a7551a701bd4082ec3343728831c8bf20e45d90719db60f8b78c"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/shared_ingestion.py",
+      "repo": "ordinances",
+      "path": "civiccode/shared_ingestion.py",
+      "sha256": "caf8ec1c4d1da5a485ec96d0ae04e800e29f02fe1a71809cbebe0718c574f987",
+      "status": "changed",
+      "publication_sha256": "caf8ec1c4d1da5a485ec96d0ae04e800e29f02fe1a71809cbebe0718c574f987"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/source_registry.py",
+      "repo": "ordinances",
+      "path": "civiccode/source_registry.py",
+      "sha256": "292e2286802f36458a7468b749f81ff82277cc5f404fbf7b0ac7dd88f5d79651",
+      "status": "changed",
+      "publication_sha256": "292e2286802f36458a7468b749f81ff82277cc5f404fbf7b0ac7dd88f5d79651"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/staff_code.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_code.py",
+      "sha256": "90b3d8ac3c6eb0c65831b47d8f6fa63ce3ac3d2350442c0913e15f7a768e317d",
+      "status": "changed",
+      "publication_sha256": "90b3d8ac3c6eb0c65831b47d8f6fa63ce3ac3d2350442c0913e15f7a768e317d"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/staff_imports.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_imports.py",
+      "sha256": "f5ccf4e1d8d24bd23b62f922013f0f8eb2a8b633737b0a1134002ea0ea51e8df",
+      "status": "changed",
+      "publication_sha256": "f5ccf4e1d8d24bd23b62f922013f0f8eb2a8b633737b0a1134002ea0ea51e8df"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/staff_sources.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_sources.py",
+      "sha256": "b7d00f3e051f131fde7142426b911e4484076987e4711685d18cf85dcee15412",
+      "status": "changed",
+      "publication_sha256": "b7d00f3e051f131fde7142426b911e4484076987e4711685d18cf85dcee15412"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/staff_sync.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_sync.py",
+      "sha256": "92361f57357bd12e22dff589a6f2353de3602947ed739b8738d8479e2462791d",
+      "status": "changed",
+      "publication_sha256": "92361f57357bd12e22dff589a6f2353de3602947ed739b8738d8479e2462791d"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/staff_workbench.py",
+      "repo": "ordinances",
+      "path": "civiccode/staff_workbench.py",
+      "sha256": "13893408816cb0794c266c78d78e30e8182171b92830e757353001afea4f79fd",
+      "status": "changed",
+      "publication_sha256": "13893408816cb0794c266c78d78e30e8182171b92830e757353001afea4f79fd"
+    },
+    {
+      "archive": "installed-owned-source/civiccode/suite_session_auth.py",
+      "repo": "ordinances",
+      "path": "civiccode/suite_session_auth.py",
+      "sha256": "b30a449b95838c04098d33373f3b6b030539b7a8ea2a998210333b314f9f4582",
+      "status": "changed",
+      "publication_sha256": "b30a449b95838c04098d33373f3b6b030539b7a8ea2a998210333b314f9f4582"
+    }
+  ],
+  "identity_note": "Publication commit integrates the already-built candidate; it is not claimed to be the original signing/build commit. Archive paths retain original byte hashes. Documentation entrypoints have a distribution addendum.",
+  "publication_note": "Original accepted bytes remain in the immutable source companion. Canonical sources normalize line endings. Release integration fixes remove a shadowed duplicate class, position imports for lint, format regression/acceptance tools and resolve the paired Core source dependency. Current audited manuals supersede build-time README copies. Each mapped file records both original and publication byte hashes."
+}

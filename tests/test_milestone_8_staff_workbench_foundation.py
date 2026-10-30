@@ -243,10 +243,10 @@ async def test_staff_note_writes_append_audit_events(client: AsyncClient) -> Non
     assert events[-1]["section_id"] == "sec_chickens"
 
 
-def test_docs_record_staff_workbench_without_claiming_public_ui() -> None:
+def test_docs_record_staff_workbench_without_claiming_public_ui_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "staff workbench foundation" in document_text

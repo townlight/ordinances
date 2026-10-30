@@ -45,7 +45,7 @@ def render_staff_source_workspace(sources: list[dict[str, Any]], *, actor: str) 
         "Staff source registry",
         f"""
         <section class="hero" aria-labelledby="workspace-title">
-          <p class="eyebrow">Townlight Code staff workspace</p>
+          <p class="eyebrow">CivicCode staff workspace</p>
           <h1 id="workspace-title">Source of truth gate</h1>
           <p class="lede">Before residents see code answers, staff must know
           which official source is active, stale, failed, or superseded. Signed
@@ -131,7 +131,7 @@ def _page(title: str, body: str) -> str:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{escape(title)} - Townlight Code</title>
+  <title>{escape(title)} - CivicCode</title>
   <style>
     :root {{
       --ink: #16241d;
@@ -287,7 +287,7 @@ def _page(title: str, body: str) -> str:
 <body>
   <a class="skip-link" href="#content">Skip to staff source registry</a>
   <header>
-    <a class="brand" href="/staff/sources">Townlight Code</a>
+    <a class="brand" href="/staff/sources">CivicCode</a>
     <span>Staff source registry</span>
   </header>
   <main id="content">

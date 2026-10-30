@@ -1,4 +1,4 @@
-"""Code section and version lifecycle rules for Townlight Code Milestone 4."""
+"""Code section and version lifecycle rules for CivicCode Milestone 4."""
 
 from __future__ import annotations
 
@@ -437,7 +437,7 @@ class SectionLifecycleStore:
             "empty_state": None
             if sorted_results
             else {
-                "message": "No public Townlight Code results matched that search.",
+                "message": "No public CivicCode results matched that search.",
                 "fix": "Try an exact section number, fewer words, or a different code term.",
             },
         }

@@ -57,7 +57,7 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
     staff = await client.get("/staff/code", headers=STAFF_HEADERS)
     assert staff.status_code == 200
     assert "Backyard Livestock" in staff.text
-    assert "Pending Townlight Meetings handoffs require codification review" in staff.text
+    assert "Pending CivicClerk handoffs require codification review" in staff.text
 
 
 def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
@@ -66,9 +66,10 @@ def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
     env_example = (ROOT / "docker.env.example").read_text(encoding="utf-8")
     dockerignore = (ROOT / ".dockerignore").read_text(encoding="utf-8")
     smoke = (ROOT / "scripts" / "docker-demo-smoke.sh").read_text(encoding="utf-8")
-    readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8")
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8")
+    historical = ROOT / "docs" / "history" / "pre-townlight-beta-1"
+    readme = (historical / "README.md").read_text(encoding="utf-8")
+    manual = (historical / "USER-MANUAL.md").read_text(encoding="utf-8")
+    landing = (historical / "docs" / "index.html").read_text(encoding="utf-8")
 
     assert "pgvector/pgvector:pg17" in compose
     assert "CIVICCODE_DEMO_SEED" in compose
