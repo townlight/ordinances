@@ -94,7 +94,7 @@ async def test_staff_sync_workspace_shows_health_and_local_payload_state(
     assert "healthy" in ready_html
     assert "No local payload run recorded" in ready_html
     assert "Fix: run the configured codifier source with an already fetched" in ready_html
-    assert "Source URL host passed Townlight Core SSRF-safe validation" in ready_html
+    assert "Source URL host passed CivicCore SSRF-safe validation" in ready_html
 
     run = await client.post(
         f"/api/v1/civiccode/staff/sync/codifier-sources/{payload['source']['source_id']}/run",

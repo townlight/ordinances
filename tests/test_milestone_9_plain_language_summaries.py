@@ -257,10 +257,10 @@ async def test_summary_approval_appends_audit_event(client: AsyncClient) -> None
     assert "plain_language_summary_approved" in event_types
 
 
-def test_docs_record_plain_language_without_claiming_legal_advice() -> None:
+def test_docs_record_plain_language_without_claiming_legal_advice_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "plain-language summaries" in document_text

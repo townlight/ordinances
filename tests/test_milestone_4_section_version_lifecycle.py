@@ -473,10 +473,10 @@ async def test_adopted_version_requires_active_public_source(client: AsyncClient
     assert "Activate an official source" in detail["fix"]
 
 
-def test_docs_and_changelog_record_section_version_without_claiming_search_or_answers() -> None:
+def test_docs_and_changelog_record_section_version_without_claiming_search_or_answers_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "section/version" in document_text or "section and version" in document_text

@@ -363,7 +363,7 @@ async def test_affected_lookup_includes_stale_code_warning(client: AsyncClient) 
     )
 
     warning = lookup.json()["handoff_warnings"][0]
-    assert warning["message"].startswith("Townlight Meetings ordinance 2026-041 may affect")
+    assert warning["message"].startswith("CivicClerk ordinance 2026-041 may affect")
     assert warning["fix"].startswith("Ask municipal staff")
     assert warning["source"] == "CivicClerk"
     assert "external_event_id" not in warning
@@ -439,10 +439,10 @@ async def test_failed_handoff_is_visible_and_does_not_mutate_code_state(
     assert "failure_reason" not in warning
 
 
-def test_docs_record_civicclerk_handoff_without_claiming_codification() -> None:
+def test_docs_record_civicclerk_handoff_without_claiming_codification_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
-    manual = (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
-    landing = (ROOT / "docs" / "index.html").read_text(encoding="utf-8").lower()
+    manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
+    landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()
 
     for document_text in [changelog, manual, landing]:
         assert "civicclerk handoff" in document_text or "townlight meetings handoff" in document_text

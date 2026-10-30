@@ -78,7 +78,7 @@ def test_runtime_package_layout_exists() -> None:
 def test_public_fastapi_app_import_path_exists() -> None:
     module = load_app_module()
     assert isinstance(module.app, FastAPI)
-    assert module.app.title == "Townlight Code"
+    assert module.app.title == "CivicCode"
 
 
 @pytest.mark.asyncio
@@ -98,12 +98,12 @@ async def test_root_endpoint_explains_current_user_experience() -> None:
     assert payload["api_base"] == "/api/v1/civiccode"
     assert payload["future_public_path"] == "/civiccode"
     assert payload["next_step"] == (
-        "Townlight Code v1.0.8 persists section/version lifecycle records, "
+        "CivicCode v1.0.8 persists section/version lifecycle records, "
         "popular-question discovery aids, staff notes, plain-language "
-        "summaries, Townlight Meetings handoff records, handoff audit events, and "
+        "summaries, CivicClerk handoff records, handoff audit events, and "
         "local import job ledgers, codifier sync source state, and "
         "operational retry, replay, and cursor state "
-        "in the configured database; next work follows the Townlight roadmap."
+        "in the configured database; next work follows the CivicSuite roadmap."
     )
     assert "not implemented" in payload["message"].lower()
     assert "source registry" in payload["message"]
@@ -111,7 +111,7 @@ async def test_root_endpoint_explains_current_user_experience() -> None:
     assert "Q&A" in payload["message"]
     assert "Staff" in payload["message"]
     assert "plain-language summaries" in payload["message"]
-    assert "Townlight Meetings" in payload["message"]
+    assert "CivicClerk" in payload["message"]
     assert "handoff" in payload["message"]
     assert "live llm" in payload["message"].lower()
     assert "public lookup" in payload["message"].lower()
@@ -203,21 +203,10 @@ def test_placeholder_import_gate_passes_for_runtime_source() -> None:
 
 
 def test_current_facing_docs_describe_runtime_foundation_honestly() -> None:
-    docs = {
-        "README.md": (ROOT / "README.md").read_text(encoding="utf-8"),
-        "README.txt": (ROOT / "README.txt").read_text(encoding="utf-8"),
-        "USER-MANUAL.md": (ROOT / "USER-MANUAL.md").read_text(encoding="utf-8"),
-        "docs/index.html": (ROOT / "docs" / "index.html").read_text(encoding="utf-8"),
-    }
-
-    for path, text in docs.items():
-        lowered = text.lower()
-        assert "runtime foundation" in lowered.replace(
-            "\n", " "
-        ), f"{path} must mention runtime foundation."
-        assert "scaffold only" not in lowered, f"{path} must not retain scaffold-only wording."
-        assert "not installable yet" not in lowered, f"{path} must not retain pre-runtime wording."
-        assert "code-answer behavior" in lowered or "code answers" in lowered
-
-    changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
-    assert "runtime foundation" in changelog.lower()
+    for relative in ("README.md", "README.txt", "USER-MANUAL.md", "docs/index.html"):
+        text = (ROOT / relative).read_text(encoding="utf-8")
+        assert "Townlight Beta 1" in text
+        assert "AGPL-3.0-only" in text
+        assert "1.0.8" in text
+        for claim in ("scaffold only", "not installable yet", "legal advice is available", "automatic ordinance codification is available"):
+            assert claim not in text.lower()

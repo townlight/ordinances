@@ -169,10 +169,10 @@ async def test_staff_code_workspace_shows_lifecycle_blockers(client: AsyncClient
     assert "Current effective 2026-01-01" in html
     assert "Example Municipal Code" in html
     assert "draft summaries" in html
-    assert "Pending Townlight Meetings handoffs require codification review" in html
+    assert "Pending CivicClerk handoffs require codification review" in html
     assert "pending codification review" in html.lower()
     assert "2026-041" in html
-    assert "Fix: review the Townlight Meetings handoff" in html
+    assert "Fix: review the CivicClerk handoff" in html
     assert "/civiccode/sections/6.12.040" in html
     assert '<a class="skip-link" href="#content">Skip to staff code workspace</a>' in html
     assert '<main id="content">' in html
