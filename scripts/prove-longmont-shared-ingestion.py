@@ -11,12 +11,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from civiccode.import_connectors import ImportConnectorRepository, job_to_dict  # noqa: E402
-from civiccode.citation_contract import build_citation_payload  # noqa: E402
-from civiccode.qa_harness import QuestionRequestContext, build_grounded_answer  # noqa: E402
-from civiccode.section_lifecycle import SectionLifecycleRepository  # noqa: E402
-from civiccode.shared_ingestion import build_longmont_import_from_shared_ingestion_sync  # noqa: E402
-from civiccode.source_registry import SourceRegistryRepository, source_to_public_dict  # noqa: E402
+from townlight_code.import_connectors import ImportConnectorRepository, job_to_dict  # noqa: E402
+from townlight_code.citation_contract import build_citation_payload  # noqa: E402
+from townlight_code.qa_harness import QuestionRequestContext, build_grounded_answer  # noqa: E402
+from townlight_code.section_lifecycle import SectionLifecycleRepository  # noqa: E402
+from townlight_code.shared_ingestion import build_longmont_import_from_shared_ingestion_sync  # noqa: E402
+from townlight_code.source_registry import SourceRegistryRepository, source_to_public_dict  # noqa: E402
 
 
 def main() -> int:
@@ -33,7 +33,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--db-url",
-        default=os.environ.get("CIVICCODE_SOURCE_REGISTRY_DB_URL") or os.environ.get("DATABASE_URL"),
+        default=os.environ.get("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL") or os.environ.get("DATABASE_URL"),
     )
     parser.add_argument("--actor", default="shared-ingestion-proof@longmont.example.gov")
     parser.add_argument(
@@ -59,9 +59,9 @@ def main() -> int:
     )
     args = parser.parse_args()
     if not args.db_url:
-        raise SystemExit("Set --db-url or CIVICCODE_SOURCE_REGISTRY_DB_URL before running proof.")
+        raise SystemExit("Set --db-url or TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL before running proof.")
 
-    os.environ.setdefault("CIVICCODE_EMBEDDING_MODE", "ollama")
+    os.environ.setdefault("TOWNLIGHT_CODE_EMBEDDING_MODE", "ollama")
     shared_import = build_longmont_import_from_shared_ingestion_sync(
         pdf_path=args.pdf,
         db_url=args.db_url,
@@ -141,7 +141,7 @@ def main() -> int:
             "llm_error": direct_payload.get("llm_error"),
             "mode": "direct_section_override",
         }
-    print("CIVICCODE-LONGMONT-SHARED-INGESTION-PROOF")
+    print("TOWNLIGHT_CODE-LONGMONT-SHARED-INGESTION-PROOF")
     print(json.dumps(output, indent=2, default=str))
     return 0
 

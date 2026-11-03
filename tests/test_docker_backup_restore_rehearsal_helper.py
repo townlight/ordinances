@@ -22,7 +22,7 @@ def test_docker_backup_restore_rehearsal_prints_non_destructive_plan(tmp_path: P
             "--run-id",
             "print-plan",
             "--compose-project-name",
-            "civiccode_print_plan",
+            "townlight_code_print_plan",
             "--print-only",
             "--strict",
         ],
@@ -37,11 +37,11 @@ def test_docker_backup_restore_rehearsal_prints_non_destructive_plan(tmp_path: P
         "Townlight Code Docker/PostgreSQL backup/restore rehearsal",
         "pg_dump",
         "pg_restore",
-        "civiccode_restore_print_plan",
-        "Compose project: civiccode_print_plan",
-        "-p civiccode_print_plan",
-        "civiccode-postgres.dump",
-        "civiccode-docker-backup-manifest.json",
+        "townlight_code_restore_print_plan",
+        "Compose project: townlight_code_print_plan",
+        "-p townlight_code_print_plan",
+        "townlight_code-postgres.dump",
+        "townlight_code-docker-backup-manifest.json",
         "Drop the temporary restore database",
         "Fix path:",
         "DOCKER-BACKUP-RESTORE-REHEARSAL: PRINT-ONLY",
@@ -63,7 +63,7 @@ def test_docker_backup_restore_rehearsal_helper_has_safe_restore_contract() -> N
     assert "table_schema NOT IN ('pg_catalog', 'information_schema')" in script
     assert "keep_restore_database" in script
     assert "restore_database_dropped" in script
-    assert "civiccode-docker-backup-manifest.json" in script
+    assert "townlight_code-docker-backup-manifest.json" in script
 
 
 def test_docker_backup_restore_rehearsal_powershell_wrapper_prints_expected_plan() -> None:
@@ -82,7 +82,7 @@ def test_docker_backup_restore_rehearsal_powershell_wrapper_prints_expected_plan
             "-RunId",
             "print-plan",
             "-ComposeProjectName",
-            "civiccode-print-plan",
+            "townlight_code-print-plan",
         ],
         cwd=ROOT,
         check=False,
@@ -94,10 +94,10 @@ def test_docker_backup_restore_rehearsal_powershell_wrapper_prints_expected_plan
     for expected in [
         "Townlight Code Docker/PostgreSQL backup/restore rehearsal profile",
         "Run id: print-plan",
-        "Compose project: civiccode-print-plan",
+        "Compose project: townlight_code-print-plan",
         "Python verifier: python scripts/check_docker_backup_restore_rehearsal.py",
-        "Backup dump: backup\\civiccode-postgres.dump",
-        "Safety: the source civiccode database is not dropped or overwritten.",
+        "Backup dump: backup\\townlight_code-postgres.dump",
+        "Safety: the source townlight_code database is not dropped or overwritten.",
         "Fix path:",
     ]:
         assert expected in result.stdout
@@ -130,7 +130,7 @@ def test_docker_backup_restore_rehearsal_bash_wrapper_prints_expected_plan() -> 
             "--run-id",
             "print-plan",
             "--compose-project-name",
-            "civiccode-print-plan",
+            "townlight_code-print-plan",
         ],
         cwd=ROOT,
         check=False,
@@ -142,10 +142,10 @@ def test_docker_backup_restore_rehearsal_bash_wrapper_prints_expected_plan() -> 
     for expected in [
         "Townlight Code Docker/PostgreSQL backup/restore rehearsal profile",
         "Run id: print-plan",
-        "Compose project: civiccode-print-plan",
+        "Compose project: townlight_code-print-plan",
         "Python verifier: python scripts/check_docker_backup_restore_rehearsal.py",
-        "Backup dump: backup/civiccode-postgres.dump",
-        "Safety: the source civiccode database is not dropped or overwritten.",
+        "Backup dump: backup/townlight_code-postgres.dump",
+        "Safety: the source townlight_code database is not dropped or overwritten.",
         "Fix path:",
     ]:
         assert expected in result.stdout
@@ -168,7 +168,7 @@ def test_docs_reference_docker_backup_restore_rehearsal_helper_historical_editio
         "scripts/start_docker_backup_restore_rehearsal.sh",
         "scripts/check_docker_backup_restore_rehearsal.py",
         ".docker-backup-restore-rehearsal",
-        "civiccode-docker-backup-manifest.json",
+        "civiccode-docker-backup-manifest.json",  # Historical receipt identity.
         "pg_dump",
         "pg_restore",
     ]:

@@ -16,8 +16,8 @@ from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import create_engine, text
 
-from civiccode.semantic_search import embed_texts, embedding_config_from_env
-from civiccode.section_lifecycle import SectionLifecycleRepository
+from townlight_code.semantic_search import embed_texts, embedding_config_from_env
+from townlight_code.section_lifecycle import SectionLifecycleRepository
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +27,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     return module
@@ -44,7 +44,7 @@ async def client(app_module):
 
 async def seed_search_fixture(client: AsyncClient) -> None:
     source = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=STAFF_HEADERS,
         json={
             "source_id": "municode_active",
@@ -63,14 +63,14 @@ async def seed_search_fixture(client: AsyncClient) -> None:
     assert source.status_code == 201, source.text
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -81,7 +81,7 @@ async def seed_search_fixture(client: AsyncClient) -> None:
         )
     ).status_code == 201
     section = await client.post(
-        "/api/v1/civiccode/sections",
+        "/api/v1/townlight_code/sections",
         headers=STAFF_HEADERS,
         json={
             "section_id": "sec_chickens",
@@ -96,7 +96,7 @@ async def seed_search_fixture(client: AsyncClient) -> None:
     )
     assert section.status_code == 201, section.text
     version = await client.post(
-        "/api/v1/civiccode/sections/sec_chickens/versions",
+        "/api/v1/townlight_code/sections/sec_chickens/versions",
         headers=STAFF_HEADERS,
         json={
             "version_id": "v_chickens_current",
@@ -118,7 +118,7 @@ async def test_search_by_exact_section_number_returns_stable_permalink(
 ) -> None:
     await seed_search_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "6.12.040"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "6.12.040"})
 
     assert response.status_code == 200
     payload = response.json()
@@ -126,7 +126,7 @@ async def test_search_by_exact_section_number_returns_stable_permalink(
     result = payload["results"][0]
     assert result["result_type"] == "code_section"
     assert result["section_number"] == "6.12.040"
-    assert result["permalink"] == "/civiccode/sections/sec_chickens"
+    assert result["permalink"] == "/townlight_code/sections/sec_chickens"
     assert result["code_answer_behavior"] == "not_available"
     assert payload["semantic_search"]["enabled"] is False
 
@@ -137,7 +137,7 @@ async def test_search_by_resident_phrase_finds_matching_adopted_text(
 ) -> None:
     await seed_search_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "backyard chickens"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "backyard chickens"})
 
     assert response.status_code == 200
     payload = response.json()
@@ -152,7 +152,7 @@ async def test_semantic_search_is_not_claimed_without_configured_embedding_model
 ) -> None:
     await seed_search_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "permit animals"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "permit animals"})
 
     assert response.status_code == 200
     payload = response.json()
@@ -187,12 +187,12 @@ async def test_sqlite_runtime_does_not_claim_semantic_search_without_shared_pgve
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("CIVICCODE_EMBEDDING_MODE", "ollama")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
+    monkeypatch.setenv("TOWNLIGHT_CODE_EMBEDDING_MODE", "ollama")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
     await seed_search_fixture(client)
     noise_section = await client.post(
-        "/api/v1/civiccode/sections",
+        "/api/v1/townlight_code/sections",
         headers=STAFF_HEADERS,
         json={
             "section_id": "sec_noise",
@@ -203,7 +203,7 @@ async def test_sqlite_runtime_does_not_claim_semantic_search_without_shared_pgve
     )
     assert noise_section.status_code == 201, noise_section.text
     noise_version = await client.post(
-        "/api/v1/civiccode/sections/sec_noise/versions",
+        "/api/v1/townlight_code/sections/sec_noise/versions",
         headers=STAFF_HEADERS,
         json={
             "version_id": "v_noise_current",
@@ -218,13 +218,13 @@ async def test_sqlite_runtime_does_not_claim_semantic_search_without_shared_pgve
     )
     assert noise_version.status_code == 201, noise_version.text
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "poultry coops"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "poultry coops"})
 
     assert response.status_code == 200
     payload = response.json()
     assert payload["semantic_search"]["enabled"] is False
     assert payload["semantic_search"]["embedding_provider"] == "ollama:nomic-embed-text"
-    assert payload["semantic_search"]["pgvector_runtime"] == "not_available_without_civiccore_pgvector"
+    assert payload["semantic_search"]["pgvector_runtime"] == "not_available_without_townlight_core_pgvector"
     assert payload["results"] == []
     assert payload["empty_state"]["message"] == "No public Townlight Code results matched that search."
 
@@ -240,9 +240,9 @@ def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
     if daemon.returncode != 0:
         pytest.skip("Docker daemon is not available for the pgvector runtime proof.")
 
-    name = f"civiccode-pgvector-search-{uuid.uuid4().hex[:12]}"
+    name = f"townlight_code-pgvector-search-{uuid.uuid4().hex[:12]}"
     db_user = "postgres"
-    db_name = "civiccode_test"
+    db_name = "townlight_code_test"
     db_secret = "post" + "gres"
     subprocess.run(
         [
@@ -287,9 +287,9 @@ def test_postgres_pgvector_runtime_search_retrieves_zero_literal_overlap(
                     raise
                 time.sleep(1)
 
-        monkeypatch.setenv("CIVICCODE_EMBEDDING_MODE", "ollama")
-        monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
-        monkeypatch.setenv("CIVICCODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
+        monkeypatch.setenv("TOWNLIGHT_CODE_EMBEDDING_MODE", "ollama")
+        monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_EMBEDDING_MODEL", "nomic-embed-text")
+        monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_EMBEDDING_URL", "http://127.0.0.1:11434")
         store = SectionLifecycleRepository(engine=engine)
         store.create_title({"title_id": "title_6", "title_number": "6", "title_name": "Animals"})
         store.create_chapter(
@@ -408,9 +408,9 @@ def _pgvector_literal(embedding: list[float]) -> str:
 async def test_search_covers_title_and_chapter_names(client: AsyncClient) -> None:
     await seed_search_fixture(client)
 
-    title_response = await client.get("/api/v1/civiccode/search", params={"q": "animals"})
+    title_response = await client.get("/api/v1/townlight_code/search", params={"q": "animals"})
     chapter_response = await client.get(
-        "/api/v1/civiccode/search",
+        "/api/v1/townlight_code/search",
         params={"q": "urban livestock"},
     )
 
@@ -424,22 +424,22 @@ async def test_search_covers_title_and_chapter_names(client: AsyncClient) -> Non
 async def test_search_no_results_is_actionable(client: AsyncClient) -> None:
     await seed_search_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "beekeeping"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "beekeeping"})
 
     assert response.status_code == 200
     payload = response.json()
     assert payload["results"] == []
-    assert payload["empty_state"]["message"] == "No public CivicCode results matched that search."
+    assert payload["empty_state"]["message"] == "No public TownlightCode results matched that search."
     assert "Try an exact section number" in payload["empty_state"]["fix"]
 
 
 @pytest.mark.asyncio
 async def test_section_permalink_is_stable_across_text_revisions(client: AsyncClient) -> None:
     await seed_search_fixture(client)
-    before = await client.get("/api/v1/civiccode/sections/sec_chickens/permalink")
+    before = await client.get("/api/v1/townlight_code/sections/sec_chickens/permalink")
 
     update = await client.post(
-        "/api/v1/civiccode/sections/sec_chickens/versions",
+        "/api/v1/townlight_code/sections/sec_chickens/versions",
         headers=STAFF_HEADERS,
         json={
             "version_id": "v_chickens_future",
@@ -454,7 +454,7 @@ async def test_section_permalink_is_stable_across_text_revisions(client: AsyncCl
         },
     )
     assert update.status_code == 201, update.text
-    after = await client.get("/api/v1/civiccode/sections/sec_chickens/permalink")
+    after = await client.get("/api/v1/townlight_code/sections/sec_chickens/permalink")
 
     assert before.status_code == 200
     assert after.status_code == 200
@@ -468,10 +468,10 @@ async def test_public_search_distinguishes_related_material_result_types(
 ) -> None:
     await seed_search_fixture(client)
 
-    policy = await client.get("/api/v1/civiccode/search", params={"q": "policy chicken"})
-    resolution = await client.get("/api/v1/civiccode/search", params={"q": "resolution"})
-    regulation = await client.get("/api/v1/civiccode/search", params={"q": "admin reg"})
-    summary = await client.get("/api/v1/civiccode/search", params={"q": "approved summary"})
+    policy = await client.get("/api/v1/townlight_code/search", params={"q": "policy chicken"})
+    resolution = await client.get("/api/v1/townlight_code/search", params={"q": "resolution"})
+    regulation = await client.get("/api/v1/townlight_code/search", params={"q": "admin reg"})
+    summary = await client.get("/api/v1/townlight_code/search", params={"q": "approved summary"})
 
     assert policy.status_code == 200
     assert resolution.status_code == 200
@@ -489,7 +489,7 @@ async def test_public_search_distinguishes_related_material_result_types(
 async def test_public_search_does_not_expose_internal_fields(client: AsyncClient) -> None:
     await seed_search_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/search", params={"q": "chickens"})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "chickens"})
 
     assert response.status_code == 200
     serialized = str(response.json()).lower()
@@ -500,7 +500,7 @@ async def test_public_search_does_not_expose_internal_fields(client: AsyncClient
 
 @pytest.mark.asyncio
 async def test_empty_search_query_returns_actionable_422(client: AsyncClient) -> None:
-    response = await client.get("/api/v1/civiccode/search", params={"q": "   "})
+    response = await client.get("/api/v1/townlight_code/search", params={"q": "   "})
 
     assert response.status_code == 422
     detail = response.json()["detail"]

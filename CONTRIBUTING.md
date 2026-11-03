@@ -1,4 +1,4 @@
-<a id="contributing-to-civiccode"></a>
+<a id="contributing-to-townlight_code"></a>
 
 # Contributing to Townlight Code
 

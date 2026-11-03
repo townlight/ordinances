@@ -1,8 +1,29 @@
-<a id="civiccode-operating-contract"></a>
+<a id="townlight_code-operating-contract"></a>
 
 # Townlight Code Operating Contract
 
-This repository implements the future Townlight Code module: municipal code and
+## Governing contract and candidate identity
+
+Scott's bounded completion contract governs. Legacy skills, automatic delegation,
+milestone/review loops and generic extra gates require explicit invocation.
+Preserve actual product requirements, required CI/release checks, security/data
+safeguards and installed acceptance. Reuse unaffected evidence with its limits.
+
+Current distribution: `townlight-code` 1.0.9; principal import:
+`townlight_code`. Shared dependency: `townlight-core==1.3.0.dev2`. Use the exact
+coordinated source pins and local candidate wheels in the README; never fabricate
+renamed historical release URLs. Source tests do not establish installed acceptance
+or publication. The original [agent contract](docs/history/pre-naming-2026-11/AGENTS.md)
+is retained as history, not current session authorization.
+
+The candidate supports fresh branded databases and fresh profiles only. Preserve
+existing data and refuse unmarked legacy initialization; no in-place upgrade or
+old import shim is provided. The sole approved old active identifier is
+`%LOCALAPPDATA%\CivicSuite` for that profile path only. Other retained old active
+identifiers require Scott's approval in the single exception registry. Preserve
+historical identities, third-party attribution and standalone CivicCast.
+
+This repository implements Townlight Code: municipal code and
 ordinance access for Townlight.
 
 ## Priority order
@@ -13,10 +34,10 @@ ordinance access for Townlight.
 
 ## Current state
 
-This repo has completed Milestone 13 accessibility and export hardening. It has an
+The prepared candidate includes accessibility and export hardening. It has an
 installable Python package, a FastAPI app shell, `/` and `/health`, an exact
-published `civiccore v1.0.0` release-wheel dependency, canonical SQLAlchemy metadata, and Alembic
-migrations for the `civiccode` schema. It also has staff/public source registry
+local `townlight-core==1.3.0.dev2` candidate dependency, canonical SQLAlchemy metadata, and Alembic
+migrations for the `townlight_code` schema. It also has staff/public source registry
 APIs, title/chapter/section/version lifecycle APIs, public-safe search, stable
 section permalinks, deterministic citation/refusal objects, and a deterministic
 citation-grounded Q&A harness that does not use live LLM calls. It also has
@@ -40,20 +61,20 @@ not adopted law and handoff intake is not automatic ordinance codification.
 
 Read these before any milestone work:
 
-- `townlight/townlight/docs/CivicSuiteUnifiedSpec.md`, especially section 11.
-- `townlight/townlight/docs/roadmap/civiccode-next-module-plan.md`.
+- `townlight/townlight/docs/TownlightUnifiedSpec.md`, especially section 11.
+- `townlight/townlight/docs/roadmap/townlight_code-next-module-plan.md`.
 - `townlight/townlight/specs/01_catalog.md`, Townlight Code section.
 - Suite ADRs in `townlight/townlight/docs/architecture/`.
 
-<a id="civiccore-placeholder-warning"></a>
+<a id="townlight_core-placeholder-warning"></a>
 
-## Townlight Core placeholder warning
+## Core dependency boundary
 
-Do not import from planned Townlight Core placeholder packages unless that package
-has shipped in a versioned Townlight Core release. Placeholder imports can appear to
-work because empty packages exist, but relying on them is a defect.
+Inspect the pinned implementation rather than assuming historical placeholder
+status. Keep the existing dependency-boundary checker and do not add unused
+consumers. Empty or unavailable interfaces must still fail the owning checks.
 
-<a id="civiccode-non-negotiables"></a>
+<a id="townlight_code-non-negotiables"></a>
 
 ## Townlight Code non-negotiables
 
@@ -69,22 +90,13 @@ These must become tests before runtime behavior ships:
 - Audit trail: imports, summaries, answers, and section changes are recorded.
 - Air-gap posture: local runtime only; no required outbound calls.
 
-## Milestones
+## Current completion boundary
 
-Milestone 0 is reconciliation only:
-
-1. Read upstream spec and ADRs.
-2. Add `docs/RECONCILIATION.md`.
-3. Queue ADRs for open questions.
-4. Add `docs/MILESTONES.md`.
-5. Keep docs verification green.
-6. Do not add runtime code.
-
-Milestone 14 implementation has landed. Townlight Code v0.5.0 is a published label
-under suite-wide release-recovery review, not a fresh product-ready claim until
-the recovery gates re-earn that status. Townlight Core v1.0.0 dependency alignment,
-downstream section resolution, cited resident Q&A, and Townlight Meetings handoff
-codification closeout are the current release boundary.
+The candidate retains source/version resolution, cited resident Q&A, staff-only
+notes and Meetings adoption/codification handoff contracts. Complete the approved
+naming change and affected checks; installed Code → Meetings proposal/adoption
+acceptance remains required for the coordinated Windows candidate. Older milestone
+labels are historical context, not a new ready/released claim.
 
 ## Prohibitions
 

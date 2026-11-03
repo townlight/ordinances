@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -35,7 +35,7 @@ async def client(app_module):
 async def seed_summary_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -54,14 +54,14 @@ async def seed_summary_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -73,7 +73,7 @@ async def seed_summary_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -85,7 +85,7 @@ async def seed_summary_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -108,7 +108,7 @@ async def test_staff_can_create_draft_and_approve_plain_language_summary(
     await seed_summary_fixture(client)
 
     create = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_chickens",
@@ -124,7 +124,7 @@ async def test_staff_can_create_draft_and_approve_plain_language_summary(
     assert draft["section_version_id"] == "v_chickens_current"
 
     approve = await client.post(
-        "/api/v1/civiccode/staff/summaries/summary_chickens/approve",
+        "/api/v1/townlight_code/staff/summaries/summary_chickens/approve",
         headers=STAFF_HEADERS,
     )
     assert approve.status_code == 200
@@ -140,7 +140,7 @@ async def test_public_only_sees_approved_summary_with_authoritative_text(
 ) -> None:
     await seed_summary_fixture(client)
     await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_chickens",
@@ -149,15 +149,15 @@ async def test_public_only_sees_approved_summary_with_authoritative_text(
         },
     )
 
-    hidden = await client.get("/api/v1/civiccode/sections/sec_chickens/summaries")
+    hidden = await client.get("/api/v1/townlight_code/sections/sec_chickens/summaries")
     assert hidden.status_code == 200
     assert hidden.json()["summaries"] == []
 
     await client.post(
-        "/api/v1/civiccode/staff/summaries/summary_chickens/approve",
+        "/api/v1/townlight_code/staff/summaries/summary_chickens/approve",
         headers=STAFF_HEADERS,
     )
-    public = await client.get("/api/v1/civiccode/sections/sec_chickens/summaries")
+    public = await client.get("/api/v1/townlight_code/sections/sec_chickens/summaries")
     payload = public.json()
     assert public.status_code == 200
     assert payload["code_answer_behavior"] == "not_available"
@@ -176,7 +176,7 @@ async def test_summary_requires_adopted_source_citation_before_approval(
     await seed_summary_fixture(client)
 
     missing_version = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_missing",
@@ -188,7 +188,7 @@ async def test_summary_requires_adopted_source_citation_before_approval(
     assert "section version" in missing_version.json()["detail"]["message"].lower()
 
     pending_version = await client.post(
-        "/api/v1/civiccode/sections/sec_chickens/versions",
+        "/api/v1/townlight_code/sections/sec_chickens/versions",
         headers=STAFF_HEADERS,
         json={
             "version_id": "v_chickens_pending",
@@ -203,7 +203,7 @@ async def test_summary_requires_adopted_source_citation_before_approval(
     )
     assert pending_version.status_code == 201
     create_pending_summary = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_pending",
@@ -222,7 +222,7 @@ async def test_summary_endpoints_require_staff_role(client: AsyncClient) -> None
     await seed_summary_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         json={
             "section_version_id": "v_chickens_current",
             "summary_text": "Unauthenticated users cannot draft summaries.",
@@ -237,7 +237,7 @@ async def test_summary_endpoints_require_staff_role(client: AsyncClient) -> None
 async def test_summary_approval_appends_audit_event(client: AsyncClient) -> None:
     await seed_summary_fixture(client)
     await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_chickens",
@@ -247,10 +247,10 @@ async def test_summary_approval_appends_audit_event(client: AsyncClient) -> None
     )
 
     await client.post(
-        "/api/v1/civiccode/staff/summaries/summary_chickens/approve",
+        "/api/v1/townlight_code/staff/summaries/summary_chickens/approve",
         headers=STAFF_HEADERS,
     )
-    audit = await client.get("/api/v1/civiccode/staff/audit-events", headers=STAFF_HEADERS)
+    audit = await client.get("/api/v1/townlight_code/staff/audit-events", headers=STAFF_HEADERS)
 
     event_types = [event["event_type"] for event in audit.json()["events"]]
     assert "plain_language_summary_created" in event_types

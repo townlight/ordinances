@@ -35,12 +35,12 @@ Clean-machine verification for a future attested release:
 ```bash
 cosign verify-blob release-attestation.json \
   --bundle release-attestation.json.bundle \
-  --certificate-identity "https://github.com/CivicSuite/civiccode/.github/workflows/release.yml@refs/tags/vX.Y.Z" \
+  --certificate-identity "https://github.com/Townlight/townlight_code/.github/workflows/release.yml@refs/tags/vX.Y.Z" \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 
 sha256sum -c SHA256SUMS.txt
 python scripts/verify-release-provenance.py "vX.Y.Z" \
-  --repo "CivicSuite/civiccode" \
+  --repo "Townlight/townlight_code" \
   --attestation release-attestation.json \
   --bundle release-attestation.json.bundle \
   --artifacts-dir .
@@ -54,7 +54,7 @@ auditor-facing justification.
 
 Townlight Code consumes the canonical Townlight Core release-provenance helper and
 schema-v1 attestation contract. Product runtime tests run against the published,
-Sigstore-attested `civiccore v1.0.0` dependency before the provenance tooling
+Sigstore-attested `townlight_core v1.0.0` dependency before the provenance tooling
 phase installs the Townlight Core `v1.0` tag for the shared fixture set.
 
 The attestation schema is versioned and canonicalized before signing. A valid
@@ -171,7 +171,7 @@ Auditor-verifiable facts:
 Expected current gate behavior:
 
 ```bash
-python scripts/verify-release-provenance.py v0.1.18 --repo CivicSuite/civiccode
+python scripts/verify-release-provenance.py v0.1.18 --repo Townlight/townlight_code
 ```
 
 The command fails closed because live release verification now requires an

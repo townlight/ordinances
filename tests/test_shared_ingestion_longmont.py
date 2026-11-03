@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from civiccode import semantic_search
+from townlight_code import semantic_search
 from types import SimpleNamespace
 
 import pytest
 
-from civiccode.shared_ingestion import (
+from townlight_code.shared_ingestion import (
     SharedIngestionError,
     _dedupe_overlapping_chunk_text,
     _extract_sections,
@@ -46,7 +46,7 @@ def test_db_url_conversion_prefers_asyncpg_for_shared_ingestion() -> None:
     )
 
 
-def test_semantic_search_delegates_embeddings_to_civiccore(monkeypatch) -> None:
+def test_semantic_search_delegates_embeddings_to_townlight_core(monkeypatch) -> None:
     calls: list[dict[str, object]] = []
 
     async def fake_embed_batch(texts, *, model, base_url, batch_size=8):
@@ -60,7 +60,7 @@ def test_semantic_search_delegates_embeddings_to_civiccore(monkeypatch) -> None:
         )
         return [[1.0] + [0.0] * 767 for _ in texts]
 
-    monkeypatch.setenv("CIVICCODE_EMBEDDING_MODE", "ollama")
+    monkeypatch.setenv("TOWNLIGHT_CODE_EMBEDDING_MODE", "ollama")
     monkeypatch.setenv("OLLAMA_BASE_URL", "http://ollama:11434")
     monkeypatch.setattr(semantic_search, "embed_batch", fake_embed_batch)
 
@@ -87,14 +87,14 @@ def test_shared_pdf_path_must_stay_inside_allowlisted_corpus(tmp_path, monkeypat
     bad_pdf = outside / "code.pdf"
     good_pdf.write_text("allowed", encoding="utf-8")
     bad_pdf.write_text("outside", encoding="utf-8")
-    monkeypatch.setenv("CIVICCODE_SHARED_INGEST_ALLOWED_DIR", str(allowed))
+    monkeypatch.setenv("TOWNLIGHT_CODE_SHARED_INGEST_ALLOWED_DIR", str(allowed))
 
     assert _validate_pdf_path(good_pdf) == good_pdf.resolve()
     with pytest.raises(SharedIngestionError) as exc:
         _validate_pdf_path(bad_pdf)
 
     assert exc.value.status_code == 403
-    assert "outside the allowed CivicCode corpus" in exc.value.message
+    assert "outside the allowed TownlightCode corpus" in exc.value.message
 
 
 def test_chunk_text_reconstruction_removes_overlap_duplication() -> None:

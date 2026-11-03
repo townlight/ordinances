@@ -1,4 +1,4 @@
-"""Run the reusable CivicCode mock-city codifier contract suite."""
+"""Run the reusable TownlightCode mock-city codifier contract suite."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from civiccode.mock_city_environment import (
+from townlight_code.mock_city_environment import (
     MOCK_CITY_NAME,
     mock_city_code_report,
     mock_city_codifier_contracts,
@@ -43,7 +43,7 @@ def _print_plan(base_url: str) -> int:
             f"auth={contract.auth_method} status={contract.interface_status} "
             f"delta={contract.delta_query_param}"
         )
-    print("Reusable municipal IdP and backup-retention contracts come from civiccore.testing.mock_city.")
+    print("Reusable municipal IdP and backup-retention contracts come from townlight_core.testing.mock_city.")
     print("Fix path: module teams should reuse these contracts and add only module-specific assertions.")
     print("MOCK-CITY-CODE-ENVIRONMENT-SUITE: PLAN")
     return 0

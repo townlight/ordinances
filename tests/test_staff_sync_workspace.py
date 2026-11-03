@@ -5,7 +5,7 @@ import importlib
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from civiccode.mock_city_environment import (
+from townlight_code.mock_city_environment import (
     mock_city_codifier_contracts,
     mock_city_import_payload,
 )
@@ -18,8 +18,8 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.delenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", raising=False)
-    module = importlib.import_module("civiccode.main")
+    monkeypatch.delenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", raising=False)
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.IMPORT_STORE.reset()
@@ -46,7 +46,7 @@ async def test_staff_sync_workspace_requires_staff_access(client: AsyncClient) -
 
     assert response.status_code == 403
     assert "Staff sync health requires staff access" in response.text
-    assert "X-CivicCode-Role: staff" in response.text
+    assert "X-Townlight-Code-Role: staff" in response.text
     assert "Fix: sign in through the staff shell" in response.text
     assert '<a class="skip-link" href="#content">Skip to staff sync health</a>' in response.text
     assert '<main id="content">' in response.text
@@ -77,7 +77,7 @@ async def test_staff_sync_workspace_shows_health_and_local_payload_state(
     app_module.SOURCE_STORE.create(payload["source"])
 
     configured = await client.post(
-        "/api/v1/civiccode/staff/sync/codifier-sources",
+        "/api/v1/townlight_code/staff/sync/codifier-sources",
         headers=STAFF_HEADERS,
         json={
             "source_id": payload["source"]["source_id"],
@@ -94,10 +94,10 @@ async def test_staff_sync_workspace_shows_health_and_local_payload_state(
     assert "healthy" in ready_html
     assert "No local payload run recorded" in ready_html
     assert "Fix: run the configured codifier source with an already fetched" in ready_html
-    assert "Source URL host passed CivicCore SSRF-safe validation" in ready_html
+    assert "Source URL host passed TownlightCore SSRF-safe validation" in ready_html
 
     run = await client.post(
-        f"/api/v1/civiccode/staff/sync/codifier-sources/{payload['source']['source_id']}/run",
+        f"/api/v1/townlight_code/staff/sync/codifier-sources/{payload['source']['source_id']}/run",
         headers=STAFF_HEADERS,
         json={
             "payload": payload,

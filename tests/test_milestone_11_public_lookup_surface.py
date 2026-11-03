@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -36,7 +36,7 @@ async def client(app_module):
 async def seed_public_lookup_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -55,14 +55,14 @@ async def seed_public_lookup_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -74,7 +74,7 @@ async def seed_public_lookup_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -87,7 +87,7 @@ async def seed_public_lookup_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -105,12 +105,12 @@ async def seed_public_lookup_fixture(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_public_lookup_home_is_accessible_and_honest(client: AsyncClient) -> None:
-    response = await client.get("/civiccode")
+    response = await client.get("/townlight_code")
 
     assert response.status_code == 200
     html = response.text
     assert '<main id="content"' in html
-    assert 'action="/civiccode/search"' in html
+    assert 'action="/townlight_code/search"' in html
     assert '<label for="q">' in html
     assert "Ready for a search" in html
     assert "No live LLM" in html
@@ -124,13 +124,13 @@ async def test_public_search_success_links_to_section_and_citation(
 ) -> None:
     await seed_public_lookup_fixture(client)
 
-    response = await client.get("/civiccode/search", params={"q": "backyard chickens"})
+    response = await client.get("/townlight_code/search", params={"q": "backyard chickens"})
 
     assert response.status_code == 200
     html = response.text
     assert "Backyard chickens" in html
     assert "6.12.040" in html
-    assert "/civiccode/sections/6.12.040" in html
+    assert "/townlight_code/sections/6.12.040" in html
     assert "Citation-ready" in html
     assert "authoritative code text" in html
 
@@ -141,12 +141,12 @@ async def test_public_search_related_material_result_links_to_source_section(
 ) -> None:
     await seed_public_lookup_fixture(client)
 
-    response = await client.get("/civiccode/search", params={"q": "policy chicken"})
+    response = await client.get("/townlight_code/search", params={"q": "policy chicken"})
 
     assert response.status_code == 200
     html = response.text
     assert "policy-chicken-permits" in html
-    assert "/civiccode/sections/6.12.040" in html
+    assert "/townlight_code/sections/6.12.040" in html
     assert "navigation aid, not a legal determination" in html
 
 
@@ -155,7 +155,7 @@ async def test_public_question_answer_page_renders_cited_answer(client: AsyncCli
     await seed_public_lookup_fixture(client)
 
     response = await client.get(
-        "/civiccode/answer",
+        "/townlight_code/answer",
         params={
             "q": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",
@@ -169,12 +169,12 @@ async def test_public_question_answer_page_renders_cited_answer(client: AsyncCli
 
 @pytest.mark.asyncio
 async def test_react_frontend_build_is_served_by_fastapi(client: AsyncClient) -> None:
-    response = await client.get("/civiccode/app")
+    response = await client.get("/townlight_code/app")
 
     assert response.status_code == 200
     html = response.text
     assert '<div id="root"></div>' in html
-    assert "/civiccode/app/assets/" in html
+    assert "/townlight_code/app/assets/" in html
 
 
 @pytest.mark.asyncio
@@ -183,7 +183,7 @@ async def test_public_section_detail_separates_code_summary_and_warning(
 ) -> None:
     await seed_public_lookup_fixture(client)
     summary = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
         headers=STAFF_HEADERS,
         json={
             "summary_id": "summary_chickens",
@@ -194,17 +194,17 @@ async def test_public_section_detail_separates_code_summary_and_warning(
     )
     assert summary.status_code == 201
     approve = await client.post(
-        "/api/v1/civiccode/staff/summaries/summary_chickens/approve",
+        "/api/v1/townlight_code/staff/summaries/summary_chickens/approve",
         headers=STAFF_HEADERS,
     )
     assert approve.status_code == 200
     handoff = await client.post(
-        "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+        "/api/v1/townlight_code/staff/townlight_meetings/ordinance-events",
         headers=STAFF_HEADERS,
         json={
             "external_event_id": "cc_event_2026_041",
-            "civicclerk_meeting_id": "meeting_2026_04_27",
-            "civicclerk_agenda_item_id": "agenda_14",
+            "townlight_meetings_meeting_id": "meeting_2026_04_27",
+            "townlight_meetings_agenda_item_id": "agenda_14",
             "ordinance_number": "2026-041",
             "title": "Ordinance amending backyard chicken permits",
             "status": "adopted",
@@ -216,7 +216,7 @@ async def test_public_section_detail_separates_code_summary_and_warning(
     )
     assert handoff.status_code == 201
 
-    response = await client.get("/civiccode/sections/6.12.040")
+    response = await client.get("/townlight_code/sections/6.12.040")
 
     assert response.status_code == 200
     html = response.text
@@ -225,7 +225,7 @@ async def test_public_section_detail_separates_code_summary_and_warning(
     assert "Plain-language summary" in html
     assert "not a legal determination" in html
     assert "pending codification" in html
-    assert "CivicClerk ordinance 2026-041" in html
+    assert "TownlightMeetings ordinance 2026-041" in html
     assert "Title 6 (Animals)" in html
     assert "Contact the City Clerk" in html
 
@@ -234,7 +234,7 @@ async def test_public_section_detail_separates_code_summary_and_warning(
 async def test_public_search_empty_state_is_actionable(client: AsyncClient) -> None:
     await seed_public_lookup_fixture(client)
 
-    response = await client.get("/civiccode/search", params={"q": "beekeeping"})
+    response = await client.get("/townlight_code/search", params={"q": "beekeeping"})
 
     assert response.status_code == 200
     html = response.text
@@ -248,13 +248,13 @@ async def test_public_legal_advice_query_gets_refusal_with_route_to_staff(
     client: AsyncClient,
 ) -> None:
     response = await client.get(
-        "/civiccode/search",
+        "/townlight_code/search",
         params={"q": "should I sue my neighbor over chickens"},
     )
 
     assert response.status_code == 200
     html = response.text
-    assert "CivicCode cannot provide legal advice" in html
+    assert "TownlightCode cannot provide legal advice" in html
     assert "Ask for the code section or contact the City Attorney" in html
     assert "not_available" in html
 
@@ -266,13 +266,13 @@ async def test_public_property_specific_determination_query_gets_refusal(
     await seed_public_lookup_fixture(client)
 
     response = await client.get(
-        "/civiccode/search",
+        "/townlight_code/search",
         params={"q": "Can I keep chickens at 123 Main Street?"},
     )
 
     assert response.status_code == 200
     html = response.text
-    assert "CivicCode cannot provide legal advice" in html
+    assert "TownlightCode cannot provide legal advice" in html
     assert "Search results for" not in html
     assert "not_available" in html
 
@@ -284,7 +284,7 @@ async def test_public_section_detail_shows_stale_source_warning(
     await seed_public_lookup_fixture(client)
     assert (
         await client.post(
-            "/api/v1/civiccode/sources/municode_active/transitions",
+            "/api/v1/townlight_code/sources/municode_active/transitions",
             headers=STAFF_HEADERS,
             json={
                 "to_status": "stale",
@@ -294,7 +294,7 @@ async def test_public_section_detail_shows_stale_source_warning(
         )
     ).status_code == 200
 
-    response = await client.get("/civiccode/sections/6.12.040")
+    response = await client.get("/townlight_code/sections/6.12.040")
 
     assert response.status_code == 200
     html = response.text

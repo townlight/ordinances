@@ -7,13 +7,13 @@ import pytest
 from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
-from civiccode.source_registry import SOURCE_STATES, SOURCE_TRANSITIONS, validate_transition
+from townlight_code.source_registry import SOURCE_STATES, SOURCE_TRANSITIONS, validate_transition
 
 
 ROOT = Path(__file__).resolve().parents[1]
 LEGACY_STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "clerk@example.gov",
+    "X-Townlight-Code-Role": "staff",
+    "X-Townlight-Code-Actor": "clerk@example.gov",
 }
 
 STAFF_HEADERS = build_suite_staff_headers()
@@ -21,7 +21,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     return module
 
@@ -65,7 +65,7 @@ def test_source_transition_matrix_is_explicit_and_forward_only() -> None:
 
 @pytest.mark.asyncio
 async def test_catalog_lists_required_codifiers_categories_and_states(client: AsyncClient) -> None:
-    response = await client.get("/api/v1/civiccode/sources/catalog")
+    response = await client.get("/api/v1/townlight_code/sources/catalog")
 
     assert response.status_code == 200
     payload = response.json()
@@ -99,7 +99,7 @@ async def test_create_active_official_source_and_read_public_sanitized_copy(
     suite_staff_headers,
 ) -> None:
     unauthenticated = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         json=active_official_source("blocked_without_session"),
     )
     assert unauthenticated.status_code == 401
@@ -107,20 +107,20 @@ async def test_create_active_official_source_and_read_public_sanitized_copy(
     assert "Authorization: Bearer" in unauthenticated.json()["detail"]["fix"]
 
     forged_legacy = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=LEGACY_STAFF_HEADERS,
         json=active_official_source("blocked_legacy_headers"),
     )
     assert forged_legacy.status_code == 401
     assert "suite session" in forged_legacy.json()["detail"]["message"].lower()
-    assert "legacy X-CivicCode-Role/X-CivicCode-Actor headers alone cannot create sources" in (
+    assert "legacy X-Townlight-Code-Role/X-Townlight-Code-Actor headers alone cannot create sources" in (
         forged_legacy.json()["detail"]["fix"]
     )
 
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-create")
 
     response = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=staff_headers,
         json=active_official_source(),
     )
@@ -131,7 +131,7 @@ async def test_create_active_official_source_and_read_public_sanitized_copy(
     assert staff_payload["search_eligible"] is True
     assert staff_payload["staff_notes"] == "Internal source review note."
 
-    public_response = await client.get("/api/v1/civiccode/sources/municode_active")
+    public_response = await client.get("/api/v1/townlight_code/sources/municode_active")
     assert public_response.status_code == 200
     public_payload = public_response.json()
     assert public_payload["status"] == "active"
@@ -148,7 +148,7 @@ async def test_active_official_source_requires_complete_provenance(
     payload.pop("source_owner")
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-provenance")
 
-    response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
 
     assert response.status_code == 422
     detail = response.json()["detail"]
@@ -167,7 +167,7 @@ async def test_active_non_official_source_requires_explicit_label(
     payload["source_owner"] = None
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-non-official")
 
-    response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
 
     assert response.status_code == 422
     detail = response.json()["detail"]
@@ -207,7 +207,7 @@ async def test_invalid_url_or_file_reference_returns_actionable_422(
         subject="clerk@example.gov",
         session_id=f"source-invalid-{field}",
     )
-    response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
 
     assert response.status_code == 422
     assert expected_fix in response.json()["detail"]["fix"]
@@ -215,7 +215,7 @@ async def test_invalid_url_or_file_reference_returns_actionable_422(
 
 @pytest.mark.asyncio
 async def test_missing_source_returns_actionable_404(client: AsyncClient) -> None:
-    response = await client.get("/api/v1/civiccode/sources/not_found")
+    response = await client.get("/api/v1/townlight_code/sources/not_found")
 
     assert response.status_code == 404
     detail = response.json()["detail"]
@@ -235,29 +235,29 @@ async def test_staff_only_sources_do_not_appear_on_public_endpoints(
     payload["source_url"] = None
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-staff-notes")
 
-    create_response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    create_response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
     assert create_response.status_code == 201
     assert create_response.json()["public_visible"] is False
     assert create_response.json()["search_eligible"] is False
 
-    public_list = await client.get("/api/v1/civiccode/sources")
+    public_list = await client.get("/api/v1/townlight_code/sources")
     assert public_list.status_code == 200
     assert public_list.json()["sources"] == []
 
-    public_get = await client.get("/api/v1/civiccode/sources/staff_notes_source")
+    public_get = await client.get("/api/v1/townlight_code/sources/staff_notes_source")
     assert public_get.status_code == 404
     assert "staff source endpoint" in public_get.json()["detail"]["fix"]
 
-    unauthenticated_staff_list = await client.get("/api/v1/civiccode/staff/sources")
+    unauthenticated_staff_list = await client.get("/api/v1/townlight_code/staff/sources")
     assert unauthenticated_staff_list.status_code == 403
     assert "Staff role required" in unauthenticated_staff_list.json()["detail"]["message"]
 
-    unauthenticated_staff_get = await client.get("/api/v1/civiccode/staff/sources/staff_notes_source")
+    unauthenticated_staff_get = await client.get("/api/v1/townlight_code/staff/sources/staff_notes_source")
     assert unauthenticated_staff_get.status_code == 403
     assert "Staff role required" in unauthenticated_staff_get.json()["detail"]["message"]
 
     staff_get = await client.get(
-        "/api/v1/civiccode/staff/sources/staff_notes_source",
+        "/api/v1/townlight_code/staff/sources/staff_notes_source",
         headers=staff_headers,
     )
     assert staff_get.status_code == 200
@@ -271,11 +271,11 @@ async def test_stale_and_failed_sources_return_actionable_messages(
 ) -> None:
     payload = active_official_source("needs_refresh")
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-state")
-    create_response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    create_response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
     assert create_response.status_code == 201
 
     blocked_transition = await client.post(
-        "/api/v1/civiccode/sources/needs_refresh/transitions",
+        "/api/v1/townlight_code/sources/needs_refresh/transitions",
         json={
             "to_status": "stale",
             "actor": "clerk@example.gov",
@@ -286,7 +286,7 @@ async def test_stale_and_failed_sources_return_actionable_messages(
     assert "Staff role required" in blocked_transition.json()["detail"]["message"]
 
     stale_response = await client.post(
-        "/api/v1/civiccode/sources/needs_refresh/transitions",
+        "/api/v1/townlight_code/sources/needs_refresh/transitions",
         headers=staff_headers,
         json={
             "to_status": "stale",
@@ -298,7 +298,7 @@ async def test_stale_and_failed_sources_return_actionable_messages(
     assert "Refresh the source" in stale_response.json()["fix"]
 
     failed_response = await client.post(
-        "/api/v1/civiccode/sources/needs_refresh/transitions",
+        "/api/v1/townlight_code/sources/needs_refresh/transitions",
         headers=staff_headers,
         json={
             "to_status": "failed",
@@ -317,11 +317,11 @@ async def test_invalid_source_transition_returns_409_with_fix_path(
 ) -> None:
     payload = active_official_source("terminal_source")
     staff_headers = suite_staff_headers(subject="clerk@example.gov", session_id="source-transition")
-    create_response = await client.post("/api/v1/civiccode/sources", headers=staff_headers, json=payload)
+    create_response = await client.post("/api/v1/townlight_code/sources", headers=staff_headers, json=payload)
     assert create_response.status_code == 201
 
     superseded_response = await client.post(
-        "/api/v1/civiccode/sources/terminal_source/transitions",
+        "/api/v1/townlight_code/sources/terminal_source/transitions",
         headers=staff_headers,
         json={
             "to_status": "superseded",
@@ -332,7 +332,7 @@ async def test_invalid_source_transition_returns_409_with_fix_path(
     assert superseded_response.status_code == 200
 
     invalid_response = await client.post(
-        "/api/v1/civiccode/sources/terminal_source/transitions",
+        "/api/v1/townlight_code/sources/terminal_source/transitions",
         headers=staff_headers,
         json={
             "to_status": "active",

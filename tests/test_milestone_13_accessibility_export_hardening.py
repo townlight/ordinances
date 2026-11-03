@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -37,7 +37,7 @@ async def client(app_module):
 async def seed_export_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -57,14 +57,14 @@ async def seed_export_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -76,7 +76,7 @@ async def seed_export_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -88,7 +88,7 @@ async def seed_export_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -110,11 +110,11 @@ async def test_records_ready_export_includes_source_version_citation_and_retriev
 ) -> None:
     await seed_export_fixture(client)
 
-    response = await client.get("/api/v1/civiccode/sections/6.12.040/export")
+    response = await client.get("/api/v1/townlight_code/sections/6.12.040/export")
 
     assert response.status_code == 200
     payload = response.json()
-    assert payload["export_version"] == "civiccode.records_ready.v1"
+    assert payload["export_version"] == "townlight_code.records_ready.v1"
     assert payload["document_type"] == "municipal_code_section"
     assert payload["section"]["section_number"] == "6.12.040"
     assert payload["version"]["version_id"] == "v_chickens_current"
@@ -123,7 +123,7 @@ async def test_records_ready_export_includes_source_version_citation_and_retriev
     assert payload["source_provenance"]["retrieval_method"] == "official_web_export"
     assert payload["source_provenance"]["checksum"] == "sha256:example"
     assert payload["legal_boundary"]["classification"] == "information_not_determination"
-    assert payload["accessibility"]["civicaccess_runtime_dependency"] == "not_shipped"
+    assert payload["accessibility"]["townlight_access_runtime_dependency"] == "not_shipped"
 
 
 @pytest.mark.asyncio
@@ -132,7 +132,7 @@ async def test_accessible_html_export_has_semantic_headings_labels_and_focus(
 ) -> None:
     await seed_export_fixture(client)
 
-    response = await client.get("/civiccode/sections/6.12.040/export")
+    response = await client.get("/townlight_code/sections/6.12.040/export")
 
     assert response.status_code == 200
     html = response.text
@@ -155,12 +155,12 @@ async def test_accessible_html_export_has_semantic_headings_labels_and_focus(
 async def test_public_section_detail_links_to_accessible_export(client: AsyncClient) -> None:
     await seed_export_fixture(client)
 
-    response = await client.get("/civiccode/sections/6.12.040")
+    response = await client.get("/townlight_code/sections/6.12.040")
 
     assert response.status_code == 200
     html = response.text
     assert "Records-ready export" in html
-    assert "/civiccode/sections/6.12.040/export" in html
+    assert "/townlight_code/sections/6.12.040/export" in html
     assert "citation and source provenance" in html
 
 
@@ -168,7 +168,7 @@ async def test_public_section_detail_links_to_accessible_export(client: AsyncCli
 async def test_export_refuses_stale_source_with_actionable_page(client: AsyncClient) -> None:
     await seed_export_fixture(client)
     stale = await client.post(
-        "/api/v1/civiccode/sources/municode_active/transitions",
+        "/api/v1/townlight_code/sources/municode_active/transitions",
         headers=STAFF_HEADERS,
         json={
             "to_status": "stale",
@@ -178,8 +178,8 @@ async def test_export_refuses_stale_source_with_actionable_page(client: AsyncCli
     )
     assert stale.status_code == 200
 
-    api = await client.get("/api/v1/civiccode/sections/6.12.040/export")
-    html = await client.get("/civiccode/sections/6.12.040/export")
+    api = await client.get("/api/v1/townlight_code/sections/6.12.040/export")
+    html = await client.get("/townlight_code/sections/6.12.040/export")
 
     assert api.status_code == 409
     assert "stale" in api.json()["detail"]["message"]
@@ -189,7 +189,7 @@ async def test_export_refuses_stale_source_with_actionable_page(client: AsyncCli
     assert "Refresh or reactivate" in html.text
 
 
-def test_docs_record_accessibility_export_without_claiming_civicaccess_runtime_historical_edition() -> None:
+def test_docs_record_accessibility_export_without_claiming_townlight_access_runtime_historical_edition() -> None:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8").lower()
     manual = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "USER-MANUAL.md").read_text(encoding="utf-8").lower()
     landing = (ROOT / "docs" / "history" / "pre-townlight-beta-1" / "docs" / "index.html").read_text(encoding="utf-8").lower()

@@ -18,7 +18,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -44,7 +44,7 @@ def fixture_payload(name: str) -> dict[str, object]:
 @pytest.mark.asyncio
 async def test_csv_bundle_import_creates_expected_section_tree(client: AsyncClient) -> None:
     response = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("csv_bundle.json"),
     )
@@ -58,7 +58,7 @@ async def test_csv_bundle_import_creates_expected_section_tree(client: AsyncClie
     assert payload["background"]["worker"] == "not_required_for_milestone_12"
 
     lookup = await client.get(
-        "/api/v1/civiccode/sections/lookup",
+        "/api/v1/townlight_code/sections/lookup",
         params={"section_number": "6.12.040"},
     )
     assert lookup.status_code == 200
@@ -66,7 +66,7 @@ async def test_csv_bundle_import_creates_expected_section_tree(client: AsyncClie
     assert "six backyard chickens" in lookup.json()["version"]["body"]
 
     tree = await client.get(
-        "/api/v1/civiccode/staff/imports/import_csv_animals/tree",
+        "/api/v1/townlight_code/staff/imports/import_csv_animals/tree",
         headers=STAFF_HEADERS,
     )
     assert tree.status_code == 200
@@ -79,7 +79,7 @@ async def test_official_html_extract_import_creates_expected_section_tree(
     client: AsyncClient,
 ) -> None:
     response = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("official_html_extract.json"),
     )
@@ -90,7 +90,7 @@ async def test_official_html_extract_import_creates_expected_section_tree(
     assert payload["connector_type"] == "official_html_extract"
     assert payload["provenance"]["source_url"] == "https://example.gov/code/title-10"
 
-    search = await client.get("/api/v1/civiccode/search", params={"q": "overnight parking"})
+    search = await client.get("/api/v1/townlight_code/search", params={"q": "overnight parking"})
     assert search.status_code == 200
     assert search.json()["results"][0]["section_number"] == "10.08.020"
 
@@ -99,14 +99,14 @@ async def test_official_html_extract_import_creates_expected_section_tree(
 async def test_reimport_is_idempotent_and_reuses_existing_records(client: AsyncClient) -> None:
     payload = fixture_payload("csv_bundle.json")
     first = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=payload,
     )
     second_payload = dict(payload)
     second_payload["job_id"] = "import_csv_animals_second_run"
     second = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=second_payload,
     )
@@ -121,7 +121,7 @@ async def test_reimport_is_idempotent_and_reuses_existing_records(client: AsyncC
     assert counts["versions_reused"] == 1
 
     lookup = await client.get(
-        "/api/v1/civiccode/sections/lookup",
+        "/api/v1/townlight_code/sections/lookup",
         params={"section_number": "6.12.040"},
     )
     assert lookup.status_code == 200
@@ -133,7 +133,7 @@ async def test_failed_import_records_actionable_error_and_can_be_retried(
     client: AsyncClient,
 ) -> None:
     broken = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("broken_missing_section.json"),
     )
@@ -143,14 +143,14 @@ async def test_failed_import_records_actionable_error_and_can_be_retried(
     assert "Include the section" in broken.json()["failure"]["fix"]
 
     job = await client.get(
-        "/api/v1/civiccode/staff/imports/import_broken_missing_section",
+        "/api/v1/townlight_code/staff/imports/import_broken_missing_section",
         headers=STAFF_HEADERS,
     )
     assert job.status_code == 200
     assert job.json()["failure"]["fix"].startswith("Include the section")
 
     fixed = await client.post(
-        "/api/v1/civiccode/staff/imports/import_broken_missing_section/retry",
+        "/api/v1/townlight_code/staff/imports/import_broken_missing_section/retry",
         headers=STAFF_HEADERS,
         json=fixture_payload("csv_bundle.json") | {"job_id": "retry_fixed_csv"},
     )
@@ -162,7 +162,7 @@ async def test_failed_import_records_actionable_error_and_can_be_retried(
 @pytest.mark.asyncio
 async def test_local_import_requires_staff_headers(client: AsyncClient) -> None:
     response = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         json=fixture_payload("csv_bundle.json"),
     )
 
@@ -180,7 +180,7 @@ async def test_local_import_does_not_require_outbound_network(
 
     monkeypatch.setattr(socket, "create_connection", fail_network)
     response = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("official_html_extract.json"),
     )
@@ -195,14 +195,14 @@ async def test_provenance_report_exposes_source_checksum_and_failure_visibility(
     client: AsyncClient,
 ) -> None:
     create = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("csv_bundle.json"),
     )
     assert create.status_code == 201
 
     provenance = await client.get(
-        "/api/v1/civiccode/staff/imports/import_csv_animals/provenance",
+        "/api/v1/townlight_code/staff/imports/import_csv_animals/provenance",
         headers=STAFF_HEADERS,
     )
     assert provenance.status_code == 200
@@ -216,12 +216,12 @@ async def test_provenance_report_exposes_source_checksum_and_failure_visibility(
 @pytest.mark.asyncio
 async def test_imported_tree_is_scoped_to_the_job_source(client: AsyncClient) -> None:
     csv_import = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("csv_bundle.json"),
     )
     html_import = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("official_html_extract.json"),
     )
@@ -229,7 +229,7 @@ async def test_imported_tree_is_scoped_to_the_job_source(client: AsyncClient) ->
     assert html_import.status_code == 201
 
     tree = await client.get(
-        "/api/v1/civiccode/staff/imports/import_csv_animals/tree",
+        "/api/v1/townlight_code/staff/imports/import_csv_animals/tree",
         headers=STAFF_HEADERS,
     )
 

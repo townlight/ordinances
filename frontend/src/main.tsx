@@ -67,7 +67,7 @@ function App() {
     }
     setSearchState("loading");
     try {
-      const response = await fetch(`/api/v1/civiccode/search?q=${encodeURIComponent(normalized)}`);
+      const response = await fetch(`/api/v1/townlight_code/search?q=${encodeURIComponent(normalized)}`);
       const payload = (await response.json()) as SearchPayload;
       if (!response.ok) throw new Error(payload.empty_state?.message ?? "Search failed.");
       setSearchPayload(payload);
@@ -89,7 +89,7 @@ function App() {
     }
     setAnswerState("loading");
     try {
-      const response = await fetch("/api/v1/civiccode/questions/answer", {
+      const response = await fetch("/api/v1/townlight_code/questions/answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -116,7 +116,7 @@ function App() {
     <main id="content" className="shell">
       <section className="mast">
         <div>
-          <p className="eyebrow">CivicCode</p>
+          <p className="eyebrow">TownlightCode</p>
           <h1>Read municipal code with cited, staff-reviewable answers.</h1>
         </div>
         <div className="status-strip" aria-label="Runtime evidence">
@@ -126,7 +126,7 @@ function App() {
         </div>
       </section>
 
-      <section className="workspace" aria-label="CivicCode lookup workspace">
+      <section className="workspace" aria-label="TownlightCode lookup workspace">
         <form className="query-panel" onSubmit={runAnswer}>
           <label htmlFor="query">Question or section</label>
           <div className="query-row">

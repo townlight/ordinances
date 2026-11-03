@@ -8,8 +8,8 @@ import { chromium } from "playwright";
 const require = createRequire(import.meta.url);
 const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const viteBin = join(dirname(require.resolve("vite/package.json")), "bin", "vite.js");
-const port = Number(process.env.CIVICCODE_A11Y_PORT || 4175);
-const url = `http://127.0.0.1:${port}/civiccode/app/`;
+const port = Number(process.env.TOWNLIGHT_CODE_A11Y_PORT || 4175);
+const url = `http://127.0.0.1:${port}/townlight_code/app/`;
 const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
 
 function waitForServer(target, timeoutMs = 30000) {

@@ -75,11 +75,11 @@ if [[ -n "$compose_project_name" ]]; then
   echo "Compose project: $compose_project_name"
 fi
 echo "Python verifier: python scripts/check_docker_backup_restore_rehearsal.py"
-echo "Backup dump: backup/civiccode-postgres.dump"
-echo "Backup manifest: backup/civiccode-docker-backup-manifest.json"
-echo "Restore target: temporary PostgreSQL database civiccode_restore_${restore_suffix}"
+echo "Backup dump: backup/townlight_code-postgres.dump"
+echo "Backup manifest: backup/townlight_code-docker-backup-manifest.json"
+echo "Restore target: temporary PostgreSQL database townlight_code_restore_${restore_suffix}"
 echo "Verification: pg_dump, pg_restore, restored application table list, manifest checksum"
-echo "Safety: the source civiccode database is not dropped or overwritten."
+echo "Safety: the source townlight_code database is not dropped or overwritten."
 echo "Fix path: if the run fails, confirm Docker Desktop is running, start the stack with docker compose up -d, inspect docker compose logs postgres api, then rerun with a new --run-id."
 
 args=(
@@ -102,8 +102,8 @@ fi
 
 cd "$repo_root"
 
-if [[ -n "${CIVICCODE_REHEARSAL_PYTHON:-}" ]]; then
-  python_cmd=("${CIVICCODE_REHEARSAL_PYTHON}")
+if [[ -n "${TOWNLIGHT_CODE_REHEARSAL_PYTHON:-}" ]]; then
+  python_cmd=("${TOWNLIGHT_CODE_REHEARSAL_PYTHON}")
 elif [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* || "$(uname -s)" == CYGWIN* ]] && command -v py >/dev/null 2>&1; then
   python_cmd=(py -3)
 elif command -v python3 >/dev/null 2>&1; then

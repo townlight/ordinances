@@ -12,7 +12,7 @@ import pytest
 from conftest import build_suite_staff_headers
 from httpx import ASGITransport, AsyncClient
 
-from civiccode.ai_answer import load_local_llm_config
+from townlight_code.ai_answer import load_local_llm_config
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,7 +22,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     return module
@@ -40,7 +40,7 @@ async def client(app_module):
 async def seed_qa_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -59,14 +59,14 @@ async def seed_qa_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -78,7 +78,7 @@ async def seed_qa_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -90,7 +90,7 @@ async def seed_qa_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -113,7 +113,7 @@ async def test_question_answer_returns_cited_extract_for_explicit_section(
     await seed_qa_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",
@@ -148,7 +148,7 @@ async def test_question_answer_uses_local_ollama_when_configured(
         def do_POST(self) -> None:  # noqa: N802
             length = int(self.headers["Content-Length"])
             body = json.loads(self.rfile.read(length).decode("utf-8"))
-            assert body["model"] == "civiccode-test-model"
+            assert body["model"] == "townlight_code-test-model"
             assert "6.12.040" in body["prompt"]
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -170,12 +170,12 @@ async def test_question_answer_uses_local_ollama_when_configured(
     server = HTTPServer(("127.0.0.1", 0), Handler)
     thread = Thread(target=server.serve_forever, daemon=True)
     thread.start()
-    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_MODEL", "civiccode-test-model")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_URL", f"http://127.0.0.1:{server.server_port}")
+    monkeypatch.setenv("TOWNLIGHT_CODE_AI_MODE", "ollama")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_MODEL", "townlight_code-test-model")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_URL", f"http://127.0.0.1:{server.server_port}")
     try:
         response = await client.post(
-            "/api/v1/civiccode/questions/answer",
+            "/api/v1/townlight_code/questions/answer",
             json={
                 "question": "What does section 6.12.040 say about backyard chickens?",
                 "section_number": "6.12.040",
@@ -189,16 +189,16 @@ async def test_question_answer_uses_local_ollama_when_configured(
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["llm_provider"] == "ollama"
-    assert payload["llm_model"] == "civiccode-test-model"
+    assert payload["llm_model"] == "townlight_code-test-model"
     assert payload["ai_review_required"] is True
     assert payload["ai_authority"] == "non_authoritative_staff_review_required"
     assert "Source:" in payload["answer"]
 
 
 def test_local_ollama_default_model_matches_city_core_pull(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
-    monkeypatch.delenv("CIVICCODE_OLLAMA_MODEL", raising=False)
-    monkeypatch.delenv("CIVICCODE_OLLAMA_URL", raising=False)
+    monkeypatch.setenv("TOWNLIGHT_CODE_AI_MODE", "ollama")
+    monkeypatch.delenv("TOWNLIGHT_CODE_OLLAMA_MODEL", raising=False)
+    monkeypatch.delenv("TOWNLIGHT_CODE_OLLAMA_URL", raising=False)
 
     config = load_local_llm_config()
 
@@ -238,14 +238,14 @@ async def test_question_answer_exercises_real_local_ollama_model(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_MODEL", "gemma3:12b")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_URL", "http://127.0.0.1:11434")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_TIMEOUT_SECONDS", "120")
+    monkeypatch.setenv("TOWNLIGHT_CODE_AI_MODE", "ollama")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_MODEL", "gemma3:12b")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_URL", "http://127.0.0.1:11434")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_TIMEOUT_SECONDS", "120")
     await seed_qa_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",
@@ -269,7 +269,7 @@ async def test_question_answer_can_resolve_single_search_result(client: AsyncCli
     await seed_qa_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={"question": "What does the code say about backyard chickens?"},
     )
 
@@ -277,7 +277,7 @@ async def test_question_answer_can_resolve_single_search_result(client: AsyncCli
     payload = response.json()
     assert payload["status"] == "ok"
     assert payload["matched_section_number"] == "6.12.040"
-    assert payload["citations"][0]["canonical_url"] == "/civiccode/sections/sec_chickens"
+    assert payload["citations"][0]["canonical_url"] == "/townlight_code/sections/sec_chickens"
 
 
 @pytest.mark.asyncio
@@ -285,7 +285,7 @@ async def test_question_answer_refuses_legal_determinations(client: AsyncClient)
     await seed_qa_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={"question": "Am I allowed to keep chickens at 123 Main Street?"},
     )
 
@@ -303,7 +303,7 @@ async def test_question_answer_refuses_uncited_questions(client: AsyncClient) ->
     await seed_qa_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={"question": "What does the code say about apiaries?"},
     )
 
@@ -320,7 +320,7 @@ async def test_question_answer_refuses_stale_source(client: AsyncClient) -> None
     await seed_qa_fixture(client)
     assert (
         await client.post(
-            "/api/v1/civiccode/sources/municode_active/transitions",
+            "/api/v1/townlight_code/sources/municode_active/transitions",
             headers=STAFF_HEADERS,
             json={
                 "to_status": "stale",
@@ -331,7 +331,7 @@ async def test_question_answer_refuses_stale_source(client: AsyncClient) -> None
     ).status_code == 200
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",

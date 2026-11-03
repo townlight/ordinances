@@ -7,16 +7,16 @@ from httpx import ASGITransport, AsyncClient
 
 
 LEGACY_STAFF_HEADERS = {
-    "X-CivicCode-Role": "staff",
-    "X-CivicCode-Actor": "release-gate@example.gov",
+    "X-Townlight-Code-Role": "staff",
+    "X-Townlight-Code-Actor": "release-gate@example.gov",
 }
 
 
 @pytest.fixture()
 def app_module(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.delenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", raising=False)
-    monkeypatch.delenv("CIVICCODE_DEMO_SEED", raising=False)
-    module = importlib.import_module("civiccode.main")
+    monkeypatch.delenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", raising=False)
+    monkeypatch.delenv("TOWNLIGHT_CODE_DEMO_SEED", raising=False)
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -44,7 +44,7 @@ async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
     )
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=staff_headers,
             json={
                 "source_id": "municode_active",
@@ -63,14 +63,14 @@ async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=staff_headers,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=staff_headers,
             json={
                 "chapter_id": "chapter_6_12",
@@ -82,7 +82,7 @@ async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=staff_headers,
             json={
                 "section_id": "sec_chickens",
@@ -94,7 +94,7 @@ async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=staff_headers,
             json={
                 "version_id": "v_chickens_current",
@@ -112,7 +112,7 @@ async def seed_section(client: AsyncClient, suite_staff_headers) -> None:
 
 @pytest.mark.asyncio
 async def test_bad_question_body_fails_closed_with_validation_error(client: AsyncClient) -> None:
-    response = await client.post("/api/v1/civiccode/questions/answer", json={"question": ""})
+    response = await client.post("/api/v1/townlight_code/questions/answer", json={"question": ""})
 
     assert response.status_code == 422
     assert "detail" in response.json()
@@ -126,7 +126,7 @@ async def test_missing_section_returns_actionable_refusal_not_fabricated_answer(
     await seed_section(client, suite_staff_headers)
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 99.99.999 say?",
             "section_number": "99.99.999",
@@ -153,7 +153,7 @@ async def test_stale_source_refuses_answer_until_staff_refreshes_source(
     )
     assert (
         await client.post(
-            "/api/v1/civiccode/sources/municode_active/transitions",
+            "/api/v1/townlight_code/sources/municode_active/transitions",
             headers=staff_headers,
             json={
                 "to_status": "stale",
@@ -164,7 +164,7 @@ async def test_stale_source_refuses_answer_until_staff_refreshes_source(
     ).status_code == 200
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say?",
             "section_number": "6.12.040",
@@ -187,10 +187,10 @@ async def test_public_cannot_reach_staff_api_or_staff_browser_surfaces(
         "/staff/sources",
         "/staff/imports",
         "/staff/sync",
-        "/api/v1/civiccode/staff/operational-state",
-        "/api/v1/civiccode/staff/sources",
-        "/api/v1/civiccode/staff/audit-events",
-        "/api/v1/civiccode/staff/imports",
+        "/api/v1/townlight_code/staff/operational-state",
+        "/api/v1/townlight_code/staff/sources",
+        "/api/v1/townlight_code/staff/audit-events",
+        "/api/v1/townlight_code/staff/imports",
     ]
 
     for path in staff_paths:
@@ -209,14 +209,14 @@ async def test_spoofed_staff_headers_from_untrusted_remote_are_rejected(app_modu
         base_url="http://testserver",
     ) as remote_client:
         response = await remote_client.get(
-            "/api/v1/civiccode/staff/audit-events",
+            "/api/v1/townlight_code/staff/audit-events",
             headers=LEGACY_STAFF_HEADERS,
         )
 
     assert response.status_code == 403
     detail = response.json()["detail"]
     assert "approved proxy" in detail["message"]
-    assert "CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS" in detail["fix"]
+    assert "TOWNLIGHT_CODE_STAFF_TRUSTED_PROXY_CIDRS" in detail["fix"]
 
 
 @pytest.mark.asyncio
@@ -224,20 +224,20 @@ async def test_shipped_compose_trust_rejects_docker_bridge_staff_header_spoof(
     app_module,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS", "127.0.0.1/32,::1/128")
+    monkeypatch.setenv("TOWNLIGHT_CODE_STAFF_TRUSTED_PROXY_CIDRS", "127.0.0.1/32,::1/128")
     async with AsyncClient(
         transport=ASGITransport(app=app_module.app, client=("172.18.0.1", 45678)),
         base_url="http://testserver",
     ) as remote_client:
         response = await remote_client.get(
-            "/api/v1/civiccode/staff/audit-events",
+            "/api/v1/townlight_code/staff/audit-events",
             headers=LEGACY_STAFF_HEADERS,
         )
 
     assert response.status_code == 403
     detail = response.json()["detail"]
     assert "approved proxy" in detail["message"]
-    assert "CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS" in detail["fix"]
+    assert "TOWNLIGHT_CODE_STAFF_TRUSTED_PROXY_CIDRS" in detail["fix"]
 
 
 @pytest.mark.asyncio
@@ -247,12 +247,12 @@ async def test_unavailable_ollama_returns_cited_deterministic_fallback_with_fix_
     suite_staff_headers,
 ) -> None:
     await seed_section(client, suite_staff_headers)
-    monkeypatch.setenv("CIVICCODE_AI_MODE", "ollama")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_URL", "http://127.0.0.1:9")
-    monkeypatch.setenv("CIVICCODE_OLLAMA_TIMEOUT_SECONDS", "0.25")
+    monkeypatch.setenv("TOWNLIGHT_CODE_AI_MODE", "ollama")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_URL", "http://127.0.0.1:9")
+    monkeypatch.setenv("TOWNLIGHT_CODE_OLLAMA_TIMEOUT_SECONDS", "0.25")
 
     response = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",

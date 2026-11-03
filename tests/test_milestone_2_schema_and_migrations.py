@@ -135,8 +135,8 @@ REQUIRED_COLUMNS = {
     "ordinance_events": {
         "id",
         "external_event_id",
-        "civicclerk_meeting_id",
-        "civicclerk_agenda_item_id",
+        "townlight_meetings_meeting_id",
+        "townlight_meetings_agenda_item_id",
         "ordinance_number",
         "title",
         "adopted_at",
@@ -150,145 +150,145 @@ REQUIRED_COLUMNS = {
 }
 
 PLACEHOLDER_TARGET_PREFIXES = {
-    "civiccore.auth",
-    "civiccore.rbac",
-    "civiccore.audit",
-    "civiccore.ingestion",
-    "civiccore.search",
-    "civiccore.notifications",
-    "civiccore.connectors",
-    "civiccore.exemptions",
-    "civiccore.onboarding",
-    "civiccore.catalog",
-    "civiccore.verification",
+    "townlight_core.auth",
+    "townlight_core.rbac",
+    "townlight_core.audit",
+    "townlight_core.ingestion",
+    "townlight_core.search",
+    "townlight_core.notifications",
+    "townlight_core.connectors",
+    "townlight_core.exemptions",
+    "townlight_core.onboarding",
+    "townlight_core.catalog",
+    "townlight_core.verification",
 }
 
 
 def model_module():
     try:
-        return importlib.import_module("civiccode.models")
+        return importlib.import_module("townlight_code.models")
     except ModuleNotFoundError as exc:
-        pytest.fail(f"civiccode.models must exist for Milestone 2 schema work: {exc}")
+        pytest.fail(f"townlight_code.models must exist for Milestone 2 schema work: {exc}")
 
 
 def migration_path() -> Path:
-    return ROOT / "civiccode" / "migrations" / "versions" / "civiccode_0001_schema.py"
+    return ROOT / "townlight_code" / "migrations" / "versions" / "townlight_code_0001_schema.py"
 
 
 def source_registry_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0002_source_registry_records.py"
+        / "townlight_code_0002_source_registry_records.py"
     )
 
 
 def popular_question_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0003_popular_question_records.py"
+        / "townlight_code_0003_popular_question_records.py"
     )
 
 
 def section_lifecycle_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0004_section_lifecycle_records.py"
+        / "townlight_code_0004_section_lifecycle_records.py"
     )
 
 
 def staff_summary_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0005_staff_summary_records.py"
+        / "townlight_code_0005_staff_summary_records.py"
     )
 
 
 def ordinance_handoff_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0006_ordinance_handoff_records.py"
+        / "townlight_code_0006_ordinance_handoff_records.py"
     )
 
 
 def import_job_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0007_import_job_records.py"
+        / "townlight_code_0007_import_job_records.py"
     )
 
 
 def codifier_sync_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0008_codifier_sync.py"
+        / "townlight_code_0008_codifier_sync.py"
     )
 
 
 def operational_state_records_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0009_operational_state.py"
+        / "townlight_code_0009_operational_state.py"
     )
 
 
 def handoff_resolution_migration_path() -> Path:
     return (
         ROOT
-        / "civiccode"
+        / "townlight_code"
         / "migrations"
         / "versions"
-        / "civiccode_0010_handoff_resolution.py"
+        / "townlight_code_0010_handoff_resolution.py"
     )
 
 
 def test_canonical_table_models_exist_and_no_tables_are_missing_or_extra() -> None:
     models = model_module()
     metadata = models.Base.metadata
-    civiccode_tables = {
+    townlight_code_tables = {
         key
         for key, table in metadata.tables.items()
-        if table.schema == "civiccode"
+        if table.schema == "townlight_code"
     }
 
-    assert sorted(civiccode_tables) == sorted(f"civiccode.{name}" for name in CANONICAL_TABLES)
+    assert sorted(townlight_code_tables) == sorted(f"townlight_code.{name}" for name in CANONICAL_TABLES)
 
 
-def test_models_use_civiccode_schema_and_civiccore_shared_base() -> None:
+def test_models_use_townlight_code_schema_and_townlight_core_shared_base() -> None:
     models = model_module()
-    civiccore_db = importlib.import_module("civiccore.db")
+    townlight_core_db = importlib.import_module("townlight_core.db")
 
-    assert models.Base is civiccore_db.Base
+    assert models.Base is townlight_core_db.Base
     for table_name in CANONICAL_TABLES:
-        table = models.Base.metadata.tables[f"civiccode.{table_name}"]
-        assert table.schema == "civiccode"
+        table = models.Base.metadata.tables[f"townlight_code.{table_name}"]
+        assert table.schema == "townlight_code"
 
 
 def test_models_do_not_declare_a_competing_sqlalchemy_base() -> None:
-    model_files = list((ROOT / "civiccode").glob("**/*.py"))
+    model_files = list((ROOT / "townlight_code").glob("**/*.py"))
     offenders: list[str] = []
     for path in model_files:
         tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -307,11 +307,11 @@ def test_each_canonical_table_has_required_foundation_columns() -> None:
     models = model_module()
 
     for table_name, expected_columns in REQUIRED_COLUMNS.items():
-        table = models.Base.metadata.tables[f"civiccode.{table_name}"]
+        table = models.Base.metadata.tables[f"townlight_code.{table_name}"]
         assert expected_columns <= set(table.columns.keys()), table_name
 
 
-def test_no_foreign_keys_target_civiccore_placeholder_packages_or_unreleased_shared_tables() -> None:
+def test_no_foreign_keys_target_townlight_core_placeholder_packages_or_unreleased_shared_tables() -> None:
     models = model_module()
 
     for table in models.Base.metadata.tables.values():
@@ -321,16 +321,16 @@ def test_no_foreign_keys_target_civiccore_placeholder_packages_or_unreleased_sha
             for element in constraint.elements:
                 target = str(element.target_fullname)
                 assert not any(target.startswith(prefix) for prefix in PLACEHOLDER_TARGET_PREFIXES)
-                assert not target.startswith("civiccore."), (
-                    "CivicCode may only FK into released CivicCore tables; "
+                assert not target.startswith("townlight_core."), (
+                    "TownlightCode may only FK into released TownlightCore tables; "
                     f"unexpected target: {target}"
                 )
 
 
-def test_alembic_scaffold_exists_for_civiccode_schema_chain() -> None:
+def test_alembic_scaffold_exists_for_townlight_code_schema_chain() -> None:
     expected = [
-        ROOT / "civiccode" / "migrations" / "alembic.ini",
-        ROOT / "civiccode" / "migrations" / "env.py",
+        ROOT / "townlight_code" / "migrations" / "alembic.ini",
+        ROOT / "townlight_code" / "migrations" / "env.py",
         migration_path(),
         source_registry_records_migration_path(),
         popular_question_records_migration_path(),
@@ -347,22 +347,22 @@ def test_alembic_scaffold_exists_for_civiccode_schema_chain() -> None:
         assert path.exists(), f"Missing migration scaffold file: {path.relative_to(ROOT)}"
 
 
-def test_alembic_env_runs_civiccore_baseline_first_and_uses_separate_version_table() -> None:
-    env_py = ROOT / "civiccode" / "migrations" / "env.py"
-    assert env_py.exists(), "civiccode migrations env.py must exist."
+def test_alembic_env_runs_townlight_core_baseline_first_and_uses_separate_version_table() -> None:
+    env_py = ROOT / "townlight_code" / "migrations" / "env.py"
+    assert env_py.exists(), "townlight_code migrations env.py must exist."
     text = env_py.read_text(encoding="utf-8")
 
-    assert "civiccore.migrations.runner" in text
+    assert "townlight_core.migrations.runner" in text
     assert "upgrade_to_head" in text
     assert "_database_url()" in text
-    assert "_run_civiccore_migrations(section[\"sqlalchemy.url\"])" in text
+    assert "_run_townlight_core_migrations(section[\"sqlalchemy.url\"])" in text
     assert "subprocess.run" in text
-    assert "version_table=\"alembic_version_civiccode\"" in text
+    assert "version_table=\"alembic_version_townlight_code\"" in text
     assert "target_metadata = Base.metadata" in text
 
 
 def test_schema_aware_guard_checks_table_inside_target_schema() -> None:
-    guard_py = ROOT / "civiccode" / "migrations" / "guards.py"
+    guard_py = ROOT / "townlight_code" / "migrations" / "guards.py"
     text = guard_py.read_text(encoding="utf-8")
 
     assert "schema = kwargs.get(\"schema\")" in text
@@ -385,7 +385,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             "Start Docker Desktop and rerun this test before release if Docker proof is required."
         )
 
-    name = f"civiccode-m2-{uuid.uuid4().hex[:12]}"
+    name = f"townlight_code-m2-{uuid.uuid4().hex[:12]}"
     subprocess.run(
         [
             "docker",
@@ -397,7 +397,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             "-e",
             "POSTGRES_USER=postgres",
             "-e",
-            "POSTGRES_DB=civiccode_test",
+            "POSTGRES_DB=townlight_code_test",
             "-p",
             "5432",
             "-d",
@@ -416,7 +416,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             text=True,
         ).stdout.strip()
         port = mapped.rsplit(":", maxsplit=1)[-1]
-        db_url = f"postgresql+psycopg2://postgres:postgres@localhost:{port}/civiccode_test"
+        db_url = f"postgresql+psycopg2://postgres:postgres@localhost:{port}/townlight_code_test"
         engine = create_engine(db_url)
 
         deadline = time.monotonic() + 30
@@ -431,33 +431,33 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
                 time.sleep(1)
 
         monkeypatch.setenv("DATABASE_URL", db_url)
-        cfg = Config(str(ROOT / "civiccode" / "migrations" / "alembic.ini"))
+        cfg = Config(str(ROOT / "townlight_code" / "migrations" / "alembic.ini"))
 
         command.upgrade(cfg, "head")
         command.upgrade(cfg, "head")
 
         with engine.connect() as connection:
-            civiccore_revision = connection.execute(
-                text("select version_num from alembic_version_civiccore")
+            townlight_core_revision = connection.execute(
+                text("select version_num from alembic_version_townlight_core")
             ).scalar_one()
-            civiccode_revision = connection.execute(
-                text("select version_num from alembic_version_civiccode")
+            townlight_code_revision = connection.execute(
+                text("select version_num from alembic_version_townlight_code")
             ).scalar_one()
-            civiccode_tables = set(
+            townlight_code_tables = set(
                 connection.execute(
                     text(
                         """
                         select table_name
                         from information_schema.tables
-                        where table_schema = 'civiccode'
+                        where table_schema = 'townlight_code'
                         """
                     )
                 ).scalars()
             )
 
-        assert civiccore_revision == "civiccore_0003_local_task_queue"
-        assert civiccode_revision == "civiccode_0012_drop_local_search"
-        assert civiccode_tables == set(CANONICAL_TABLES) | {
+        assert townlight_core_revision == "townlight_core_0003"
+        assert townlight_code_revision == "townlight_code_0012"
+        assert townlight_code_tables == set(CANONICAL_TABLES) | {
             "source_registry_records",
             "popular_question_records",
             "code_title_records",
@@ -480,17 +480,17 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
 
 
 def test_first_migration_declares_revision_and_creates_all_canonical_tables_idempotently() -> None:
-    assert migration_path().exists(), "civiccode_0001_schema migration must exist."
+    assert migration_path().exists(), "townlight_code_0001_schema migration must exist."
     text = migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0001_schema"' in text
+    assert 'revision = "townlight_code_0001"' in text
     assert "down_revision = None" in text
     assert "idempotent_create_table" in text
-    assert 'op.execute("CREATE SCHEMA IF NOT EXISTS civiccode")' in text
+    assert 'op.execute("CREATE SCHEMA IF NOT EXISTS townlight_code")' in text
 
     for table_name in CANONICAL_TABLES:
         assert f'"{table_name}"' in text or f"'{table_name}'" in text
-        assert 'schema="civiccode"' in text or "schema='civiccode'" in text
+        assert 'schema="townlight_code"' in text or "schema='townlight_code'" in text
 
 
 def test_migration_table_list_matches_model_metadata() -> None:
@@ -500,7 +500,7 @@ def test_migration_table_list_matches_model_metadata() -> None:
     model_tables = {
         table.name
         for table in models.Base.metadata.tables.values()
-        if table.schema == "civiccode"
+        if table.schema == "townlight_code"
     }
     for table_name in model_tables:
         assert f'"{table_name}"' in text or f"'{table_name}'" in text
@@ -509,33 +509,33 @@ def test_migration_table_list_matches_model_metadata() -> None:
 def test_source_registry_records_migration_declares_persistent_records_table() -> None:
     text = source_registry_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0002_sources"' in text
-    assert 'down_revision = "civiccode_0001_schema"' in text
+    assert 'revision = "townlight_code_0002"' in text
+    assert 'down_revision = "townlight_code_0001"' in text
     assert "idempotent_create_table" in text
     assert '"source_registry_records"' in text
     assert '"source_id"' in text
     assert '"official_status_note"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_popular_question_records_migration_declares_persistent_records_table() -> None:
     text = popular_question_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0003_popular_questions"' in text
-    assert 'down_revision = "civiccode_0002_sources"' in text
+    assert 'revision = "townlight_code_0003"' in text
+    assert 'down_revision = "townlight_code_0002"' in text
     assert "idempotent_create_table" in text
     assert '"popular_question_records"' in text
     assert '"question_id"' in text
     assert '"section_number"' in text
     assert '"citation_payload"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_section_lifecycle_records_migration_declares_persistent_records_tables() -> None:
     text = section_lifecycle_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0004_section_lifecycle"' in text
-    assert 'down_revision = "civiccode_0003_popular_questions"' in text
+    assert 'revision = "townlight_code_0004"' in text
+    assert 'down_revision = "townlight_code_0003"' in text
     assert "idempotent_create_table" in text
     for table_name in [
         "code_title_records",
@@ -546,14 +546,14 @@ def test_section_lifecycle_records_migration_declares_persistent_records_tables(
         assert f'"{table_name}"' in text
     assert '"section_number"' in text
     assert '"effective_start"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_staff_summary_records_migration_declares_persistent_records_tables() -> None:
     text = staff_summary_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0005_staff_summaries"' in text
-    assert 'down_revision = "civiccode_0004_section_lifecycle"' in text
+    assert 'revision = "townlight_code_0005"' in text
+    assert 'down_revision = "townlight_code_0004"' in text
     assert "idempotent_create_table" in text
     for table_name in [
         "staff_interpretation_note_records",
@@ -564,43 +564,43 @@ def test_staff_summary_records_migration_declares_persistent_records_tables() ->
         assert f'"{table_name}"' in text
     assert '"summary_text"' in text
     assert '"approved_by"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_ordinance_handoff_records_migration_declares_persistent_records_tables() -> None:
     text = ordinance_handoff_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0006_handoffs"' in text
-    assert 'down_revision = "civiccode_0005_staff_summaries"' in text
+    assert 'revision = "townlight_code_0006"' in text
+    assert 'down_revision = "townlight_code_0005"' in text
     assert "idempotent_create_table" in text
     for table_name in [
         "ordinance_handoff_records",
         "ordinance_handoff_audit_event_records",
     ]:
         assert f'"{table_name}"' in text
-    assert '"civicclerk_meeting_id"' in text
+    assert '"townlight_meetings_meeting_id"' in text
     assert '"affected_sections"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_import_job_records_migration_declares_persistent_records_table() -> None:
     text = import_job_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0007_import_jobs"' in text
-    assert 'down_revision = "civiccode_0006_handoffs"' in text
+    assert 'revision = "townlight_code_0007"' in text
+    assert 'down_revision = "townlight_code_0006"' in text
     assert "idempotent_create_table" in text
     assert '"import_job_records"' in text
     assert '"job_id"' in text
     assert '"provenance"' in text
     assert '"failure"' in text
-    assert 'schema="civiccode"' in text
+    assert 'schema="townlight_code"' in text
 
 
 def test_codifier_sync_records_migration_declares_persistent_records_tables() -> None:
     text = codifier_sync_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0008_codifier_sync"' in text
-    assert 'down_revision = "civiccode_0007_import_jobs"' in text
+    assert 'revision = "townlight_code_0008"' in text
+    assert 'down_revision = "townlight_code_0007"' in text
     assert "idempotent_create_table" in text
     for table_name in [
         "codifier_sync_source_records",
@@ -615,8 +615,8 @@ def test_codifier_sync_records_migration_declares_persistent_records_tables() ->
 def test_operational_state_records_migration_declares_persistent_records_table() -> None:
     text = operational_state_records_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0009_operational_state"' in text
-    assert 'down_revision = "civiccode_0008_codifier_sync"' in text
+    assert 'revision = "townlight_code_0009"' in text
+    assert 'down_revision = "townlight_code_0008"' in text
     assert "idempotent_create_table" in text
     assert '"operational_state_records"' in text
     for column_name in [
@@ -634,8 +634,8 @@ def test_operational_state_records_migration_declares_persistent_records_table()
 def test_handoff_resolution_migration_declares_durable_resolution_fields() -> None:
     text = handoff_resolution_migration_path().read_text(encoding="utf-8")
 
-    assert 'revision = "civiccode_0010_handoff_resolve"' in text
-    assert 'down_revision = "civiccode_0009_operational_state"' in text
+    assert 'revision = "townlight_code_0010"' in text
+    assert 'down_revision = "townlight_code_0009"' in text
     for column_name in [
         "resolved_section_version_id",
         "resolved_by",
@@ -646,7 +646,7 @@ def test_handoff_resolution_migration_declares_durable_resolution_fields() -> No
 
 def test_migration_revision_ids_fit_alembic_version_column() -> None:
     """Alembic's default version table stores revision IDs in VARCHAR(32)."""
-    migrations_dir = ROOT / "civiccode" / "migrations" / "versions"
+    migrations_dir = ROOT / "townlight_code" / "migrations" / "versions"
     for migration in migrations_dir.glob("*.py"):
         text = migration.read_text(encoding="utf-8")
         match = re.search(r'^revision = "([^"]+)"', text, flags=re.MULTILINE)

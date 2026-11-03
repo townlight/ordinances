@@ -25,7 +25,7 @@ def test_release_workflow_dispatch_release_tag_contract() -> None:
     release_tag = workflow_dispatch["inputs"]["release_tag"]
 
     assert release_tag["required"] is True
-    assert release_tag["default"] == "v1.0.8"
+    assert release_tag["default"] == "v1.0.9"
 
 
 def test_release_workflow_cleanroom_release_gate_contract() -> None:
@@ -35,7 +35,7 @@ def test_release_workflow_cleanroom_release_gate_contract() -> None:
 
     assert jobs["publish-release"]["needs"] == ["release-cleanroom-rehearsal"]
     assert "release-cleanroom-rehearsal" in jobs
-    assert "civicsuite-cleanroom=1" in workflow_text
+    assert "townlight-cleanroom=1" in workflow_text
     assert "system prune" not in workflow_text
     assert "Cleanroom rehearsal: PASSED in workflow run ${WORKFLOW_RUN_ID}" in workflow_text
     assert "Verified clean install of ${WHEEL_URL} from cold caches" in workflow_text

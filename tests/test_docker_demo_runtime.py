@@ -15,9 +15,9 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setenv("CIVICCODE_DEMO_SEED", "1")
-    monkeypatch.delenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", raising=False)
-    module = importlib.import_module("civiccode.main")
+    monkeypatch.setenv("TOWNLIGHT_CODE_DEMO_SEED", "1")
+    monkeypatch.delenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", raising=False)
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -43,12 +43,12 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
     health = await client.get("/health")
     assert health.status_code == 200
 
-    search = await client.get("/civiccode/search", params={"q": "13.40.020"})
+    search = await client.get("/townlight_code/search", params={"q": "13.40.020"})
     assert search.status_code == 200
     assert "Backyard Livestock" in search.text
     assert "Citation-ready" in search.text
 
-    detail = await client.get("/civiccode/sections/13.40.020")
+    detail = await client.get("/townlight_code/sections/13.40.020")
     assert detail.status_code == 200
     assert "Plain-language summary" in detail.text
     assert "pending codification" in detail.text
@@ -57,7 +57,7 @@ async def test_demo_seed_populates_public_and_staff_workspaces(client: AsyncClie
     staff = await client.get("/staff/code", headers=STAFF_HEADERS)
     assert staff.status_code == 200
     assert "Backyard Livestock" in staff.text
-    assert "Pending CivicClerk handoffs require codification review" in staff.text
+    assert "Pending TownlightMeetings handoffs require codification review" in staff.text
 
 
 def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
@@ -72,20 +72,20 @@ def test_docker_product_artifacts_document_seeded_compose_runtime() -> None:
     landing = (historical / "docs" / "index.html").read_text(encoding="utf-8")
 
     assert "pgvector/pgvector:pg17" in compose
-    assert "CIVICCODE_DEMO_SEED" in compose
-    assert "CIVICCODE_STAFF_TRUSTED_PROXY_CIDRS" in compose
-    assert "127.0.0.1:${CIVICCODE_PORT:-8000}:8000" in compose
+    assert "TOWNLIGHT_CODE_DEMO_SEED" in compose
+    assert "TOWNLIGHT_CODE_STAFF_TRUSTED_PROXY_CIDRS" in compose
+    assert "127.0.0.1:${TOWNLIGHT_CODE_PORT:-8000}:8000" in compose
     assert "172.16.0.0/12" not in compose
     assert "172.16.0.0/12" not in env_example
-    assert "alembic -c civiccode/migrations/alembic.ini upgrade head" in dockerfile
-    assert "POSTGRES_PASSWORD=civiccode-local-only" in env_example
+    assert "alembic -c townlight_code/migrations/alembic.ini upgrade head" in dockerfile
+    assert "POSTGRES_PASSWORD=townlight_code-local-only" in env_example
     assert ".tmp-*" in dockerignore
     assert "docs/*.png" in dockerignore
     assert "DOCKER-DEMO-SMOKE: PASSED" in smoke
     assert "rejects forged staff headers" in smoke
-    assert "/api/v1/civiccode/staff/audit-events" in smoke
+    assert "/api/v1/townlight_code/staff/audit-events" in smoke
     assert 'staff_status" != "403"' in smoke
     for text in [readme, manual, landing]:
         assert "Docker Compose" in text
-        assert "CIVICCODE_DEMO_SEED=1" in text
+        assert "CIVICCODE_DEMO_SEED=1" in text  # Unchanged historical manual.
         assert "Portland Title 13" in text

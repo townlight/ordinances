@@ -3,14 +3,14 @@ from __future__ import annotations
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from civiccode.import_connectors import ImportConnectorRepository
-from civiccode.main import app
-from civiccode.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
-from civiccode.ordinance_handoff import OrdinanceHandoffRepository
-from civiccode.plain_language import PlainLanguageSummaryRepository
-from civiccode.public_discovery import PopularQuestionRepository
-from civiccode.staff_workbench import StaffWorkbenchRepository
-from civiccode.source_registry import SourceRegistryRepository
+from townlight_code.import_connectors import ImportConnectorRepository
+from townlight_code.main import app
+from townlight_code.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
+from townlight_code.ordinance_handoff import OrdinanceHandoffRepository
+from townlight_code.plain_language import PlainLanguageSummaryRepository
+from townlight_code.public_discovery import PopularQuestionRepository
+from townlight_code.staff_workbench import StaffWorkbenchRepository
+from townlight_code.source_registry import SourceRegistryRepository
 
 
 from conftest import build_suite_staff_headers
@@ -58,16 +58,16 @@ def test_source_registry_records_persist_status_and_staff_notes(tmp_path) -> Non
 @pytest.mark.asyncio
 async def test_api_sources_use_configured_database(monkeypatch, tmp_path) -> None:
     db_url = f"sqlite:///{tmp_path / 'api-sources.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         created = await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json=active_official_source(),
         )
         transitioned = await client.post(
-            "/api/v1/civiccode/sources/municode_persistent/transitions",
+            "/api/v1/townlight_code/sources/municode_persistent/transitions",
             headers=STAFF_HEADERS,
             json={
                 "to_status": "stale",
@@ -75,7 +75,7 @@ async def test_api_sources_use_configured_database(monkeypatch, tmp_path) -> Non
                 "reason": "Publisher posted a newer official export.",
             },
         )
-        public = await client.get("/api/v1/civiccode/sources/municode_persistent")
+        public = await client.get("/api/v1/townlight_code/sources/municode_persistent")
 
     second = SourceRegistryRepository(db_url=db_url)
     persisted = second.get("municode_persistent")
@@ -91,10 +91,10 @@ async def test_api_sources_use_configured_database(monkeypatch, tmp_path) -> Non
 
 @pytest.mark.asyncio
 async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-discovery.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.POPULAR_QUESTION_STORE.reset()
@@ -104,21 +104,21 @@ async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_pa
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         assert (
             await client.post(
-                "/api/v1/civiccode/sources",
+                "/api/v1/townlight_code/sources",
                 headers=STAFF_HEADERS,
                 json=active_official_source("municode_discovery"),
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/titles",
+                "/api/v1/townlight_code/titles",
                 headers=STAFF_HEADERS,
                 json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/chapters",
+                "/api/v1/townlight_code/chapters",
                 headers=STAFF_HEADERS,
                 json={
                     "chapter_id": "chapter_6_12",
@@ -130,7 +130,7 @@ async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_pa
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections",
+                "/api/v1/townlight_code/sections",
                 headers=STAFF_HEADERS,
                 json={
                     "section_id": "sec_chickens",
@@ -142,7 +142,7 @@ async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_pa
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections/sec_chickens/versions",
+                "/api/v1/townlight_code/sections/sec_chickens/versions",
                 headers=STAFF_HEADERS,
                 json={
                     "version_id": "v_chickens_current",
@@ -157,7 +157,7 @@ async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_pa
             )
         ).status_code == 201
         created = await client.post(
-            "/api/v1/civiccode/staff/popular-questions",
+            "/api/v1/townlight_code/staff/popular-questions",
             headers=STAFF_HEADERS,
             json={
                 "question_id": "popular_chickens",
@@ -177,10 +177,10 @@ async def test_api_popular_questions_use_configured_database(monkeypatch, tmp_pa
 
 @pytest.mark.asyncio
 async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-sections.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module._source_registry_repository = None
@@ -189,21 +189,21 @@ async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_p
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         assert (
             await client.post(
-                "/api/v1/civiccode/sources",
+                "/api/v1/townlight_code/sources",
                 headers=STAFF_HEADERS,
                 json=active_official_source("municode_sections"),
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/titles",
+                "/api/v1/townlight_code/titles",
                 headers=STAFF_HEADERS,
                 json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/chapters",
+                "/api/v1/townlight_code/chapters",
                 headers=STAFF_HEADERS,
                 json={
                     "chapter_id": "chapter_6_12",
@@ -215,7 +215,7 @@ async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_p
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections",
+                "/api/v1/townlight_code/sections",
                 headers=STAFF_HEADERS,
                 json={
                     "section_id": "sec_chickens",
@@ -227,7 +227,7 @@ async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_p
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections/sec_chickens/versions",
+                "/api/v1/townlight_code/sections/sec_chickens/versions",
                 headers=STAFF_HEADERS,
                 json={
                     "version_id": "v_chickens_current",
@@ -245,7 +245,7 @@ async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_p
     app_module._section_lifecycle_repository = None
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         persisted = await client.get(
-            "/api/v1/civiccode/sections/lookup",
+            "/api/v1/townlight_code/sections/lookup",
             params={"section_number": "6.12.040"},
         )
 
@@ -256,10 +256,10 @@ async def test_api_section_lifecycle_uses_configured_database(monkeypatch, tmp_p
 
 @pytest.mark.asyncio
 async def test_api_staff_notes_use_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-staff-notes.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.STAFF_NOTE_STORE.reset()
@@ -270,21 +270,21 @@ async def test_api_staff_notes_use_configured_database(monkeypatch, tmp_path) ->
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         assert (
             await client.post(
-                "/api/v1/civiccode/sources",
+                "/api/v1/townlight_code/sources",
                 headers=STAFF_HEADERS,
                 json=active_official_source("municode_staff_notes"),
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/titles",
+                "/api/v1/townlight_code/titles",
                 headers=STAFF_HEADERS,
                 json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/chapters",
+                "/api/v1/townlight_code/chapters",
                 headers=STAFF_HEADERS,
                 json={
                     "chapter_id": "chapter_6_12",
@@ -296,7 +296,7 @@ async def test_api_staff_notes_use_configured_database(monkeypatch, tmp_path) ->
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections",
+                "/api/v1/townlight_code/sections",
                 headers=STAFF_HEADERS,
                 json={
                     "section_id": "sec_chickens",
@@ -307,7 +307,7 @@ async def test_api_staff_notes_use_configured_database(monkeypatch, tmp_path) ->
             )
         ).status_code == 201
         created = await client.post(
-            "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+            "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
             headers=STAFF_HEADERS,
             json={
                 "note_id": "note_chicken_permits",
@@ -328,10 +328,10 @@ async def test_api_staff_notes_use_configured_database(monkeypatch, tmp_path) ->
 
 @pytest.mark.asyncio
 async def test_api_plain_language_summaries_use_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-summaries.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.SUMMARY_STORE.reset()
@@ -342,21 +342,21 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         assert (
             await client.post(
-                "/api/v1/civiccode/sources",
+                "/api/v1/townlight_code/sources",
                 headers=STAFF_HEADERS,
                 json=active_official_source("municode_summaries"),
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/titles",
+                "/api/v1/townlight_code/titles",
                 headers=STAFF_HEADERS,
                 json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/chapters",
+                "/api/v1/townlight_code/chapters",
                 headers=STAFF_HEADERS,
                 json={
                     "chapter_id": "chapter_6_12",
@@ -368,7 +368,7 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections",
+                "/api/v1/townlight_code/sections",
                 headers=STAFF_HEADERS,
                 json={
                     "section_id": "sec_chickens",
@@ -380,7 +380,7 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections/sec_chickens/versions",
+                "/api/v1/townlight_code/sections/sec_chickens/versions",
                 headers=STAFF_HEADERS,
                 json={
                     "version_id": "v_chickens_current",
@@ -395,7 +395,7 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
             )
         ).status_code == 201
         created = await client.post(
-            "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+            "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
             headers=STAFF_HEADERS,
             json={
                 "summary_id": "summary_chicken_permits",
@@ -404,7 +404,7 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
             },
         )
         approved = await client.post(
-            "/api/v1/civiccode/staff/summaries/summary_chicken_permits/approve",
+            "/api/v1/townlight_code/staff/summaries/summary_chicken_permits/approve",
             headers=STAFF_HEADERS,
         )
 
@@ -423,11 +423,11 @@ async def test_api_plain_language_summaries_use_configured_database(monkeypatch,
 
 
 @pytest.mark.asyncio
-async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+async def test_api_townlight_meetings_handoffs_use_configured_database(monkeypatch, tmp_path) -> None:
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-handoffs.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.HANDOFF_STORE.reset()
@@ -438,21 +438,21 @@ async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         assert (
             await client.post(
-                "/api/v1/civiccode/sources",
+                "/api/v1/townlight_code/sources",
                 headers=STAFF_HEADERS,
                 json=active_official_source("municode_handoffs"),
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/titles",
+                "/api/v1/townlight_code/titles",
                 headers=STAFF_HEADERS,
                 json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
             )
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/chapters",
+                "/api/v1/townlight_code/chapters",
                 headers=STAFF_HEADERS,
                 json={
                     "chapter_id": "chapter_6_12",
@@ -464,7 +464,7 @@ async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections",
+                "/api/v1/townlight_code/sections",
                 headers=STAFF_HEADERS,
                 json={
                     "section_id": "sec_chickens",
@@ -476,7 +476,7 @@ async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_
         ).status_code == 201
         assert (
             await client.post(
-                "/api/v1/civiccode/sections/sec_chickens/versions",
+                "/api/v1/townlight_code/sections/sec_chickens/versions",
                 headers=STAFF_HEADERS,
                 json={
                     "version_id": "v_chickens_current",
@@ -491,13 +491,13 @@ async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_
             )
         ).status_code == 201
         created = await client.post(
-            "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+            "/api/v1/townlight_code/staff/townlight_meetings/ordinance-events",
             headers=STAFF_HEADERS,
             json={
                 "event_id": "ord_2026_041",
                 "external_event_id": "cc_event_2026_041",
-                "civicclerk_meeting_id": "meeting_2026_04_27",
-                "civicclerk_agenda_item_id": "agenda_14",
+                "townlight_meetings_meeting_id": "meeting_2026_04_27",
+                "townlight_meetings_agenda_item_id": "agenda_14",
                 "ordinance_number": "2026-041",
                 "title": "Ordinance amending backyard chicken permits",
                 "status": "adopted",
@@ -515,15 +515,15 @@ async def test_api_civicclerk_handoffs_use_configured_database(monkeypatch, tmp_
     events = persisted.list_events()
     assert [event.event_id for event in events] == ["ord_2026_041"]
     assert persisted.warnings_for_section("6.12.040")[0]["external_event_id"] == "cc_event_2026_041"
-    assert persisted.audit_events()[0].event_type == "civicclerk_handoff_received"
+    assert persisted.audit_events()[0].event_type == "townlight_meetings_handoff_received"
 
 
 @pytest.mark.asyncio
 async def test_api_import_jobs_use_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-import-jobs.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.IMPORT_STORE.reset()
@@ -535,7 +535,7 @@ async def test_api_import_jobs_use_configured_database(monkeypatch, tmp_path) ->
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         created = await client.post(
-            "/api/v1/civiccode/staff/imports/local-bundle",
+            "/api/v1/townlight_code/staff/imports/local-bundle",
             headers=STAFF_HEADERS,
             json=payload,
         )
@@ -560,10 +560,10 @@ async def test_api_import_jobs_use_configured_database(monkeypatch, tmp_path) ->
 
 @pytest.mark.asyncio
 async def test_api_imported_tree_uses_configured_database(monkeypatch, tmp_path) -> None:
-    import civiccode.main as app_module
+    import townlight_code.main as app_module
 
     db_url = f"sqlite:///{tmp_path / 'api-import-tree.db'}"
-    monkeypatch.setenv("CIVICCODE_SOURCE_REGISTRY_DB_URL", db_url)
+    monkeypatch.setenv("TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL", db_url)
     app_module.SOURCE_STORE.reset()
     app_module.SECTION_STORE.reset()
     app_module.IMPORT_STORE.reset()
@@ -575,12 +575,12 @@ async def test_api_imported_tree_uses_configured_database(monkeypatch, tmp_path)
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
         created = await client.post(
-            "/api/v1/civiccode/staff/imports/local-bundle",
+            "/api/v1/townlight_code/staff/imports/local-bundle",
             headers=STAFF_HEADERS,
             json=payload,
         )
         tree = await client.get(
-            "/api/v1/civiccode/staff/imports/import_tree_code_vendor/tree",
+            "/api/v1/townlight_code/staff/imports/import_tree_code_vendor/tree",
             headers=STAFF_HEADERS,
         )
 

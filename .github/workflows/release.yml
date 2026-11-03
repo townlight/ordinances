@@ -9,7 +9,7 @@ on:
       release_tag:
         description: "Published release tag to rehearse from cold caches"
         required: true
-        default: "v1.0.8"
+        default: "v1.0.9"
 
 permissions:
   contents: write
@@ -31,13 +31,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+          cache: pip
 
       - name: Set up Node for frontend cleanroom
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Cleanroom cache strip (scoped, CivicSuite-only)
+      - name: Cleanroom cache strip (scoped, Townlight-only)
         shell: bash
         run: |
           python - <<'PY'
@@ -48,10 +49,10 @@ jobs:
           for rel in (".npm", ".cache/pip"):
               shutil.rmtree(os.path.join(runner_temp, rel), ignore_errors=True)
           PY
-          docker builder prune --all --force --filter "label=civicsuite-cleanroom=1" || true
-          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker builder prune --all --force --filter "label=townlight-cleanroom=1" || true
+          docker network ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker network rm || true
-          docker volume ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker volume ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker volume rm || true
 
       - name: Install published wheel from release URL
@@ -59,22 +60,23 @@ jobs:
         run: |
           TAG="${{ inputs.release_tag }}"
           VERSION="${TAG#v}"
-          WHEEL_URL="https://github.com/townlight/ordinances/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
+          WHEEL_URL="https://github.com/townlight/ordinances/releases/download/${TAG}/townlight_code-${VERSION}-py3-none-any.whl"
           echo "Cleanroom wheel URL: ${WHEEL_URL}"
           python -m venv .cleanroom-venv
           . .cleanroom-venv/bin/activate
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip build
+          python scripts/install-core-candidate.py
           python -m pip install --no-cache-dir --force-reinstall "${WHEEL_URL}"
           TESTING=1 python - <<PY
-          import civiccode
-          from civiccore.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
+          import townlight_code
+          from townlight_core.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
 
           expected = "${VERSION}"
-          print(f"civiccode.__version__={civiccode.__version__}")
-          if civiccode.__version__ != expected:
-              raise SystemExit(f"Expected CivicCode {expected}, got {civiccode.__version__}")
+          print(f"townlight_code.__version__={townlight_code.__version__}")
+          if townlight_code.__version__ != expected:
+              raise SystemExit(f"Expected TownlightCode {expected}, got {townlight_code.__version__}")
           print(
-              "civiccore dependency import ok: "
+              "townlight_core dependency import ok: "
               f"{Document.__name__}, {DocumentChunk.__name__}, {compute_file_hash.__name__}, {ingest_file.__name__}"
           )
           PY
@@ -95,10 +97,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          docker compose -p civicsuite-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
-          docker ps -a --filter "label=civicsuite-cleanroom=1" -q \
+          docker compose -p townlight-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
+          docker ps -a --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker container rm --force || true
-          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker network ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker network rm || true
 
   preflight:
@@ -114,19 +116,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+          cache: pip
 
-      - name: Install CivicCore release-provenance helper
-        run: python -m pip install https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
+      - name: Install TownlightCore release-provenance helper
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
 
-      - name: Checkout canonical CivicCore provenance fixtures
+      - name: Checkout canonical TownlightCore provenance fixtures
         uses: actions/checkout@v4
         with:
           repository: townlight/core
-          ref: v1.2.1
-          path: .tmp-civiccore
+          ref: 3021821bf9a92c790a399ad12aed821d65b09105
+          path: .tmp-townlight_core
 
       - name: Verify adversarial release provenance fixtures
-        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-civiccore/tests/fixtures/release_provenance
+        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-townlight_core/tests/fixtures/release_provenance
 
   build:
     name: Build, attest, and verify release candidate
@@ -150,8 +155,10 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install CivicCore release wheel
-        run: python -m pip install https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59
+      - name: Install TownlightCore release wheel
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
 
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
@@ -169,16 +176,16 @@ jobs:
       - name: Run release-provenance tooling tests
         timeout-minutes: 10
         env:
-          CIVICCODE_SKIP_ISOLATED_PROVENANCE: "1"
+          TOWNLIGHT_CODE_SKIP_ISOLATED_PROVENANCE: "1"
         run: |
-          python -m pip install --force-reinstall "https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
+          python scripts/install-core-candidate.py --verify-installed
           python -m pytest -q tests/test_release_provenance_gate.py
 
       - name: Run docs, placeholder, and Ruff gates
         timeout-minutes: 10
         run: |
           bash scripts/verify-docs.sh
-          python scripts/check-civiccore-placeholder-imports.py
+          python scripts/check-townlight_core-placeholder-imports.py
           python -m ruff check .
 
       - name: Run frontend build gates
@@ -224,8 +231,10 @@ jobs:
           echo "target_commit=$target_commit" >> "$GITHUB_OUTPUT"
           echo "target_tree=$target_tree" >> "$GITHUB_OUTPUT"
 
-      - name: Install CivicCore release-provenance helper
-        run: python -m pip install --force-reinstall https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
+      - name: Install TownlightCore release-provenance helper
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
 
       - name: Build release attestation
         run: |
@@ -261,7 +270,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: civiccode-dist
+          name: townlight_code-dist
           path: |
             dist/*
             release-attestation.json
@@ -277,7 +286,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: civiccode-dist
+          name: townlight_code-dist
           path: .
 
       - name: Write release notes with exact provenance command
@@ -286,10 +295,10 @@ jobs:
           export REPO="${GITHUB_REPOSITORY}"
           export TAG="${GITHUB_REF_NAME}"
           export WORKFLOW_RUN_ID="${GITHUB_RUN_ID}"
-          export WHEEL_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/civiccode-${VERSION}-py3-none-any.whl"
+          export WHEEL_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/townlight_code-${VERSION}-py3-none-any.whl"
           export CLEANROOM_TIMESTAMP="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           cat > release-notes.md <<EOF
-          CivicCode ${TAG} release.
+          TownlightCode ${TAG} release.
 
           Cleanroom rehearsal: PASSED in workflow run ${WORKFLOW_RUN_ID}.
           Verified clean install of ${WHEEL_URL} from cold caches at ${CLEANROOM_TIMESTAMP}.
@@ -325,7 +334,7 @@ jobs:
             release-attestation.json \
             release-attestation.json.bundle \
             --repo "$GH_REPO" \
-            --title "civiccode ${{ github.ref_name }}" \
+            --title "townlight_code ${{ github.ref_name }}" \
             --notes-file release-notes.md
 
   release-cleanroom-rehearsal:
@@ -344,13 +353,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+          cache: pip
 
       - name: Set up Node for frontend cleanroom
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
-      - name: Cleanroom cache strip (scoped, CivicSuite-only)
+      - name: Cleanroom cache strip (scoped, Townlight-only)
         shell: bash
         run: |
           python - <<'PY'
@@ -361,10 +371,10 @@ jobs:
           for rel in (".npm", ".cache/pip"):
               shutil.rmtree(os.path.join(runner_temp, rel), ignore_errors=True)
           PY
-          docker builder prune --all --force --filter "label=civicsuite-cleanroom=1" || true
-          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker builder prune --all --force --filter "label=townlight-cleanroom=1" || true
+          docker network ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker network rm || true
-          docker volume ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker volume ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker volume rm || true
 
       - name: Download uploaded wheel from draft release
@@ -375,7 +385,7 @@ jobs:
           mkdir -p .cleanroom-assets
           gh release download "${{ github.ref_name }}" \
             --repo "${{ github.repository }}" \
-            --pattern 'civiccode-*-py3-none-any.whl' \
+            --pattern 'townlight_code-*-py3-none-any.whl' \
             --dir .cleanroom-assets
           find .cleanroom-assets -maxdepth 1 -type f -print
 
@@ -383,26 +393,27 @@ jobs:
         shell: bash
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          WHEEL="$(find .cleanroom-assets -name 'civiccode-*-py3-none-any.whl' -type f | head -1)"
+          WHEEL="$(find .cleanroom-assets -name 'townlight_code-*-py3-none-any.whl' -type f | head -1)"
           if [ -z "$WHEEL" ]; then
-            echo "::error::No CivicCode wheel downloaded from draft release."
+            echo "::error::No TownlightCode wheel downloaded from draft release."
             exit 1
           fi
           echo "Cleanroom wheel asset: ${WHEEL}"
           python -m venv .cleanroom-venv
           . .cleanroom-venv/bin/activate
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip build
+          python scripts/install-core-candidate.py
           python -m pip install --no-cache-dir --force-reinstall "${WHEEL}"
           TESTING=1 python - <<PY
-          import civiccode
-          from civiccore.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
+          import townlight_code
+          from townlight_core.ingest import Document, DocumentChunk, compute_file_hash, ingest_file
 
           expected = "${VERSION}"
-          print(f"civiccode.__version__={civiccode.__version__}")
-          if civiccode.__version__ != expected:
-              raise SystemExit(f"Expected CivicCode {expected}, got {civiccode.__version__}")
+          print(f"townlight_code.__version__={townlight_code.__version__}")
+          if townlight_code.__version__ != expected:
+              raise SystemExit(f"Expected TownlightCode {expected}, got {townlight_code.__version__}")
           print(
-              "civiccore dependency import ok: "
+              "townlight_core dependency import ok: "
               f"{Document.__name__}, {DocumentChunk.__name__}, {compute_file_hash.__name__}, {ingest_file.__name__}"
           )
           PY
@@ -423,10 +434,10 @@ jobs:
         if: always()
         shell: bash
         run: |
-          docker compose -p civicsuite-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
-          docker ps -a --filter "label=civicsuite-cleanroom=1" -q \
+          docker compose -p townlight-cleanroom-${{ github.run_id }} down -v --remove-orphans || true
+          docker ps -a --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker container rm --force || true
-          docker network ls --filter "label=civicsuite-cleanroom=1" -q \
+          docker network ls --filter "label=townlight-cleanroom=1" -q \
             | xargs -r docker network rm || true
 
   publish-release:

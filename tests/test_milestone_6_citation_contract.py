@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     return module
@@ -33,7 +33,7 @@ async def client(app_module):
 async def seed_citation_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -52,14 +52,14 @@ async def seed_citation_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -71,7 +71,7 @@ async def seed_citation_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -83,7 +83,7 @@ async def seed_citation_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -106,7 +106,7 @@ async def test_citation_includes_required_ids_source_and_effective_date(
     await seed_citation_fixture(client)
 
     response = await client.get(
-        "/api/v1/civiccode/citations/build",
+        "/api/v1/townlight_code/citations/build",
         params={"section_number": "6.12.040"},
     )
 
@@ -120,7 +120,7 @@ async def test_citation_includes_required_ids_source_and_effective_date(
     assert citation["version_id"] == "v_chickens_current"
     assert citation["source_id"] == "municode_active"
     assert citation["effective_start"] == "2026-01-01"
-    assert citation["canonical_url"] == "/civiccode/sections/sec_chickens"
+    assert citation["canonical_url"] == "/townlight_code/sections/sec_chickens"
     assert "Title 6" in citation["citation_text"]
     assert "Chapter 6.12" in citation["citation_text"]
     assert "Section 6.12.040" in citation["citation_text"]
@@ -129,7 +129,7 @@ async def test_citation_includes_required_ids_source_and_effective_date(
 @pytest.mark.asyncio
 async def test_citation_refuses_missing_section_with_fix_path(client: AsyncClient) -> None:
     response = await client.get(
-        "/api/v1/civiccode/citations/build",
+        "/api/v1/townlight_code/citations/build",
         params={"section_number": "99.99.999"},
     )
 
@@ -145,7 +145,7 @@ async def test_citation_refuses_missing_section_with_fix_path(client: AsyncClien
 async def test_citation_refuses_stale_source(client: AsyncClient) -> None:
     await seed_citation_fixture(client)
     stale = await client.post(
-        "/api/v1/civiccode/sources/municode_active/transitions",
+        "/api/v1/townlight_code/sources/municode_active/transitions",
         headers=STAFF_HEADERS,
         json={
             "to_status": "stale",
@@ -156,7 +156,7 @@ async def test_citation_refuses_stale_source(client: AsyncClient) -> None:
     assert stale.status_code == 200
 
     response = await client.get(
-        "/api/v1/civiccode/citations/build",
+        "/api/v1/townlight_code/citations/build",
         params={"section_number": "6.12.040"},
     )
 
@@ -172,7 +172,7 @@ async def test_citation_refuses_stale_source(client: AsyncClient) -> None:
 async def test_citation_refuses_overlapping_effective_dates(client: AsyncClient) -> None:
     await seed_citation_fixture(client)
     overlap = await client.post(
-        "/api/v1/civiccode/sections/sec_chickens/versions",
+        "/api/v1/townlight_code/sections/sec_chickens/versions",
         headers=STAFF_HEADERS,
         json={
             "version_id": "v_overlap",
@@ -189,7 +189,7 @@ async def test_citation_refuses_overlapping_effective_dates(client: AsyncClient)
     assert overlap.status_code == 201
 
     response = await client.get(
-        "/api/v1/civiccode/citations/build",
+        "/api/v1/townlight_code/citations/build",
         params={"section_number": "6.12.040", "as_of": "2026-06-01"},
     )
 
@@ -206,7 +206,7 @@ async def test_citation_endpoint_never_returns_uncited_prose(client: AsyncClient
     await seed_citation_fixture(client)
 
     response = await client.get(
-        "/api/v1/civiccode/citations/build",
+        "/api/v1/townlight_code/citations/build",
         params={"section_number": "6.12.040"},
     )
 

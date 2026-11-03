@@ -13,7 +13,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -34,7 +34,7 @@ async def client(app_module):
 async def seed_code_workspace(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -53,14 +53,14 @@ async def seed_code_workspace(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -72,7 +72,7 @@ async def seed_code_workspace(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -84,7 +84,7 @@ async def seed_code_workspace(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -106,7 +106,7 @@ async def test_staff_code_workspace_requires_staff_access(client: AsyncClient) -
 
     assert response.status_code == 403
     assert "Staff code workspace requires staff access" in response.text
-    assert "X-CivicCode-Role: staff" in response.text
+    assert "X-Townlight-Code-Role: staff" in response.text
     assert "Fix: sign in through the staff shell" in response.text
     assert '<a class="skip-link" href="#content">Skip to staff code workspace</a>' in response.text
     assert '<main id="content">' in response.text
@@ -132,7 +132,7 @@ async def test_staff_code_workspace_shows_lifecycle_blockers(client: AsyncClient
     await seed_code_workspace(client)
     assert (
         await client.post(
-            "/api/v1/civiccode/staff/sections/sec_chickens/summaries",
+            "/api/v1/townlight_code/staff/sections/sec_chickens/summaries",
             headers=STAFF_HEADERS,
             json={
                 "summary_id": "summary_draft",
@@ -144,12 +144,12 @@ async def test_staff_code_workspace_shows_lifecycle_blockers(client: AsyncClient
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/staff/civicclerk/ordinance-events",
+            "/api/v1/townlight_code/staff/townlight_meetings/ordinance-events",
             headers=STAFF_HEADERS,
             json={
                 "external_event_id": "cc_event_2026_041",
-                "civicclerk_meeting_id": "meeting_2026_04_27",
-                "civicclerk_agenda_item_id": "agenda_14",
+                "townlight_meetings_meeting_id": "meeting_2026_04_27",
+                "townlight_meetings_agenda_item_id": "agenda_14",
                 "ordinance_number": "2026-041",
                 "title": "Ordinance amending backyard chicken permits",
                 "status": "adopted",
@@ -169,10 +169,10 @@ async def test_staff_code_workspace_shows_lifecycle_blockers(client: AsyncClient
     assert "Current effective 2026-01-01" in html
     assert "Example Municipal Code" in html
     assert "draft summaries" in html
-    assert "Pending CivicClerk handoffs require codification review" in html
+    assert "Pending TownlightMeetings handoffs require codification review" in html
     assert "pending codification review" in html.lower()
     assert "2026-041" in html
-    assert "Fix: review the CivicClerk handoff" in html
-    assert "/civiccode/sections/6.12.040" in html
+    assert "Fix: review the TownlightMeetings handoff" in html
+    assert "/townlight_code/sections/6.12.040" in html
     assert '<a class="skip-link" href="#content">Skip to staff code workspace</a>' in html
     assert '<main id="content">' in html

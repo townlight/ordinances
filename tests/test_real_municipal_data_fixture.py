@@ -5,7 +5,7 @@ from importlib.resources import files
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-from civiccode.real_municipal_fixtures import (
+from townlight_code.real_municipal_fixtures import (
     PORTLAND_BACKYARD_LIVESTOCK_SOURCE_URL,
     PORTLAND_SECTIONS,
     portland_backyard_livestock_payload,
@@ -24,7 +24,7 @@ async def test_real_portland_code_fixture_imports_searches_and_answers(app_modul
         base_url="http://testserver",
     ) as client:
         imported = await client.post(
-            "/api/v1/civiccode/staff/imports/local-bundle",
+            "/api/v1/townlight_code/staff/imports/local-bundle",
             headers=STAFF_HEADERS,
             json=portland_backyard_livestock_payload(),
         )
@@ -37,16 +37,16 @@ async def test_real_portland_code_fixture_imports_searches_and_answers(app_modul
         assert job["provenance"]["fixture_name"] == "fixtures/portland/code"
 
         for section in PORTLAND_SECTIONS:
-            assert files("civiccode").joinpath(section.file_reference).is_file()
+            assert files("townlight_code").joinpath(section.file_reference).is_file()
 
-        source = await client.get("/api/v1/civiccode/sources/src_portland_code_13_40")
+        source = await client.get("/api/v1/townlight_code/sources/src_portland_code_13_40")
         assert source.status_code == 200
         assert source.json()["source_url"] == PORTLAND_BACKYARD_LIVESTOCK_SOURCE_URL
         assert source.json()["is_official"] is True
         assert source.json()["file_reference"] == "fixtures/portland/code/13.40-keeping-livestock.txt"
 
         search = await client.get(
-            "/api/v1/civiccode/search",
+            "/api/v1/townlight_code/search",
             params={"q": "roosters"},
         )
         assert search.status_code == 200
@@ -56,7 +56,7 @@ async def test_real_portland_code_fixture_imports_searches_and_answers(app_modul
         assert search_payload["semantic_search"]["enabled"] is False
 
         answer = await client.post(
-            "/api/v1/civiccode/questions/answer",
+            "/api/v1/townlight_code/questions/answer",
             json={
                 "question": "What does section 13.40.020 say about domestic fowl?",
                 "section_number": "13.40.020",
@@ -75,7 +75,7 @@ async def test_real_portland_code_fixture_imports_searches_and_answers(app_modul
 def app_module():
     import importlib
 
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()

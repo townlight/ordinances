@@ -1,4 +1,4 @@
-"""Contract tests for CivicCode accepting only CivicCore suite staff sessions."""
+"""Contract tests for TownlightCode accepting only TownlightCore suite staff sessions."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from httpx import ASGITransport, AsyncClient
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     return module
 
@@ -25,12 +25,12 @@ async def client(app_module):
 
 
 @pytest.mark.asyncio
-async def test_forged_staff_headers_do_not_create_civiccode_sources(client: AsyncClient) -> None:
+async def test_forged_staff_headers_do_not_create_townlight_code_sources(client: AsyncClient) -> None:
     response = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers={
-            "X-CivicCode-Role": "staff",
-            "X-CivicCode-Actor": "spoof@example.gov",
+            "X-Townlight-Code-Role": "staff",
+            "X-Townlight-Code-Actor": "spoof@example.gov",
         },
         json={
             "source_id": "forged_header_source",

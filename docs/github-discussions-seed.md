@@ -1,11 +1,11 @@
-<a id="civiccode-github-discussions-seed-posts"></a>
+<a id="townlight_code-github-discussions-seed-posts"></a>
 
 # Townlight Code GitHub Discussions Seed Posts
 
 These are draft seed posts for future GitHub Discussions. They are not posted
 yet.
 
-<a id="welcome-to-civiccode-planning"></a>
+<a id="welcome-to-townlight_code-planning"></a>
 
 ## Welcome To Townlight Code Planning
 
@@ -26,7 +26,7 @@ stale sources, and staff interpretation routing.
 Question for clerks and attorneys: what wording would your city be comfortable
 showing to residents?
 
-<a id="civicclerk-handoff"></a>
+<a id="townlight_meetings-handoff"></a>
 
 ## Townlight Meetings Handoff
 

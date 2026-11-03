@@ -22,16 +22,19 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Install CivicCore release-provenance helper
-        run: python -m pip install "git+https://github.com/townlight/core.git@v1.0"
-      - name: Checkout canonical CivicCore provenance fixtures
+          cache: pip
+      - name: Install TownlightCore release-provenance helper
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
+      - name: Checkout canonical TownlightCore provenance fixtures
         uses: actions/checkout@v6
         with:
           repository: townlight/core
-          ref: v1.0
-          path: .tmp-civiccore
+          ref: 3021821bf9a92c790a399ad12aed821d65b09105
+          path: .tmp-townlight_core
       - name: Verify adversarial release provenance fixtures
-        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-civiccore/tests/fixtures/release_provenance
+        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-townlight_core/tests/fixtures/release_provenance
       - name: Install cosign
         uses: sigstore/cosign-installer@v4.1.1
       - name: Verify published release tag and target commit provenance

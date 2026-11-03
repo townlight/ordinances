@@ -3,13 +3,13 @@ from __future__ import annotations
 from datetime import date
 from pathlib import Path
 
-from civiccode.codifier_sync import CodifierSyncRepository
-from civiccode.import_connectors import ImportConnectorRepository
-from civiccode.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
-from civiccode.operational_state import OperationalStateRepository, OperationalStateStore
-from civiccode.ordinance_handoff import OrdinanceHandoffRepository
-from civiccode.section_lifecycle import SectionLifecycleRepository
-from civiccode.source_registry import SourceRegistryRepository
+from townlight_code.codifier_sync import CodifierSyncRepository
+from townlight_code.import_connectors import ImportConnectorRepository
+from townlight_code.mock_city_environment import mock_city_codifier_contracts, mock_city_import_payload
+from townlight_code.operational_state import OperationalStateRepository, OperationalStateStore
+from townlight_code.ordinance_handoff import OrdinanceHandoffRepository
+from townlight_code.section_lifecycle import SectionLifecycleRepository
+from townlight_code.source_registry import SourceRegistryRepository
 
 
 def test_import_retry_and_replay_operational_state_persists(tmp_path: Path) -> None:
@@ -86,8 +86,8 @@ def test_handoff_failed_state_records_retry_and_replay(tmp_path: Path) -> None:
         {
             "event_id": "ord_failed_operational",
             "external_event_id": "cc_event_failed_operational",
-            "civicclerk_meeting_id": "meeting_2026_05_04",
-            "civicclerk_agenda_item_id": "agenda_9",
+            "townlight_meetings_meeting_id": "meeting_2026_05_04",
+            "townlight_meetings_agenda_item_id": "agenda_9",
             "ordinance_number": "2026-099",
             "title": "Failed codification handoff",
             "status": "failed",
