@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from civiccode.shared_ingestion import (  # noqa: E402
+from townlight_code.shared_ingestion import (  # noqa: E402
     _SECTION_RE,
     _extract_pdf_column_text,
     _extract_sections,
@@ -88,7 +88,7 @@ def main() -> int:
         "samples_returned": len(samples),
         "samples": samples,
     }
-    print("CIVICCODE-LONGMONT-SECTION-FIDELITY-PROOF")
+    print("TOWNLIGHT_CODE-LONGMONT-SECTION-FIDELITY-PROOF")
     print(json.dumps(output, indent=2, default=str))
     return 0
 

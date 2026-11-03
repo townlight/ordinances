@@ -4,11 +4,11 @@ const http = require("node:http");
 const path = require("node:path");
 const { chromium } = require("playwright");
 
-const basePort = Number(process.env.CIVICCODE_BROWSER_QA_PORT || "18022");
-const artifactDir = process.env.CIVICCODE_BROWSER_QA_ARTIFACT_DIR || "";
+const basePort = Number(process.env.TOWNLIGHT_CODE_BROWSER_QA_PORT || "18022");
+const artifactDir = process.env.TOWNLIGHT_CODE_BROWSER_QA_ARTIFACT_DIR || "";
 const staffHeaders = {
-  "X-CivicCode-Role": "staff",
-  "X-CivicCode-Actor": "browser-qa@example.gov",
+  "X-Townlight-Code-Role": "staff",
+  "X-Townlight-Code-Actor": "browser-qa@example.gov",
 };
 
 const phases = [
@@ -81,9 +81,9 @@ async function main() {
 function startServer(phase) {
   const serverProcess = spawn(
     process.env.PYTHON || "python",
-    ["-m", "uvicorn", "civiccode.main:app", "--host", "127.0.0.1", "--port", String(phase.port)],
+    ["-m", "uvicorn", "townlight_code.main:app", "--host", "127.0.0.1", "--port", String(phase.port)],
     {
-      env: { ...process.env, CIVICCODE_DEMO_SEED: phase.demoSeed ? "true" : "false" },
+      env: { ...process.env, TOWNLIGHT_CODE_DEMO_SEED: phase.demoSeed ? "true" : "false" },
       stdio: ["ignore", "pipe", "pipe"],
     },
   );

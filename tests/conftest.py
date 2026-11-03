@@ -8,26 +8,26 @@ import os
 
 import pytest
 
-SIBLING_CIVICCORE = Path(__file__).resolve().parents[1].parent / "civiccore"
-if SIBLING_CIVICCORE.is_dir() and str(SIBLING_CIVICCORE) not in sys.path:
-    sys.path.insert(0, str(SIBLING_CIVICCORE))
-if SIBLING_CIVICCORE.is_dir():
-    import civiccore
-    import civiccore.auth
+SIBLING_TOWNLIGHT_CORE = Path(__file__).resolve().parents[1].parent / "townlight_core"
+if SIBLING_TOWNLIGHT_CORE.is_dir() and str(SIBLING_TOWNLIGHT_CORE) not in sys.path:
+    sys.path.insert(0, str(SIBLING_TOWNLIGHT_CORE))
+if SIBLING_TOWNLIGHT_CORE.is_dir():
+    import townlight_core
+    import townlight_core.auth
 
-    civiccore_path = str(SIBLING_CIVICCORE / "civiccore")
-    civiccore_auth_path = str(SIBLING_CIVICCORE / "civiccore" / "auth")
-    if civiccore_path not in civiccore.__path__:
-        civiccore.__path__.append(civiccore_path)
-    if civiccore_auth_path not in civiccore.auth.__path__:
-        civiccore.auth.__path__.append(civiccore_auth_path)
+    townlight_core_path = str(SIBLING_TOWNLIGHT_CORE / "townlight_core")
+    townlight_core_auth_path = str(SIBLING_TOWNLIGHT_CORE / "townlight_core" / "auth")
+    if townlight_core_path not in townlight_core.__path__:
+        townlight_core.__path__.append(townlight_core_path)
+    if townlight_core_auth_path not in townlight_core.auth.__path__:
+        townlight_core.auth.__path__.append(townlight_core_auth_path)
 
 
 TEST_SUITE_SESSION_SIGNER = "suite-session-test-fixture"
 
 
 def _suite_session_env_name() -> str:
-    return "CIVICCORE_SUITE_SESSION_SECRET"
+    return "TOWNLIGHT_CORE_SUITE_SESSION_SECRET"
 
 
 def build_suite_staff_headers(
@@ -37,7 +37,7 @@ def build_suite_staff_headers(
     session_id: str = "code-suite-session",
 ) -> dict[str, str]:
     os.environ[_suite_session_env_name()] = TEST_SUITE_SESSION_SIGNER
-    from civiccore.auth.suite_session import issue_suite_session_token
+    from townlight_core.auth.suite_session import issue_suite_session_token
 
     token = issue_suite_session_token(
         subject=subject,

@@ -1,4 +1,4 @@
-<a id="civiccode-implementation-plan"></a>
+<a id="townlight_code-implementation-plan"></a>
 
 # Townlight Code Implementation Plan
 
@@ -13,9 +13,9 @@ and no planned behavior promoted as shipped.
 
 ## Unified Spec Traceability
 
-This plan is keyed directly to `townlight/townlight/docs/CivicSuiteUnifiedSpec.md`
+This plan is keyed directly to `townlight/townlight/docs/TownlightUnifiedSpec.md`
 and cross-checked against the original catalog extract at
-`docx-canonical-extracts/CivicSuiteAI_Module_Catalog_v1 (1).txt`.
+`docx-canonical-extracts/TownlightAI_Module_Catalog_v1 (1).txt`.
 
 - Section 4.4: documentation, QA, version, browser-QA, and shipped/planned
   truth are release gates.
@@ -34,7 +34,7 @@ and cross-checked against the original catalog extract at
   determination.
 - Section 11: Townlight Code owns authoritative municipal code storage, cited Q&A,
   plain-language explanations, Townlight Meetings ordinance handoff, amendment/version
-  history, and section resolution for CivicZone/CivicLegal/CivicAccess/CivicComms.
+  history, and section resolution for Townlight Zoning/CivicLegal/Townlight Access/CivicComms.
 - Section 12: Townlight Access is the future accessibility/plain-language layer;
   Townlight Code must not bake in designs that prevent that integration.
 - Section 13: Townlight Code owns its public "Read code" surface but must remain
@@ -87,7 +87,7 @@ Every chunk follows the same loop:
 Required gates for every PR:
 
 - `bash scripts/verify-docs.sh`
-- `python scripts/check-civiccore-placeholder-imports.py`
+- `python scripts/check-townlight_core-placeholder-imports.py`
 - project test suite once runtime tests exist
 - browser QA evidence for every frontend-visible change
 
@@ -119,11 +119,11 @@ behavior.
 Work:
 
 - Add `pyproject.toml` with package metadata and the published Townlight Core release-wheel dependency.
-- Add `civiccode/__init__.py` with `__version__ = "0.1.0.dev0"`.
-- Add `civiccode/main.py` FastAPI app with `/` and `/health`.
+- Add `townlight_code/__init__.py` with `__version__ = "0.1.0.dev0"`.
+- Add `townlight_code/main.py` FastAPI app with `/` and `/health`.
 - Add app settings surface for local-only runtime defaults.
-- Establish route naming for the future module API under `/api/v1/civiccode`
-  and document that frontend pages will mount under `/civiccode` in the shared
+- Establish route naming for the future module API under `/api/v1/townlight_code`
+  and document that frontend pages will mount under `/townlight_code` in the shared
   Townlight shell when UI ships.
 - Add tests for package import, version, root payload, health payload, and
   no accidental shipped-feature claims.
@@ -140,7 +140,7 @@ Explicit non-goals:
 Acceptance tests:
 
 - `GET /` says runtime foundation and points to Chunk 2.
-- `GET /health` returns package version and civiccore version.
+- `GET /health` returns package version and townlight_core version.
 - Tests assert the root endpoint says no code-answer behavior is available.
 
 ## Chunk 2 - Database Foundation
@@ -149,7 +149,7 @@ Goal: establish Townlight Code's database namespace without duplicating Townligh
 
 Work:
 
-- Add Alembic config under `civiccode/migrations`.
+- Add Alembic config under `townlight_code/migrations`.
 - Run Townlight Core migrations before Townlight Code migrations.
 - Add first migration for the schema/table foundation.
 - Add real Postgres/pgvector migration smoke test.
@@ -158,16 +158,16 @@ Work:
 
 Initial table set:
 
-- `civiccode.code_sources`
-- `civiccode.code_titles`
-- `civiccode.code_chapters`
-- `civiccode.code_sections`
-- `civiccode.section_versions`
-- `civiccode.section_citations`
-- `civiccode.interpretation_notes`
-- `civiccode.plain_language_summaries`
-- `civiccode.code_questions`
-- `civiccode.ordinance_events`
+- `townlight_code.code_sources`
+- `townlight_code.code_titles`
+- `townlight_code.code_chapters`
+- `townlight_code.code_sections`
+- `townlight_code.section_versions`
+- `townlight_code.section_citations`
+- `townlight_code.interpretation_notes`
+- `townlight_code.plain_language_summaries`
+- `townlight_code.code_questions`
+- `townlight_code.ordinance_events`
 
 Audit risks:
 
@@ -297,7 +297,7 @@ Goal: introduce local-LLM answer drafting under strict refusal rules.
 
 Work:
 
-- Use `civiccore.llm` provider abstraction.
+- Use `townlight_core.llm` provider abstraction.
 - Add module-specific YAML prompt templates for code Q&A; do not hardcode
   policy-bearing prompts in Python.
 - Use the Townlight Core template resolver for defaults/overrides.
@@ -326,7 +326,7 @@ advice.
 
 Status: shipped in Townlight Code v0.1.12 as staff-approved popular questions and
 explicit related-material navigation aids. Popular questions persist through
-`CIVICCODE_SOURCE_REGISTRY_DB_URL` on the Docker/PostgreSQL product path while
+`TOWNLIGHT_CODE_SOURCE_REGISTRY_DB_URL` on the Docker/PostgreSQL product path while
 the lightweight local path keeps its in-memory store. These surfaces link only
 to cited adopted code or public cross-references, keep staff notes private, and
 label themselves as navigation aids rather than legal determinations.
@@ -407,7 +407,7 @@ Acceptance tests:
 - Every note create/update/delete writes audit entry.
 - Search and Q&A never use staff-only notes for public answers.
 
-<a id="chunk-11---civicclerk-handoff-and-conflict-detection"></a>
+<a id="chunk-11---townlight_meetings-handoff-and-conflict-detection"></a>
 
 ## Chunk 11 - Townlight Meetings Handoff And Conflict Detection
 
@@ -443,7 +443,7 @@ compatible with the future shared resident portal shell.
 Work:
 
 - Add public search/section pages.
-- Mount pages under `/civiccode` while remaining compatible with a future shared
+- Mount pages under `/townlight_code` while remaining compatible with a future shared
   resident portal shell.
 - Add clear citation UI.
 - Add legal-disclaimer and staff-contact routing.

@@ -17,7 +17,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -46,7 +46,7 @@ async def test_staff_import_ledger_requires_staff_access(client: AsyncClient) ->
 
     assert response.status_code == 403
     assert "Staff import ledger requires staff access" in response.text
-    assert "X-CivicCode-Role: staff" in response.text
+    assert "X-Townlight-Code-Role: staff" in response.text
     assert "Fix: sign in through the staff shell" in response.text
     assert '<a class="skip-link" href="#content">Skip to staff import ledger</a>' in response.text
     assert '<main id="content">' in response.text
@@ -61,7 +61,7 @@ async def test_staff_import_ledger_empty_state_is_actionable(client: AsyncClient
     assert "Import provenance ledger" in html
     assert "No local import jobs have run yet" in html
     assert "post a vetted local bundle" in html
-    assert "/api/v1/civiccode/staff/imports/local-bundle" in html
+    assert "/api/v1/townlight_code/staff/imports/local-bundle" in html
     assert "csv_bundle, official_html_extract" in html
     assert '<a class="skip-link" href="#content">Skip to staff import ledger</a>' in html
     assert '<main id="content">' in html
@@ -73,12 +73,12 @@ async def test_staff_import_ledger_shows_jobs_provenance_and_failure_fix(
     client: AsyncClient,
 ) -> None:
     completed = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("csv_bundle.json"),
     )
     failed = await client.post(
-        "/api/v1/civiccode/staff/imports/local-bundle",
+        "/api/v1/townlight_code/staff/imports/local-bundle",
         headers=STAFF_HEADERS,
         json=fixture_payload("broken_missing_section.json"),
     )
@@ -101,6 +101,6 @@ async def test_staff_import_ledger_shows_jobs_provenance_and_failure_fix(
     assert "Import failure" in html
     assert "Version &#x27;version_orphan&#x27; references missing section" in html
     assert "Fix: Include the section in the same bundle or import it before this version" in html
-    assert "/api/v1/civiccode/staff/imports/import_csv_animals/provenance" in html
+    assert "/api/v1/townlight_code/staff/imports/import_csv_animals/provenance" in html
     assert '<a class="skip-link" href="#content">Skip to staff import ledger</a>' in html
     assert '<main id="content">' in html

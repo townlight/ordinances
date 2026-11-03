@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="1.0.8"
+VERSION="1.0.9"
 
 find_python() {
   local candidates=()
-  if [[ -n "${CIVICCODE_RELEASE_PYTHON:-}" ]]; then
-    candidates+=("${CIVICCODE_RELEASE_PYTHON}")
+  if [[ -n "${TOWNLIGHT_CODE_RELEASE_PYTHON:-}" ]]; then
+    candidates+=("${TOWNLIGHT_CODE_RELEASE_PYTHON}")
   fi
   command -v python3 >/dev/null 2>&1 && candidates+=("$(command -v python3)")
   command -v python >/dev/null 2>&1 && candidates+=("$(command -v python)")
@@ -40,12 +40,12 @@ ${PYTHON_BIN} - <<'PY'
 from pathlib import Path
 import tomllib
 
-version = "1.0.8"
+version = "1.0.9"
 root = Path(".")
 pyproject = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
 assert pyproject["project"]["version"] == version, pyproject["project"]["version"]
 namespace: dict[str, str] = {}
-exec((root / "civiccode" / "__init__.py").read_text(encoding="utf-8"), namespace)
+exec((root / "townlight_code" / "__init__.py").read_text(encoding="utf-8"), namespace)
 assert namespace["__version__"] == version, namespace["__version__"]
 for path in [
     "README.md",
@@ -62,14 +62,14 @@ PY
 
 echo "==> Product test suite"
 # Release-provenance gate is ignored here because it is exercised below inside
-# the isolated virtualenv against the real CivicCore dependency path.
+# the isolated virtualenv against the real TownlightCore dependency path.
 ${PYTHON_BIN} -m pytest -q --ignore=tests/test_release_provenance_gate.py
 
-if [[ "${CIVICCODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
-  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
+if [[ "${TOWNLIGHT_CODE_SKIP_ISOLATED_PROVENANCE:-0}" == "1" ]]; then
+  echo "==> Release-provenance tooling tests against TownlightCore shared-ingestion dependency"
   echo "SKIP: isolated provenance test already ran in this CI job"
 else
-  echo "==> Release-provenance tooling tests against CivicCore shared-ingestion dependency"
+  echo "==> Release-provenance tooling tests against TownlightCore shared-ingestion dependency"
   ${PYTHON_BIN} - <<'PY'
 from __future__ import annotations
 
@@ -79,8 +79,7 @@ import tempfile
 import venv
 from pathlib import Path
 
-wheel_url = "https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59"
-temp_dir = Path(tempfile.mkdtemp(prefix="civiccode-release-provenance-"))
+temp_dir = Path(tempfile.mkdtemp(prefix="townlight_code-release-provenance-"))
 
 try:
     venv.EnvBuilder(with_pip=True).create(temp_dir)
@@ -102,10 +101,16 @@ try:
             "--upgrade",
             "pip",
             "pytest",
-            wheel_url,
+            "build",
         ],
         check=True,
     )
+    import os
+    core_source = os.environ.get("TOWNLIGHT_CORE_SOURCE")
+    command = [str(venv_python), "scripts/install-core-candidate.py", "--receipt", str(temp_dir / "core-candidate.json")]
+    if core_source:
+        command += ["--core-source", core_source]
+    subprocess.run(command, check=True)
     subprocess.run(
         [str(venv_python), "-m", "pytest", "-q", "tests/test_release_provenance_gate.py"],
         check=True,
@@ -119,7 +124,7 @@ echo "==> Documentation gate"
 bash scripts/verify-docs.sh
 
 echo "==> Placeholder import gate"
-${PYTHON_BIN} scripts/check-civiccore-placeholder-imports.py
+${PYTHON_BIN} scripts/check-townlight_core-placeholder-imports.py
 
 echo "==> Ruff"
 ${PYTHON_BIN} -m ruff check .
@@ -130,7 +135,7 @@ if command -v npm >/dev/null 2>&1; then
   npm run typecheck
   npm run build
 else
-  echo "FAIL: npm not found. Install Node.js to typecheck and build the CivicCode React frontend." >&2
+  echo "FAIL: npm not found. Install Node.js to typecheck and build the TownlightCode React frontend." >&2
   exit 1
 fi
 
@@ -161,8 +166,8 @@ from pathlib import Path
 import hashlib
 
 dist = Path("dist")
-wheel = dist / "civiccode-1.0.8-py3-none-any.whl"
-sdist = dist / "civiccode-1.0.8.tar.gz"
+wheel = dist / "townlight_code-1.0.9-py3-none-any.whl"
+sdist = dist / "townlight_code-1.0.9.tar.gz"
 assert wheel.exists(), f"missing {wheel}"
 assert sdist.exists(), f"missing {sdist}"
 lines = []

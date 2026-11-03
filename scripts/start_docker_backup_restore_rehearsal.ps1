@@ -34,11 +34,11 @@ if ($ComposeProjectName) {
     Write-Host "Compose project: $ComposeProjectName"
 }
 Write-Host "Python verifier: python scripts/check_docker_backup_restore_rehearsal.py"
-Write-Host "Backup dump: backup\civiccode-postgres.dump"
-Write-Host "Backup manifest: backup\civiccode-docker-backup-manifest.json"
-Write-Host "Restore target: temporary PostgreSQL database civiccode_restore_$($RunId -replace '[^a-zA-Z0-9_]', '_')"
+Write-Host "Backup dump: backup\townlight_code-postgres.dump"
+Write-Host "Backup manifest: backup\townlight_code-docker-backup-manifest.json"
+Write-Host "Restore target: temporary PostgreSQL database townlight_code_restore_$($RunId -replace '[^a-zA-Z0-9_]', '_')"
 Write-Host "Verification: pg_dump, pg_restore, restored application table list, manifest checksum"
-Write-Host "Safety: the source civiccode database is not dropped or overwritten."
+Write-Host "Safety: the source townlight_code database is not dropped or overwritten."
 Write-Host "Fix path: if the run fails, confirm Docker Desktop is running, start the stack with docker compose up -d, inspect docker compose logs postgres api, then rerun with a new -RunId."
 
 Push-Location $RepoRoot

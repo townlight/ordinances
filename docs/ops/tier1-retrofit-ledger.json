@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "sprint": "CO-4",
-  "repo": "CivicSuite/civiccode",
+  "repo": "Townlight/townlight_code",
   "status": "closed_by_repo_ledger_no_public_release_artifact_changes",
   "generated_at": "2026-05-05",
   "upstream_attested_baseline": {
-    "repo": "CivicSuite/civiccore",
+    "repo": "Townlight/townlight_core",
     "tag": "v0.22.1",
-    "release_url": "https://github.com/CivicSuite/civiccore/releases/tag/v0.22.1",
+    "release_url": "https://github.com/Townlight/townlight_core/releases/tag/v0.22.1",
     "target_commit": "46c99854adbce6dc8a056ae5215278bb1eba9a19",
     "attestation_status": "sigstore_verified"
   },
@@ -16,17 +16,17 @@
     {
       "tag": "v0.1.17",
       "published_at": "2026-05-04T16:49:03Z",
-      "release_url": "https://github.com/CivicSuite/civiccode/releases/tag/v0.1.17",
+      "release_url": "https://github.com/Townlight/townlight_code/releases/tag/v0.1.17",
       "tag_ref_type": "tag",
       "tag_ref_sha": "31d9d18ed4931cf462732b6fd91f2937cc80d792",
       "target_commit": "a1f414a9cd4e9e3398da9cc8e1f44f80c5d269ed",
       "release_assets": [
         {
-          "name": "civiccode-0.1.17-py3-none-any.whl",
+          "name": "townlight_code-0.1.17-py3-none-any.whl",
           "sha256": "a9d089712da2058942401e4ebf2d4af64c9e5d794779be3abea3e810923281d1"
         },
         {
-          "name": "civiccode-0.1.17.tar.gz",
+          "name": "townlight_code-0.1.17.tar.gz",
           "sha256": "1019c806f9df401b98a27e2c926c537e52d9c962a7055a001504d240a3e52352"
         },
         {
@@ -34,7 +34,7 @@
           "sha256": "0c5ce79d1aee2262b9d4faf52e936227030547c878ae0034ff695f847c6ece9a"
         }
       ],
-      "workflow_run_url": "https://github.com/CivicSuite/civiccode/actions/runs/25331382757",
+      "workflow_run_url": "https://github.com/Townlight/townlight_code/actions/runs/25331382757",
       "ledger_status": "pre_gate_no_attestation_do_not_promote",
       "attestation_status": "none_pre_gate",
       "rationale": "The public release assets contain the wheel, source distribution, and SHA256SUMS only. No release-attestation.json or release-attestation.json.bundle assets are present on the public release page.",
@@ -43,17 +43,17 @@
     {
       "tag": "v0.1.18",
       "published_at": "2026-05-04T17:11:13Z",
-      "release_url": "https://github.com/CivicSuite/civiccode/releases/tag/v0.1.18",
+      "release_url": "https://github.com/Townlight/townlight_code/releases/tag/v0.1.18",
       "tag_ref_type": "tag",
       "tag_ref_sha": "d82660282fa48193fd437f033c28bec687fb380c",
       "target_commit": "e061d262e1fc78875e72c28a809dd07a00f7b798",
       "release_assets": [
         {
-          "name": "civiccode-0.1.18-py3-none-any.whl",
+          "name": "townlight_code-0.1.18-py3-none-any.whl",
           "sha256": "d77c716a6c055ceb3060266cf6504c5cf42686f4efb8f97909a071a0372d65f0"
         },
         {
-          "name": "civiccode-0.1.18.tar.gz",
+          "name": "townlight_code-0.1.18.tar.gz",
           "sha256": "afa69c0ab941cbf96d12ab12c893cb19aa14b057900e3bd99ce552acd0090134"
         },
         {
@@ -61,7 +61,7 @@
           "sha256": "9d2882d754e4b0fea062e8157fc97994a3b202bed2dc906a261c7b3f2fc5a71f"
         }
       ],
-      "workflow_run_url": "https://github.com/CivicSuite/civiccode/actions/runs/25332439856",
+      "workflow_run_url": "https://github.com/Townlight/townlight_code/actions/runs/25332439856",
       "ledger_status": "pre_gate_no_attestation_do_not_promote",
       "attestation_status": "none_pre_gate",
       "rationale": "The public release assets contain the wheel, source distribution, and SHA256SUMS only. No release-attestation.json or release-attestation.json.bundle assets are present on the public release page.",

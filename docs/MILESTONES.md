@@ -1,4 +1,4 @@
-<a id="civiccode-milestones"></a>
+<a id="townlight_code-milestones"></a>
 
 # Townlight Code Milestones
 
@@ -25,7 +25,7 @@ Expected tests/gates: docs gate, placeholder-import gate.
 Acceptance criteria:
 
 - FastAPI app shell only.
-- `civiccore` dependency pinned to the approved version.
+- `townlight_core` dependency pinned to the approved version.
 - Health/root endpoints say scaffold/runtime-foundation truth plainly.
 - No code-answer behavior yet.
 
@@ -37,7 +37,7 @@ Acceptance criteria:
 
 - Schema follows ADR-0002 shared Base rule.
 - Migrations run after Townlight Core migrations.
-- Tables are namespaced under `civiccode`.
+- Tables are namespaced under `townlight_code`.
 - Real Postgres migration smoke test passes.
 
 Expected tests/gates: migration integration, idempotency, docs gate.
@@ -102,7 +102,7 @@ Acceptance criteria:
 
 Expected tests/gates: ACL matrix, leakage tests, audit-log tests.
 
-<a id="milestone-9---civicclerk-handoff-intake"></a>
+<a id="milestone-9---townlight_meetings-handoff-intake"></a>
 
 ## Milestone 9 - Townlight Meetings Handoff Intake
 

@@ -4,9 +4,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   root: "frontend",
-  base: "/civiccode/app/",
+  base: "/townlight_code/app/",
   build: {
-    outDir: "../civiccode/frontend_dist",
+    outDir: "../townlight_code/frontend_dist",
     emptyOutDir: true
   },
   server: {

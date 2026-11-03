@@ -14,7 +14,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -35,7 +35,7 @@ async def client(app_module):
 async def seed_resolution_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_current",
@@ -54,14 +54,14 @@ async def seed_resolution_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -73,7 +73,7 @@ async def seed_resolution_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -85,7 +85,7 @@ async def seed_resolution_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "version_current",
@@ -102,7 +102,7 @@ async def seed_resolution_fixture(client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("consumer_module", ["CivicZone", "CivicLegal", "CivicAccess", "CivicComms"])
+@pytest.mark.parametrize("consumer_module", ["TownlightZoning", "CivicLegal", "TownlightAccess", "CivicComms"])
 async def test_section_resolution_contract_serves_downstream_modules(
     client: AsyncClient,
     consumer_module: str,
@@ -110,7 +110,7 @@ async def test_section_resolution_contract_serves_downstream_modules(
     await seed_resolution_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/sections/resolve",
+        "/api/v1/townlight_code/sections/resolve",
         json={
             "consumer_module": consumer_module,
             "section_number": "6.12.040",
@@ -127,7 +127,7 @@ async def test_section_resolution_contract_serves_downstream_modules(
     assert payload["citation"]["section_number"] == "6.12.040"
     assert payload["legal_boundary"]["legal_determination"] == "not_provided"
     assert payload["version_context"]["as_of"] == "2026-05-07"
-    assert payload["stable_contract"]["contract_name"] == "civiccode.section_resolution.v1"
+    assert payload["stable_contract"]["contract_name"] == "townlight_code.section_resolution.v1"
     assert payload["code_answer_behavior"] == "section_resolution"
 
 
@@ -136,9 +136,9 @@ async def test_section_resolution_refuses_legal_determination_queries(client: As
     await seed_resolution_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/sections/resolve",
+        "/api/v1/townlight_code/sections/resolve",
         json={
-            "consumer_module": "CivicZone",
+            "consumer_module": "TownlightZoning",
             "query": "Can I keep chickens at 123 Main Street?",
         },
     )
@@ -147,4 +147,4 @@ async def test_section_resolution_refuses_legal_determination_queries(client: As
     payload = response.json()
     assert payload["status"] == "refused"
     assert payload["refusal_type"] == "legal_determination"
-    assert payload["consumer_module"] == "CivicZone"
+    assert payload["consumer_module"] == "TownlightZoning"

@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers(subject="planner@example.gov")
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -34,7 +34,7 @@ async def client(app_module):
 async def seed_staff_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -53,14 +53,14 @@ async def seed_staff_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -72,7 +72,7 @@ async def seed_staff_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -84,7 +84,7 @@ async def seed_staff_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -105,7 +105,7 @@ async def test_staff_can_create_and_read_interpretation_note(client: AsyncClient
     await seed_staff_fixture(client)
 
     create = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
         headers=STAFF_HEADERS,
         json={
             "note_text": "Planning staff generally treats coop setbacks as measured from the property line.",
@@ -120,7 +120,7 @@ async def test_staff_can_create_and_read_interpretation_note(client: AsyncClient
     assert created["created_by"] == "planner@example.gov"
 
     read = await client.get(
-        "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
         headers=STAFF_HEADERS,
     )
     assert read.status_code == 200
@@ -132,14 +132,14 @@ async def test_staff_note_endpoints_require_staff_role(client: AsyncClient) -> N
     await seed_staff_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
         json={"note_text": "Internal note", "status": "draft"},
     )
 
     assert response.status_code == 403
     detail = response.json()["detail"]
     assert "Staff role required" in detail["message"]
-    assert "X-CivicCode-Role" in detail["fix"]
+    assert "X-Townlight-Code-Role" in detail["fix"]
 
 
 @pytest.mark.asyncio
@@ -150,22 +150,22 @@ async def test_public_surfaces_never_leak_staff_note_text_or_counts(
     private_note_marker = "property-line interpretation marker"
     assert (
         await client.post(
-            "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+            "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
             headers=STAFF_HEADERS,
             json={"note_text": private_note_marker, "status": "approved"},
         )
     ).status_code == 201
 
     public_lookup = await client.get(
-        "/api/v1/civiccode/sections/lookup",
+        "/api/v1/townlight_code/sections/lookup",
         params={"section_number": "6.12.040"},
     )
     public_search = await client.get(
-        "/api/v1/civiccode/search",
+        "/api/v1/townlight_code/search",
         params={"q": "chickens"},
     )
     public_answer = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={"question": "What does section 6.12.040 say?", "section_number": "6.12.040"},
     )
 
@@ -184,7 +184,7 @@ async def test_staff_qa_can_include_staff_notes_without_changing_public_contract
     await seed_staff_fixture(client)
     assert (
         await client.post(
-            "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+            "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
             headers=STAFF_HEADERS,
             json={
                 "note_text": "Prior approved interpretation: chicken coop setbacks are measured from the property line.",
@@ -194,7 +194,7 @@ async def test_staff_qa_can_include_staff_notes_without_changing_public_contract
     ).status_code == 201
 
     staff_answer = await client.post(
-        "/api/v1/civiccode/staff/questions/answer",
+        "/api/v1/townlight_code/staff/questions/answer",
         headers=STAFF_HEADERS,
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
@@ -202,7 +202,7 @@ async def test_staff_qa_can_include_staff_notes_without_changing_public_contract
         },
     )
     public_answer = await client.post(
-        "/api/v1/civiccode/questions/answer",
+        "/api/v1/townlight_code/questions/answer",
         json={
             "question": "What does section 6.12.040 say about backyard chickens?",
             "section_number": "6.12.040",
@@ -226,14 +226,14 @@ async def test_staff_note_writes_append_audit_events(client: AsyncClient) -> Non
     await seed_staff_fixture(client)
 
     create = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
         headers=STAFF_HEADERS,
         json={"note_text": "Audit me", "status": "draft"},
     )
     assert create.status_code == 201
 
     audit = await client.get(
-        "/api/v1/civiccode/staff/audit-events",
+        "/api/v1/townlight_code/staff/audit-events",
         headers=STAFF_HEADERS,
     )
     assert audit.status_code == 200

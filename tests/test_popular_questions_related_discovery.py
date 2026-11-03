@@ -15,7 +15,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     module.STAFF_NOTE_STORE.reset()
@@ -37,7 +37,7 @@ async def client(app_module):
 async def seed_discovery_fixture(client: AsyncClient) -> None:
     assert (
         await client.post(
-            "/api/v1/civiccode/sources",
+            "/api/v1/townlight_code/sources",
             headers=STAFF_HEADERS,
             json={
                 "source_id": "municode_active",
@@ -56,14 +56,14 @@ async def seed_discovery_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/titles",
+            "/api/v1/townlight_code/titles",
             headers=STAFF_HEADERS,
             json={"title_id": "title_6", "title_number": "6", "title_name": "Animals"},
         )
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/chapters",
+            "/api/v1/townlight_code/chapters",
             headers=STAFF_HEADERS,
             json={
                 "chapter_id": "chapter_6_12",
@@ -75,7 +75,7 @@ async def seed_discovery_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections",
+            "/api/v1/townlight_code/sections",
             headers=STAFF_HEADERS,
             json={
                 "section_id": "sec_chickens",
@@ -90,7 +90,7 @@ async def seed_discovery_fixture(client: AsyncClient) -> None:
     ).status_code == 201
     assert (
         await client.post(
-            "/api/v1/civiccode/sections/sec_chickens/versions",
+            "/api/v1/townlight_code/sections/sec_chickens/versions",
             headers=STAFF_HEADERS,
             json={
                 "version_id": "v_chickens_current",
@@ -113,7 +113,7 @@ async def test_staff_can_publish_cited_popular_question_navigation_aid(
     await seed_discovery_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/staff/popular-questions",
+        "/api/v1/townlight_code/staff/popular-questions",
         headers=STAFF_HEADERS,
         json={
             "question_id": "popular_chickens",
@@ -125,12 +125,12 @@ async def test_staff_can_publish_cited_popular_question_navigation_aid(
 
     assert response.status_code == 201
     payload = response.json()
-    assert payload["section_url"] == "/civiccode/sections/6.12.040"
+    assert payload["section_url"] == "/townlight_code/sections/6.12.040"
     assert payload["citation"]["section_number"] == "6.12.040"
     assert payload["classification"] == "navigation_aid_not_legal_determination"
     assert payload["legal_determination"] == "not_provided"
 
-    public = await client.get("/api/v1/civiccode/popular-questions")
+    public = await client.get("/api/v1/townlight_code/popular-questions")
     assert public.status_code == 200
     assert public.json()["count"] == 1
 
@@ -142,7 +142,7 @@ async def test_popular_questions_reject_legal_determinations_with_fix_path(
     await seed_discovery_fixture(client)
 
     response = await client.post(
-        "/api/v1/civiccode/staff/popular-questions",
+        "/api/v1/townlight_code/staff/popular-questions",
         headers=STAFF_HEADERS,
         json={
             "question_text": "Can I keep chickens at my address?",
@@ -173,7 +173,7 @@ async def test_public_popular_questions_filter_draft_staff_and_nonpopular_items(
         ("public_question", "approved", "public", True),
     ]:
         response = await client.post(
-            "/api/v1/civiccode/staff/popular-questions",
+            "/api/v1/townlight_code/staff/popular-questions",
             headers=STAFF_HEADERS,
             json={
                 **base,
@@ -186,7 +186,7 @@ async def test_public_popular_questions_filter_draft_staff_and_nonpopular_items(
         )
         assert response.status_code == 201
 
-    public = await client.get("/api/v1/civiccode/popular-questions")
+    public = await client.get("/api/v1/townlight_code/popular-questions")
 
     assert public.status_code == 200
     payload = public.json()
@@ -200,7 +200,7 @@ async def test_related_materials_use_explicit_public_refs_without_staff_notes(
 ) -> None:
     await seed_discovery_fixture(client)
     note = await client.post(
-        "/api/v1/civiccode/staff/sections/sec_chickens/notes",
+        "/api/v1/townlight_code/staff/sections/sec_chickens/notes",
         headers=STAFF_HEADERS,
         json={
             "note_id": "staff_routing_note",
@@ -210,7 +210,7 @@ async def test_related_materials_use_explicit_public_refs_without_staff_notes(
     )
     assert note.status_code == 201
 
-    response = await client.get("/api/v1/civiccode/sections/6.12.040/related")
+    response = await client.get("/api/v1/townlight_code/sections/6.12.040/related")
 
     assert response.status_code == 200
     payload = response.json()
@@ -227,7 +227,7 @@ async def test_public_pages_render_popular_questions_and_related_navigation(
 ) -> None:
     await seed_discovery_fixture(client)
     create = await client.post(
-        "/api/v1/civiccode/staff/popular-questions",
+        "/api/v1/townlight_code/staff/popular-questions",
         headers=STAFF_HEADERS,
         json={
             "question_text": "Where do I read the backyard chicken permit rule?",
@@ -237,8 +237,8 @@ async def test_public_pages_render_popular_questions_and_related_navigation(
     )
     assert create.status_code == 201
 
-    home = await client.get("/civiccode")
-    section = await client.get("/civiccode/sections/6.12.040")
+    home = await client.get("/townlight_code")
+    section = await client.get("/townlight_code/sections/6.12.040")
 
     assert home.status_code == 200
     assert "Popular questions" in home.text
@@ -254,8 +254,8 @@ async def test_public_pages_render_popular_questions_and_related_navigation(
 async def test_empty_discovery_states_are_actionable(client: AsyncClient) -> None:
     await seed_discovery_fixture(client)
 
-    questions = await client.get("/api/v1/civiccode/popular-questions")
-    section = await client.get("/civiccode/sections/sec_chickens")
+    questions = await client.get("/api/v1/townlight_code/popular-questions")
+    section = await client.get("/townlight_code/sections/sec_chickens")
 
     assert questions.status_code == 200
     assert "ask the City Clerk to approve public questions" in questions.json()["empty_state"]["fix"]

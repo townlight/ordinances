@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_REPO = "CivicSuite/civiccode"
+EXPECTED_REPO = "Townlight/townlight_code"
 EXPECTED_TAGS = {"v0.1.17", "v0.1.18"}
 ATTESTATION_ASSETS = {"release-attestation.json", "release-attestation.json.bundle"}
 

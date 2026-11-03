@@ -1,4 +1,4 @@
-"""Contract tests for CivicCode accepting CivicCore suite bearer sessions."""
+"""Contract tests for TownlightCode accepting TownlightCore suite bearer sessions."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from httpx import ASGITransport, AsyncClient
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     module.SECTION_STORE.reset()
     return module
@@ -26,13 +26,13 @@ async def client(app_module):
 
 
 @pytest.mark.asyncio
-async def test_civiccode_staff_endpoint_accepts_civiccore_suite_bearer(
+async def test_townlight_code_staff_endpoint_accepts_townlight_core_suite_bearer(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from civiccore.auth.suite_session import issue_suite_session_token
+    from townlight_core.auth.suite_session import issue_suite_session_token
 
-    monkeypatch.setenv("CIVICCORE_SUITE_SESSION_SECRET", "code-suite-session-secret")
+    monkeypatch.setenv("TOWNLIGHT_CORE_SUITE_SESSION_SECRET", "code-suite-session-secret")
     token = issue_suite_session_token(
         subject="code-operator@example.gov",
         roles=frozenset({"code_admin"}),
@@ -40,7 +40,7 @@ async def test_civiccode_staff_endpoint_accepts_civiccore_suite_bearer(
     )
 
     response = await client.get(
-        "/api/v1/civiccode/staff/operational-state",
+        "/api/v1/townlight_code/staff/operational-state",
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -49,13 +49,13 @@ async def test_civiccode_staff_endpoint_accepts_civiccore_suite_bearer(
 
 
 @pytest.mark.asyncio
-async def test_civiccode_source_creation_accepts_civiccore_suite_bearer(
+async def test_townlight_code_source_creation_accepts_townlight_core_suite_bearer(
     client: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    from civiccore.auth.suite_session import issue_suite_session_token
+    from townlight_core.auth.suite_session import issue_suite_session_token
 
-    monkeypatch.setenv("CIVICCORE_SUITE_SESSION_SECRET", "code-suite-session-secret")
+    monkeypatch.setenv("TOWNLIGHT_CORE_SUITE_SESSION_SECRET", "code-suite-session-secret")
     token = issue_suite_session_token(
         subject="code-operator@example.gov",
         roles=frozenset({"code_admin"}),
@@ -63,7 +63,7 @@ async def test_civiccode_source_creation_accepts_civiccore_suite_bearer(
     )
 
     response = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "source_id": "suite_bearer_source",

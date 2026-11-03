@@ -48,23 +48,28 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Install CivicCore release wheel
-        run: python -m pip install https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl#sha256=8dde29408e206048bde63ec14156a8e6329382af4d16b12710d12aa5c27f3f59
+          cache: pip
+      - name: Install TownlightCore release wheel
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
       - name: Install package and test dependencies
         run: python -m pip install -e ".[dev]"
       - name: Run release verification before publication
         if: ${{ inputs.fixtures_only != 'true' }}
         run: bash scripts/verify-release.sh
-      - name: Install CivicCore release-provenance helper
-        run: python -m pip install --force-reinstall https://github.com/townlight/core/releases/download/v1.2.1/civiccore-1.2.1-py3-none-any.whl
-      - name: Checkout canonical CivicCore provenance fixtures
+      - name: Install TownlightCore release-provenance helper
+        run: |
+          python -m pip install build
+          python scripts/install-core-candidate.py
+      - name: Checkout canonical TownlightCore provenance fixtures
         uses: actions/checkout@v6
         with:
           repository: townlight/core
-          ref: v1.2.1
-          path: .tmp-civiccore
+          ref: 3021821bf9a92c790a399ad12aed821d65b09105
+          path: .tmp-townlight_core
       - name: Verify adversarial release provenance fixtures
-        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-civiccore/tests/fixtures/release_provenance
+        run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-townlight_core/tests/fixtures/release_provenance
       - name: Install cosign
         if: ${{ inputs.fixtures_only != 'true' }}
         uses: sigstore/cosign-installer@v4.1.1

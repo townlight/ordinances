@@ -39,11 +39,11 @@ class RehearsalConfig:
 
     @property
     def dump_path(self) -> Path:
-        return self.backup_root / "civiccode-postgres.dump"
+        return self.backup_root / "townlight_code-postgres.dump"
 
     @property
     def manifest_path(self) -> Path:
-        return self.backup_root / "civiccode-docker-backup-manifest.json"
+        return self.backup_root / "townlight_code-docker-backup-manifest.json"
 
     @property
     def verification_path(self) -> Path:
@@ -52,7 +52,7 @@ class RehearsalConfig:
     @property
     def restore_db(self) -> str:
         safe = re.sub(r"[^a-zA-Z0-9_]", "_", self.run_id).strip("_").lower() or "run"
-        return f"civiccode_restore_{safe}"[:60]
+        return f"townlight_code_restore_{safe}"[:60]
 
 
 def main() -> int:
@@ -83,11 +83,11 @@ def main() -> int:
         postgres_user=args.postgres_user
         or os.environ.get("POSTGRES_USER")
         or env_values.get("POSTGRES_USER")
-        or "civiccode",
+        or "townlight_code",
         postgres_db=args.postgres_db
         or os.environ.get("POSTGRES_DB")
         or env_values.get("POSTGRES_DB")
-        or "civiccode",
+        or "townlight_code",
         keep_restore_database=args.keep_restore_database,
     )
 
@@ -288,7 +288,7 @@ def _list_restored_application_tables(config: RehearsalConfig) -> list[str]:
 
 def _write_manifest(*, config: RehearsalConfig, restored_tables: list[str]) -> None:
     verification = {
-        "service": "civiccode",
+        "service": "townlight_code",
         "checked_at": datetime.now(UTC).isoformat(),
         "restore_database": config.restore_db,
         "restored_application_tables": restored_tables,
@@ -299,7 +299,7 @@ def _write_manifest(*, config: RehearsalConfig, restored_tables: list[str]) -> N
         encoding="utf-8",
     )
     manifest = {
-        "service": "civiccode",
+        "service": "townlight_code",
         "created_at": datetime.now(UTC).isoformat(),
         "source": "docker-compose-postgres",
         "postgres_service": config.postgres_service,

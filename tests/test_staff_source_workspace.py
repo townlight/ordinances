@@ -13,7 +13,7 @@ STAFF_HEADERS = build_suite_staff_headers()
 
 @pytest.fixture()
 def app_module():
-    module = importlib.import_module("civiccode.main")
+    module = importlib.import_module("townlight_code.main")
     module.SOURCE_STORE.reset()
     return module
 
@@ -51,7 +51,7 @@ async def test_staff_source_workspace_requires_staff_access(client: AsyncClient)
     assert response.status_code == 403
     assert "Staff source workspace requires staff access" in response.text
     assert "Open this page through the trusted staff shell" in response.text
-    assert "X-CivicCode-Role: staff" in response.text
+    assert "X-Townlight-Code-Role: staff" in response.text
     assert '<a class="skip-link" href="#content">Skip to staff source registry</a>' in response.text
     assert '<main id="content">' in response.text
 
@@ -76,19 +76,19 @@ async def test_staff_source_workspace_renders_warnings_and_fix_paths(
     client: AsyncClient,
 ) -> None:
     active = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=STAFF_HEADERS,
         json=source_payload("active_source"),
     )
     assert active.status_code == 201
     stale = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=STAFF_HEADERS,
         json=source_payload("stale_source", status="stale"),
     )
     assert stale.status_code == 201
     failed = await client.post(
-        "/api/v1/civiccode/sources",
+        "/api/v1/townlight_code/sources",
         headers=STAFF_HEADERS,
         json=source_payload("failed_source", status="failed"),
     )

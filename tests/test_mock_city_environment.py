@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from civiccode.mock_city_environment import (
+from townlight_code.mock_city_environment import (
     MOCK_CITY_CODE_CHANGED_SINCE,
     MOCK_CITY_NAME,
     mock_city_code_report,
@@ -57,7 +57,7 @@ def test_mock_city_suite_imports_codifier_sources_without_network() -> None:
     assert "network" not in " ".join(check.message.lower() for check in checks)
 
 
-def test_mock_city_report_reuses_civiccore_idp_and_backup_contracts() -> None:
+def test_mock_city_report_reuses_townlight_core_idp_and_backup_contracts() -> None:
     report = mock_city_code_report()
 
     assert report["ready"] is True
