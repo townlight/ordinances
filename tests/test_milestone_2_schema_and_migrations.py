@@ -455,7 +455,7 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
                 ).scalars()
             )
 
-        assert townlight_core_revision == "townlight_core_0003"
+        assert townlight_core_revision == "townlight_core_0009"
         assert townlight_code_revision == "townlight_code_0012"
         assert townlight_code_tables == set(CANONICAL_TABLES) | {
             "source_registry_records",
