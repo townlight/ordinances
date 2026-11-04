@@ -1,5 +1,8 @@
 # Changelog
 
+> Windows delivery: this package is included in [MSI 1.7.0.1](https://github.com/townlight/townlight/releases/tag/townlight-beta-1-windows-1.7.0.1); [installed acceptance](https://github.com/townlight/townlight/releases/download/townlight-beta-1-windows-1.7.0.1/ACCEPTANCE-Windows-1.7.0.1.md) applies only to the identified artifact. Earlier entries retain their original release context.
+
+
 ## [Unreleased]
 
 - Aligns the default local Ollama answer model with the city-core installer
