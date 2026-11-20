@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import os
 import importlib
 from pathlib import Path
 import re
@@ -371,52 +372,66 @@ def test_schema_aware_guard_checks_table_inside_target_schema() -> None:
 
 def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.MonkeyPatch) -> None:
     """Run the actual operator migration path against disposable Postgres."""
-    if shutil.which("docker") is None:
-        pytest.skip("Docker CLI is not available for the real pgvector migration smoke.")
-    daemon = subprocess.run(
-        ["docker", "info"],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if daemon.returncode != 0:
-        pytest.skip(
-            "Docker daemon is not available for the real pgvector migration smoke. "
-            "Start Docker Desktop and rerun this test before release if Docker proof is required."
+    external_url = os.environ.get("TOWNLIGHT_CODE_TEST_DATABASE_URL")
+    if external_url:
+        from sqlalchemy.engine import make_url
+        target = make_url(external_url)
+        assert target.host in {"127.0.0.1", "localhost"}
+        assert target.database == "townlight_code_windows_test"
+        with create_engine(external_url).connect() as connection:
+            assert connection.execute(text(
+                "SELECT count(*) FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema')"
+            )).scalar_one() == 0, "Native migration test requires a new empty disposable database"
+    else:
+        if shutil.which("docker") is None:
+            pytest.skip("Docker CLI is not available for the real pgvector migration smoke.")
+        daemon = subprocess.run(
+            ["docker", "info"],
+            check=False,
+            capture_output=True,
+            text=True,
         )
+        if daemon.returncode != 0:
+            pytest.skip(
+                "Docker daemon is not available for the real pgvector migration smoke. "
+                "Start Docker Desktop and rerun this test before release if Docker proof is required."
+            )
 
-    name = f"townlight_code-m2-{uuid.uuid4().hex[:12]}"
-    subprocess.run(
-        [
-            "docker",
-            "run",
-            "--name",
-            name,
-            "-e",
-            "POSTGRES_PASSWORD=postgres",
-            "-e",
-            "POSTGRES_USER=postgres",
-            "-e",
-            "POSTGRES_DB=townlight_code_test",
-            "-p",
-            "5432",
-            "-d",
-            "pgvector/pgvector:pg17",
-        ],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-
-    try:
-        mapped = subprocess.run(
-            ["docker", "port", name, "5432/tcp"],
+        name = f"townlight_code-m2-{uuid.uuid4().hex[:12]}"
+        subprocess.run(
+            [
+                "docker",
+                "run",
+                "--name",
+                name,
+                "-e",
+                "POSTGRES_PASSWORD=postgres",
+                "-e",
+                "POSTGRES_USER=postgres",
+                "-e",
+                "POSTGRES_DB=townlight_code_test",
+                "-p",
+                "5432",
+                "-d",
+                "pgvector/pgvector:pg17",
+            ],
             check=True,
             capture_output=True,
             text=True,
-        ).stdout.strip()
-        port = mapped.rsplit(":", maxsplit=1)[-1]
-        db_url = f"postgresql+psycopg2://postgres:postgres@localhost:{port}/townlight_code_test"
+        )
+
+    try:
+        if external_url:
+            db_url = external_url
+        else:
+            mapped = subprocess.run(
+                ["docker", "port", name, "5432/tcp"],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            port = mapped.rsplit(":", maxsplit=1)[-1]
+            db_url = f"postgresql+psycopg2://postgres:postgres@localhost:{port}/townlight_code_test"
         engine = create_engine(db_url)
 
         deadline = time.monotonic() + 30
@@ -476,7 +491,8 @@ def test_alembic_command_upgrades_real_pgvector_database(monkeypatch: pytest.Mon
             "operational_state_records",
         }
     finally:
-        subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)
+        if not external_url:
+            subprocess.run(["docker", "rm", "-f", name], check=False, capture_output=True, text=True)
 
 
 def test_first_migration_declares_revision_and_creates_all_canonical_tables_idempotently() -> None:
