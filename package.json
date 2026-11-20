@@ -9,7 +9,7 @@
     "a11y:ci": "node scripts/a11y-ci.mjs"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^5.0.0",
+    "@vitejs/plugin-react": "^6.3.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "typescript": "^5.9.0",
