@@ -268,7 +268,7 @@ jobs:
             --expected-tree "${{ steps.release_ref.outputs.target_tree }}"
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: townlight_code-dist
           path: |
