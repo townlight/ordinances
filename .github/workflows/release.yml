@@ -25,7 +25,7 @@ jobs:
       group: scott-desktop-cleanroom-${{ github.repository }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python for direct-pip cleanroom
         uses: actions/setup-python@v5
@@ -108,7 +108,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -124,7 +124,7 @@ jobs:
           python scripts/install-core-candidate.py
 
       - name: Checkout canonical TownlightCore provenance fixtures
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: townlight/core
           ref: 3021821bf9a92c790a399ad12aed821d65b09105
@@ -140,7 +140,7 @@ jobs:
     needs: preflight
     timeout-minutes: 120
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -282,7 +282,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v4
         with:
@@ -347,7 +347,7 @@ jobs:
       group: scott-desktop-cleanroom-${{ github.repository }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python for release-asset cleanroom
         uses: actions/setup-python@v5
