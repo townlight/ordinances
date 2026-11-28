@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/setup-python@v6
@@ -28,7 +28,7 @@ jobs:
           python -m pip install build
           python scripts/install-core-candidate.py
       - name: Checkout canonical TownlightCore provenance fixtures
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: townlight/core
           ref: 3021821bf9a92c790a399ad12aed821d65b09105
