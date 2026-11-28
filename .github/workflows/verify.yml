@@ -27,7 +27,7 @@ jobs:
           SHA: ${{ github.sha }}
         run: |
           # code=false only when every changed file is docs. Anything unknown counts as code.
-          docs_re='(\.(md|mdx|rst|docx|pdf)$)|(^|/)(LICENSE|NOTICE)(\.[^/]*)?$|^docs/.*\.(png|jpe?g|svg|gif|webp|html|css)$'
+          docs_re='(\.(md|mdx|rst|docx|pdf)$)|(^|/)(LICENSE|NOTICE)(\.[^/]*)?$|^docs/.*\.(png|jpe?g|svg|gif|webp|html|css)$|^(README|USER-MANUAL)\.txt$'
           keep_re='(^|/)SKILL\.md$|(^|/)(skills|agents|commands|prompts|references)/|^\.claude/'
           files=""
           if [ "$EVENT" = pull_request ] || [ "$EVENT" = pull_request_target ]; then
