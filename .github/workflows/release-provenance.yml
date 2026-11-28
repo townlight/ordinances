@@ -36,7 +36,7 @@ jobs:
       - name: Verify adversarial release provenance fixtures
         run: python scripts/verify-release-provenance.py --fixtures-dir .tmp-townlight_core/tests/fixtures/release_provenance
       - name: Install cosign
-        uses: sigstore/cosign-installer@v4.1.1
+        uses: sigstore/cosign-installer@v4.1.4
       - name: Verify published release tag and target commit provenance
         env:
           GH_TOKEN: ${{ github.token }}
