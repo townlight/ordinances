@@ -1,8 +1,8 @@
-## Windows 1.10.0.1 current release
+## Windows 1.11.0.1 current release
 
-Townlight for Windows 1.10.0.1 is the current signed public beta. See the [release notes](https://github.com/townlight/townlight/releases/tag/townlight-windows-v1.10.0.1) and [acceptance record](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.10.0.1/ACCEPTANCE-Windows-1.10.0.1.md).
+Townlight for Windows 1.11.0.1 is the current signed public beta. See the [release notes](https://github.com/townlight/townlight/releases/tag/townlight-windows-v1.11.0.1) and [acceptance record](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.11.0.1/ACCEPTANCE-Windows-1.11.0.1.md).
 
-For an existing city, make and verify a backup, close Townlight, run the signed Windows 1.10.0.1 MSI, then reopen Townlight under the same Windows account and existing profile. Direct upgrade is tested from 1.9.3.2; earlier paths have separate prior evidence.
+For an existing city, make and verify a backup, close Townlight, run the signed Windows 1.11.0.1 MSI, then reopen Townlight under the same Windows account and existing profile. The upgrade from 1.10.0.1 kept existing data; Elections approval after the upgrade and data preservation after uninstall are not yet verified.
 
 ## Windows 1.9.2.1 historical Suite release
 
@@ -12,7 +12,7 @@ Acceptance used synthetic data and a test portal on the physical Windows host wi
 
 [Release and downloads](https://github.com/townlight/townlight/releases/tag/townlight-windows-v1.9.2.1) · [Acceptance and limits](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.9.2.1/ACCEPTANCE-Windows-1.9.2.1.md)
 
-Windows x64 Beta 1 · MSI 1.10.0.1
+Windows x64 Beta 1 · MSI 1.11.0.1
 
 Windows 1.8.1.1 adds shared meeting imports for 31 source families, with 34 supported source/format pairs. Installed Windows Sandbox checks exercised preview, save and durable readback using public captures and fixtures, plus the documented Townlight handoffs. These checks do not establish automatic discovery on every live portal or a complete retest of every module.
 
@@ -46,7 +46,7 @@ Windows 1.8.1.1 adds shared meeting imports for 31 source families, with 34 supp
 
 [All 31 sources, formats and handoffs](https://townlight.github.io/manuals/meeting-imports.html) · [Installed acceptance](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.8.1.1/ACCEPTANCE-Windows-1.8.1.1.md).
 
-The release acceptance summary and corresponding-source archive identify the exact packaged component sources, artifact hashes and installed evidence for Windows 1.10.0.1.
+The release acceptance summary and corresponding-source archive identify the exact packaged component sources, artifact hashes and installed evidence for Windows 1.11.0.1.
 
 
 **Townlight Beta 1** · Naming candidate documentation edition 2 November 2026
@@ -84,22 +84,22 @@ Staff should begin with First run and Daily workflow. Administrators should also
 | Identity | Value |
 |----|----|
 | Documentation | Townlight Beta 1 |
-| Windows MSI version | 1.10.0.1 |
+| Windows MSI version | 1.11.0.1 |
 | Product component | townlight-code 1.0.9 |
 | Principal import package | townlight_code |
-| Native desktop source version | 1.9.3-2 |
-| Published MSI checksums | [SHA-256 checksums](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.10.0.1/SHA256SUMS-Windows-1.10.0.1.txt) and [Windows acceptance summary](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.10.0.1/ACCEPTANCE-Windows-1.10.0.1.md) |
+| Native desktop source version | 1.11.0-1 |
+| Published MSI checksums | [SHA-256 checksums](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.11.0.1/SHA256SUMS-Windows-1.11.0.1.txt) and [Windows acceptance summary](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.11.0.1/ACCEPTANCE-Windows-1.11.0.1.md) |
 | Current owned software license | AGPL-3.0-only |
-| Acceptance composition | Signed 1.10.0.1 setup, backup/restore, uninstall, and adjacent upgrade verified. |
+| Acceptance composition | Signed 1.11.0.1 fresh setup and backup/restore verified; upgrade from 1.10.0.1 partly verified; uninstall preservation not confirmed. |
 
 ## First run
 
 ### Fresh installation
 
-For a new city, install the signed Townlight Windows 1.10.0.1 MSI and complete first-run under the intended named Windows account with an empty database and a new profile. Current release acceptance: [ACCEPTANCE-Windows-1.10.0.1.md](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.10.0.1/ACCEPTANCE-Windows-1.10.0.1.md).
+For a new city, install the signed Townlight Windows 1.11.0.1 MSI and complete first-run under the intended named Windows account with an empty database and a new profile. Current release acceptance: [ACCEPTANCE-Windows-1.11.0.1.md](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.11.0.1/ACCEPTANCE-Windows-1.11.0.1.md).
 
-1.  Download the signed MSI, matching source companion and checksums from the [public Windows release](https://github.com/townlight/townlight/releases/tag/townlight-windows-v1.10.0.1).
-2.  Verify the MSI hash and Authenticode publisher before installation. See the [Windows acceptance summary](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.10.0.1/ACCEPTANCE-Windows-1.10.0.1.md) for the tested setup.
+1.  Download the signed MSI, matching source companion and checksums from the [public Windows release](https://github.com/townlight/townlight/releases/tag/townlight-windows-v1.11.0.1).
+2.  Verify the MSI hash and Authenticode publisher before installation. See the [Windows acceptance summary](https://github.com/townlight/townlight/releases/download/townlight-windows-v1.11.0.1/ACCEPTANCE-Windows-1.11.0.1.md) for the tested setup.
 3.  Launch Townlight under the intended Windows account and choose storage folders. On the setup screen, choose the full bundled profile labeled **Townlight Inspections candidate**; it includes Records, Meetings, Code, Access, Notice, Zoning, Planning, Permitting, Inspections, Boards & Commissions, Contracts, Procurement, Data, Budget, and Grants.
 4.  Enter the city profile, time zone and contacts. Create the first named local administrator, sign in and choose protected backup storage. **Continue without local AI** is valid for the deterministic workflows.
 5.  Select **Run Health Check**, then choose **Finish setup**; in System Health, if **Prepare Records** appears, choose it and follow its prompts, otherwise skip it.
@@ -222,7 +222,7 @@ Source contracts: `townlight_runtime/code_bridge.py`, `townlight_code/main.py`, 
 
 ### Runtime and storage
 
-The 1.9.1.1 physical Station camera and microphone test applies only to that historical release. Current Windows 1.10.0.1 acceptance is documented in the release summary. Its native shell uses **Rust 2021, Tauri 2 and Microsoft WebView2**; browser assets are JavaScript built with **Vite 8.1.6**. This describes the native desktop frontend; Station has a separate React operator, specified below or in its product manual. Canonical business workflows use bundled **CPython 3.13.5, FastAPI, Pydantic, SQLAlchemy and Alembic**, with **PostgreSQL 17 / PostGIS** and managed original files. Bundled dependency versions are recorded with the release evidence. Package minimum Python requirements can differ from the bundled executable; the metadata reference preserves both. No stack rewrite is implied by the beta label.
+The 1.9.1.1 physical Station camera and microphone test applies only to that historical release. Current Windows 1.11.0.1 acceptance is documented in the release summary. Its native shell uses **Rust 2021, Tauri 2 and Microsoft WebView2**; browser assets are JavaScript built with **Vite 8.1.6**. This describes the native desktop frontend; Station has a separate React operator, specified below or in its product manual. Canonical business workflows use bundled **CPython 3.13.5, FastAPI, Pydantic, SQLAlchemy and Alembic**, with **PostgreSQL 17 / PostGIS** and managed original files. Bundled dependency versions are recorded with the release evidence. Package minimum Python requirements can differ from the bundled executable; the metadata reference preserves both. No stack rewrite is implied by the beta label.
 
 The native transport is fixed to loopback `127.0.0.1:15480`; PostgreSQL uses the configured local runtime port (default `15432`). Optional local model service defaults to `127.0.0.1:15434`. Those are deployment defaults, not internet endpoints. The runtime has health, module and readiness endpoints; readiness is stronger than process existence. The task queue is the existing local Core task infrastructure, not an assertion that a separate Redis service is required for this desktop composition.
 
@@ -396,7 +396,7 @@ Staff verify the jurisdiction, source currency, permissions, citations and propo
 
 ### Beta operation and recovery
 
-For an existing city, make and verify a backup, close Townlight, run the signed Windows 1.10.0.1 MSI, then reopen Townlight under the same Windows account and existing profile. Direct upgrade is tested from 1.9.3.2; earlier paths have separate prior evidence.
+For an existing city, make and verify a backup, close Townlight, run the signed Windows 1.11.0.1 MSI, then reopen Townlight under the same Windows account and existing profile. The upgrade from 1.10.0.1 kept existing data; Elections approval after the upgrade and data preservation after uninstall are not yet verified.
 
 ### Warranty and liability
 
